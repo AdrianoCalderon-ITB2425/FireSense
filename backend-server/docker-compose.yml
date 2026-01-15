@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # MOSQUITTO MQTT BROKER - TLS ACTIVADO
+  # ============================================
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt-broker
+    restart: unless-stopped
+    hostname: mqtt-broker
+    ports:
+      - "80:8883"
+    # Por limitaciones del bastion que tiene IsardVDI tenemos que redirigir el puerto del MQTT al 80 en la maquina host
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      # Archivo de configuración principal (solo lectura)
+      - ./mqtt/certs:/mosquitto/certs:ro
+      # Certificados TLS/SSL para conexiones seguras (solo lectura)
+      - ./mqtt/passwd:/mosquitto/config/passwd:ro
+      # Archivo de contraseñas para autenticación (solo lectura)
+      - mosquitto-data:/mosquitto/data7
+      # Volumen para datos persistentes
+      - mosquitto-logs:/mosquitto/log
+      
+    environment:
+      - TZ=Europe/Madrid
+    networks:
+      - iot-network
+    # Red personalizada para comunicarse con los demas servicios
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-h", "localhost", "-t", "test", "-C", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Verifica cada 30 segundos que el broker funciona correctamente
+    # mosquitto_sub intenta conectarse al broker (localhost)
+    # Si falla 3 veces consecutivas, marca el contenedor como unhealthy
+    labels:
+      - "MQTT_Server_EspVRna"
+
+  # ============================================
+  # INFLUXDB - TIME SERIES DATABASE
+  # ============================================
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: influxdb
+    restart: unless-stopped
+    hostname: influxdb
+    ports:
+      - "127.0.0.1:8086:8086"  # SOLO LOCALHOST (Node-RED accede internamente)
+    environment:
+      # Inicialización (documentacion sobre las varibles en docs influxdb)
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USER}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+      - DOCKER_INFLUXDB_INIT_RETENTION=${INFLUXDB_RETENTION}
+      # Configuración
+      - TZ=Europe/Madrid
+      - INFLUXDB_HTTP_LOG_ENABLED=true
+      - INFLUXDB_REPORTING_DISABLED=false
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+      - ./influxdb/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    networks:
+      - iot-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/api/v2/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "InfluxDB_Server_EspVRna"
+
+  # ============================================
+  # NODE-RED - DATA PROCESSING & DASHBOARD
+  # ============================================
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    restart: unless-stopped
+    hostname: node-red
+    ports:
+      - "1880:1880"   # Web UI + API
+    environment:
+      - NODE_RED_ENABLE_PROJECTS=true
+      - NODE_RED_ENABLE_SAFE_MODE=false
+      - TZ=Europe/Madrid
+      - NODE_OPTIONS=--max-old-space-size=256  # Limitar memoria
+    volumes:
+      - node-red-data:/data
+      - ./node-red/settings.js:/data/settings.js:ro
+      - ./node-red/flows.json:/data/flows.json:ro
+      - ./node-red/flows_cred.json:/data/flows_cred.json:ro
+      - ./node-red/package.json:/data/package.json:ro
+    networks:
+      - iot-network
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1880/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "com.example.description=Node-RED Processing Engine"
+
+  # ============================================
+  # CHIRPSTACK (LoRaWAN Network Server)
+  # ============================================
+  # Descomenta si usas LoRaWAN
+  # chirpstack:
+  #   image: chirpstack/chirpstack:4
+  #   container_name: chirpstack
+  #   restart: unless-stopped
+  #   ports:
+  #     - "127.0.0.1:8080:8080"  # Web UI (solo local)
+  #   volumes:
+  #     - ./lorawan-gateway/chirpstack.toml:/etc/chirpstack/chirpstack.toml:ro
+  #     - ./lorawan-gateway/certs:/etc/chirpstack/certs:ro
+  #     - chirpstack-data:/var/lib/chirpstack
+  #   environment:
+  #     - RUST_LOG=info
+  #     - TZ=Europe/Madrid
+  #   networks:
+  #     - iot-network
+  #   depends_on:
+  #     - mosquitto
+  #     - postgres
+
+  # ============================================
+  # POSTGRESQL (Base de datos ChirpStack)
+  # ============================================
+  # Descomenta si usas ChirpStack
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: postgres-db
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=${POSTGRES_DB}
+  #     - POSTGRES_USER=${POSTGRES_USER}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #     - TZ=Europe/Madrid
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   networks:
+  #     - iot-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+# ============================================
+# REDES
+# ============================================
+networks:
+  iot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============================================
+# VOLUMENES PERSISTENTES
+# ============================================
+volumes:
+  # MQTT
+  mosquitto-data:
+    driver: local
+  mosquitto-logs:
+    driver: local
+  
+  # InfluxDB
+  influxdb-data:
+    driver: local
+  influxdb-config:
+    driver: local
+  
+  # Node-RED
+  node-red-data:
+    driver: local
+  
+  # ChirpStack
+  # chirpstack-data:
+  #   driver: local.
+  # postgres-data:
+  #   driver: local
