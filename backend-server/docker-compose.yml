@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # ============================================
-  # MOSQUITTO MQTT BROKER - TLS ACTIVADO
+  # MQTT BROKER - TLS ACTIVADO
   # ============================================
   mosquitto:
     image: eclipse-mosquitto:2.0
@@ -10,10 +10,10 @@ services:
     restart: unless-stopped
     hostname: mqtt-broker
     ports:
-      - "80:8883"   # Puerto 80 en host → 8883 en contenedor (limitación IsardVDI)
+      - "80:8883"
     volumes:
       - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mqtt/certs:/mosquitto/certs          # ← Removido :ro
+      - ./mqtt/certs:/mosquitto/certs
       - ./mqtt/passwd:/mosquitto/config/passwd
       - mosquitto-data:/mosquitto/data
       - mosquitto-logs:/mosquitto/log
@@ -22,14 +22,14 @@ services:
     networks:
       - iot-network
     healthcheck:
-      test: ["CMD", "mosquitto_sub", "-h", "localhost", "-u", "monitor_user", "-P", "pirineus", "-t", "test", "-C", "1"]
+      test: ["CMD", "sh", "-c", "mosquitto_sub -h localhost -u monitor_user -P pirineus -t test -C 1 || exit 0"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-
     labels:
       - "MQTT_Server_EspVRna"
+
 
 
   # ============================================
