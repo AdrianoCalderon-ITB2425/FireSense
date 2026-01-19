@@ -1,7 +1,7 @@
 #!/bin/bash
 # scripts/generate-tls-certs.sh
 
-cd mqtt/certs
+cd ./certs
 
 # 1. Generar Certificado Autoridad (CA)
 echo "Generando CA..."
