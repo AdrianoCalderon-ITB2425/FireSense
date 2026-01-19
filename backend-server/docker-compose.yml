@@ -22,11 +22,12 @@ services:
     networks:
       - iot-network
     healthcheck:
-      test: ["CMD", "mosquitto_sub", "-h", "localhost", "-t", "test", "-C", "1"]
+      test: ["CMD", "mosquitto_sub", "-h", "localhost", "-u", "monitor_user", "-P", "pirineus", "-t", "test", "-C", "1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
+
     labels:
       - "MQTT_Server_EspVRna"
 
@@ -61,11 +62,12 @@ services:
     networks:
       - iot-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "-H", "Authorization: Token ${INFLUXDB_ADMIN_TOKEN}", "http://localhost:8086/api/v2/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
     labels:
       - "InfluxDB_Server_EspVRna"
 
