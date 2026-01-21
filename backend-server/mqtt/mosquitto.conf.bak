@@ -1,0 +1,42 @@
+# CONFIGURACIÓN GLOBAL
+allow_anonymous false
+password_file /mosquitto/config/passwd
+
+
+# LISTENERS
+
+
+# Listener 1: MQTT Plain (localhost only)
+listener 1883 127.0.0.1
+protocol mqtt
+
+
+# Listener 2: MQTT TLS (remote access)
+listener 8883 0.0.0.0
+protocol mqtt
+certfile /mosquitto/certs/server.crt
+keyfile /mosquitto/certs/server.key
+cafile /mosquitto/certs/ca.crt
+tls_version tlsv1.2
+
+
+# PERSISTENCIA
+persistence true
+persistence_location /mosquitto/data/
+
+
+# LOGGING
+log_dest file /mosquitto/log/mosquitto.log
+log_dest stdout
+log_type all
+log_timestamp true
+
+
+# SEGURIDAD
+max_connections 100
+max_queued_messages 1000
+message_size_limit 0
+
+
+# PERFORMANCE
+autosave_interval 1800
