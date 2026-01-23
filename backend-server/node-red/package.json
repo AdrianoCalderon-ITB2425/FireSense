@@ -1,17 +1,13 @@
 {
-  "name": "node-red-iot-project",
-  "description": "Node-RED para PROJECTEESPVRNA IoT",
+  "name": "node-red-project",
   "version": "1.0.0",
+  "description": "Node-RED IoT Project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node-red -u /data"
+  },
   "dependencies": {
-    "node-red-contrib-influxdb": "^0.6.1",
-    "node-red-contrib-mqtt-broker": "^0.0.1",
-    "node-red-dashboard": "^3.6.2",
-    "node-red-node-mysql": "^1.0.0",
-    "node-red-node-pushbullet": "^0.0.4",
-    "node-red-node-email": "^1.14.2",
-    "node-red-contrib-moment": "^2.0.0",
-    "node-red-contrib-json": "^0.0.12",
-    "node-red-contrib-buffermaker": "^4.0.1",
-    "node-red-node-sqlite": "^0.5.1"
+    "node-red-contrib-influxdb": "latest",
+    "node-red-contrib-mqtt-all": "latest"
   }
 }
