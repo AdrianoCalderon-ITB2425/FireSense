@@ -1,156 +1,118 @@
 [
-    {
-        "id": "d0d34d678f4eddd6",
-        "type": "tab",
-        "label": "Flow 1",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "mqtt-broker-config",
-        "type": "mqtt-broker",
-        "name": "MQTT Broker TLS",
-        "broker": "mqtt-broker",
-        "port": "8883",
-        "clientid": "node-red-iot",
-        "autoConnect": true,
-        "usetls": true,
-        "keepalive": 60,
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": 0,
-        "birthPayload": "",
-        "closeTopic": "",
-        "closeQos": 0,
-        "closePayload": "",
-        "willTopic": "",
-        "willQos": 0,
-        "willPayload": ""
-    },
-    {
-        "id": "influxdb-config",
-        "type": "influxdb",
-        "hostname": "influxdb",
-        "port": "8086",
-        "database": "iot",
-        "name": "InfluxDB Local",
-        "influxdbVersion": "1.x"
-    },
-    {
-        "id": "f58710c38e3c8375",
-        "type": "mqtt in",
-        "z": "d0d34d678f4eddd6",
-        "name": "MQTT JSON in",
-        "topic": "meshtastic/mesh/collserola/message",
-        "qos": "1",
-        "datatype": "auto",
-        "broker": "mqtt-broker-config",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 180,
-        "y": 280,
-        "wires": [
-            [
-                "24e8f00cfa07f2d2"
-            ]
-        ]
-    },
-    {
-        "id": "24e8f00cfa07f2d2",
-        "type": "json",
-        "z": "d0d34d678f4eddd6",
-        "name": "Parse JSON",
-        "property": "payload",
-        "action": "obj",
-        "pretty": false,
-        "x": 380,
-        "y": 280,
-        "wires": [
-            [
-                "2580fa66f9d6eb60",
-                "b109539b44306639"
-            ]
-        ]
-    },
-    {
-        "id": "2580fa66f9d6eb60",
-        "type": "switch",
-        "z": "d0d34d678f4eddd6",
-        "name": "Check Valid",
-        "property": "payload.temperature",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "exists"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 580,
-        "y": 280,
-        "wires": [
-            [
-                "a450129bb233cc09",
-                "344ab6d9ca014246"
-            ]
-        ]
-    },
-    {
-        "id": "a450129bb233cc09",
-        "type": "influxdb out",
-        "z": "d0d34d678f4eddd6",
-        "influxdb": "influxdb-config",
-        "name": "To InfluxDB",
-        "measurement": "collserola_sensors",
-        "database": "iot",
-        "x": 780,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "b109539b44306639",
-        "type": "debug",
-        "z": "d0d34d678f4eddd6",
-        "name": "Debug JSON",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 380,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "344ab6d9ca014246",
-        "type": "debug",
-        "z": "d0d34d678f4eddd6",
-        "name": "Debug Valid",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 780,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "46c7f6d7c4095c97",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-contrib-influxdb": "0.7.0"
-        }
-    }
+  {
+    "id": "mqtt-broker-tls-001",
+    "type": "mqtt-broker",
+    "name": "MQTT Broker TLS",
+    "broker": "mqtt-broker",
+    "port": "8883",
+    "clientid": "node-red-iot",
+    "autoConnect": true,
+    "usetls": true,
+    "useSelfSigned": true,
+    "tlsVersion": "tlsv1.2",
+    "cafile": "/data/certs/ca.crt",
+    "certfile": "/data/certs/server.crt",
+    "keyfile": "/data/certs/server.key",
+    "compatMode": true,
+    "keepalive": 60,
+    "cleansession": true
+  },
+  {
+    "id": "influxdb-config-001",
+    "type": "influxdb",
+    "hostname": "influxdb",
+    "port": "8086",
+    "database": "iot",
+    "name": "InfluxDB Local"
+  },
+  {
+    "id": "mqtt-in-node-001",
+    "type": "mqtt in",
+    "topic": "meshtastic/mesh/collserola/message",
+    "qos": "1",
+    "datatype": "auto",
+    "broker": "mqtt-broker-tls-001",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "name": "MQTT JSON in",
+    "x": 100,
+    "y": 100,
+    "wires": [["parse-json-node-001"]]
+  },
+  {
+    "id": "parse-json-node-001",
+    "type": "json",
+    "name": "Parse JSON",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 300,
+    "y": 100,
+    "wires": [["check-valid-node-001", "debug-json-001"]]
+  },
+  {
+    "id": "check-valid-node-001",
+    "type": "switch",
+    "name": "Check Valid",
+    "property": "payload.temperature",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "exists"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 500,
+    "y": 100,
+    "wires": [["influxdb-node-001", "debug-valid-001"]]
+  },
+  {
+    "id": "influxdb-node-001",
+    "type": "influxdb out",
+    "influxdb": "influxdb-config-001",
+    "measurement": "collserola_sensors",
+    "tags": "sensor=collserola",
+    "fields": "temperature,humidity,pressure",
+    "timestamp": "",
+    "database": "iot",
+    "name": "To InfluxDB",
+    "x": 700,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "debug-json-001",
+    "type": "debug",
+    "name": "Debug JSON",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 300,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "debug-valid-001",
+    "type": "debug",
+    "name": "Debug Valid",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 700,
+    "y": 200,
+    "wires": []
+  }
 ]
