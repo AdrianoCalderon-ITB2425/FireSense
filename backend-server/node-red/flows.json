@@ -1,7 +1,16 @@
 [
   {
+    "id": "flow-main-001",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": "",
+    "env": []
+  },
+  {
     "id": "mqtt-broker-tls-001",
     "type": "mqtt-broker",
+    "z": "flow-main-001",
     "name": "MQTT Broker TLS",
     "broker": "mqtt-broker",
     "port": "8883",
@@ -20,6 +29,7 @@
   {
     "id": "influxdb-config-001",
     "type": "influxdb",
+    "z": "flow-main-001",
     "hostname": "influxdb",
     "port": "8086",
     "database": "iot",
@@ -28,6 +38,7 @@
   {
     "id": "mqtt-in-node-001",
     "type": "mqtt in",
+    "z": "flow-main-001",
     "topic": "meshtastic/mesh/collserola/message",
     "qos": "1",
     "datatype": "auto",
@@ -43,6 +54,7 @@
   {
     "id": "parse-json-node-001",
     "type": "json",
+    "z": "flow-main-001",
     "name": "Parse JSON",
     "property": "payload",
     "action": "obj",
@@ -54,6 +66,7 @@
   {
     "id": "check-valid-node-001",
     "type": "switch",
+    "z": "flow-main-001",
     "name": "Check Valid",
     "property": "payload.temperature",
     "propertyType": "msg",
@@ -72,6 +85,7 @@
   {
     "id": "influxdb-node-001",
     "type": "influxdb out",
+    "z": "flow-main-001",
     "influxdb": "influxdb-config-001",
     "measurement": "collserola_sensors",
     "tags": "sensor=collserola",
@@ -86,6 +100,7 @@
   {
     "id": "debug-json-001",
     "type": "debug",
+    "z": "flow-main-001",
     "name": "Debug JSON",
     "active": true,
     "tosidebar": true,
@@ -102,6 +117,7 @@
   {
     "id": "debug-valid-001",
     "type": "debug",
+    "z": "flow-main-001",
     "name": "Debug Valid",
     "active": true,
     "tosidebar": true,
