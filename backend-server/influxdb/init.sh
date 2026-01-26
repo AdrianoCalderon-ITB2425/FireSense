@@ -1,37 +1,23 @@
 set -e
 
-INFLUX_HOST=${INFLUX_HOST:-http://localhost:8086}
-INFLUX_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
-INFLUX_ORG=${DOCKER_INFLUXDB_INIT_ORG}
-INFLUX_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+echo "=== InfluxDB Init Script ==="
 
-# Crear bucket adicional para datos históricos
-echo "Creando buckets adicionales..."
-curl -X POST ${INFLUX_HOST}/api/v2/buckets \
-  -H "Authorization: Token ${INFLUX_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orgID": "'$(curl -s -X GET ${INFLUX_HOST}/api/v2/orgs \
-      -H "Authorization: Token ${INFLUX_TOKEN}" \
-      -H "Content-Type: application/json" | jq -r '.orgs[0].id')'",
-    "name": "historical_data",
-    "description": "Datos históricos para análisis",
-    "retentionRules": [{"type": "expire", "everySeconds": 7776000}]
-  }' || true
+# Las variables DOCKER_INFLUXDB_INIT_* ya crearon la org y bucket
+# Solo necesitamos verificar que existen
 
-# Crear políticas de retención
-echo "Configurando políticas de retención..."
+# Esperar a que InfluxDB esté listo
+sleep 10
 
-# Retencion corta para datos en tiempo real (7 días)
-curl -X POST ${INFLUX_HOST}/api/v2/buckets \
-  -H "Authorization: Token ${INFLUX_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orgID": "'$(curl -s -X GET ${INFLUX_HOST}/api/v2/orgs \
-      -H "Authorization: Token ${INFLUX_TOKEN}" | jq -r '.orgs[0].id')'",
-    "name": "realtime_data",
-    "description": "Datos tiempo real",
-    "retentionRules": [{"type": "expire", "everySeconds": 604800}]
-  }' || true
+# Verificar org
+echo "Verificando organización..."
+influx org list
 
-echo "InfluxDB inicializado correctamente"
+# Verificar bucket
+echo "Verificando bucket..."
+influx bucket list
+
+# Verificar token
+echo "Verificando token..."
+influx auth list
+
+echo "=== Init completado ==="
