@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     hostname: influxdb
     ports:
-      - "127.0.0.1:8086:8086"  # SOLO LOCALHOST (Node-RED accede internamente)
+      - 8086:8086
     environment:
       # Inicialización (documentacion sobre las varibles en /database/READ.ME)
       - DOCKER_INFLUXDB_INIT_MODE=setup
