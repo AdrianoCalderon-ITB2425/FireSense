@@ -87,13 +87,9 @@ services:
       - node-red-data:/data
       - ./node-red/settings.js:/data/settings.js
       - ./node-red/ca.crt:/data/certs/ca.crt:ro
-      - ./node-red/server.crt:/data/certs/server.crt:ro
-      - ./node-red/server.key:/data/certs/server.key:ro
     networks:
       - iot-network
     depends_on:
-      mosquitto:
-        condition: service_started
       influxdb:
         condition: service_started
     healthcheck:
@@ -114,19 +110,16 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # Configuración básica
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-      - GF_INSTALL_PLUGINS=
       - GF_SERVER_ROOT_URL=http://localhost:3000
       - GF_AUTH_ANONYMOUS_ENABLED=false
       - TZ=Europe/Madrid
-      # Configuración de datasources automática
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - INFLUXDB_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
     volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
     networks:
       - iot-network
     depends_on:
@@ -140,7 +133,6 @@ services:
       start_period: 40s
     labels:
       - "Grafana_Dashboard_EspVRna"
-
   # ============================================
   # CHIRPSTACK (LoRaWAN Network Server)
   # ============================================
