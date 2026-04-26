@@ -123,6 +123,7 @@
     border-color: rgba(74,222,128,0.5);
     background: rgba(255,255,255,0.09);
   }
+  .form-input.error { border-color: rgba(220,38,38,0.8); background: rgba(220,38,38,0.08); box-shadow: 0 0 0 2px rgba(220,38,38,0.2); }
   .form-input::placeholder { color: rgba(255,255,255,0.25); }
 
   .form-hint {
@@ -305,7 +306,11 @@ function showAlert(id, type, msg) {
 async function doLogin() {
   const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value;
-  if (!user || !pass) { showAlert('login-alert','error','Omple tots els camps.'); return; }
+  document.querySelectorAll('#tab-login .form-input').forEach(i=>i.classList.remove('error'));
+  let validLogin=true;
+  if(!user){document.getElementById('login-user').classList.add('error');validLogin=false;}
+  if(!pass){document.getElementById('login-pass').classList.add('error');validLogin=false;}
+  if(!validLogin){showAlert('login-alert','error','Omple tots els camps.');return;}
 
   const btn = document.getElementById('login-btn');
   btn.classList.add('loading');
@@ -342,7 +347,13 @@ async function doSignup() {
   const email = document.getElementById('signup-email').value.trim();
   const user = document.getElementById('signup-user').value.trim();
   const pass = document.getElementById('signup-pass').value;
-  if (!name || !email || !user || !pass) { showAlert('signup-alert','error','Omple tots els camps obligatoris.'); return; }
+  document.querySelectorAll('#tab-signup .form-input').forEach(i=>i.classList.remove('error'));
+  let valid=true;
+  if(!name){document.getElementById('signup-name').classList.add('error');valid=false;}
+  if(!email){document.getElementById('signup-email').classList.add('error');valid=false;}
+  if(!user){document.getElementById('signup-user').classList.add('error');valid=false;}
+  if(!pass){document.getElementById('signup-pass').classList.add('error');valid=false;}
+  if(!valid){showAlert('signup-alert','error','Omple tots els camps obligatoris.');return;}
   if (pass.length < 8) { showAlert('signup-alert','error','La contrasenya ha de tenir mínim 8 caràcters.'); return; }
 
   const btn = document.getElementById('signup-btn');
