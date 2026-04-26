@@ -199,6 +199,35 @@ services:
       grafana:
         condition: service_healthy
 
+
+  # ============================================
+  # AUTH SERVICE - LDAP + JWT
+  # ============================================
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - LDAP_HOST=openldap
+      - LDAP_BASE=dc=firesense,dc=io
+      - POSTGRES_HOST=postgres
+    networks:
+      - iot-network
+    depends_on:
+      openldap:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
   # ============================================
   # FIRESENSE AI
   # ============================================
