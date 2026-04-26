@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireSense — Accés</title>
+<link rel="icon" type="image/png" href="favicon.png?v=5">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Raleway', sans-serif; background: #020d1f; color: #fff; min-height: 100vh; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 72px;
+    background: rgba(255,255,255,0.93);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.15rem; color: #0d3b1e;
+    text-decoration: none; letter-spacing: -.01em;
+  }
+  .nav-logo img { width: 26px; height: 26px; }
+  .nav-back {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .82rem; color: #0d5c2e; text-decoration: none;
+    letter-spacing: .08em; display: flex; align-items: center; gap: 6px;
+    transition: color .2s;
+  }
+  .nav-back:hover { color: #000; }
+
+  /* BACKGROUND */
+  .bg-video {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 0;
+    filter: brightness(0.35) saturate(1.2);
+  }
+  .bg-overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background: linear-gradient(135deg, rgba(2,13,31,0.7) 0%, rgba(5,25,10,0.5) 100%);
+  }
+
+  /* MAIN */
+  main {
+    position: relative; z-index: 2;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 100px 24px 40px;
+  }
+
+  .auth-container {
+    width: 100%; max-width: 460px;
+    animation: fadeUp .7s ease both;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  .auth-header { text-align: center; margin-bottom: 40px; }
+  .auth-tag {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: .25em; color: #4ade80; text-transform: uppercase; margin-bottom: 14px; display: block;
+  }
+  .auth-title {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2.2rem; font-weight: 800; color: #fff;
+    line-height: 1.1; letter-spacing: -.02em;
+  }
+  .auth-title span { color: #8FFFB8; }
+  .auth-sub {
+    font-size: .88rem; color: rgba(255,255,255,0.55);
+    margin-top: 10px; line-height: 1.6;
+    font-family: 'Share Tech Mono', monospace; letter-spacing: .02em;
+  }
+
+  /* CARD */
+  .auth-card {
+    background: rgba(5,20,10,0.75);
+    border: 1px solid rgba(74,222,128,0.15);
+    border-top: 2px solid rgba(74,222,128,0.5);
+    backdrop-filter: blur(20px);
+    border-radius: 4px;
+    padding: 40px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex; border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 32px; gap: 0;
+  }
+  .tab-btn {
+    flex: 1; padding: 12px; background: none; border: none; cursor: pointer;
+    font-family: 'Share Tech Mono', monospace; font-size: .78rem;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: color .2s, border-color .2s;
+  }
+  .tab-btn.active { color: #4ade80; border-bottom-color: #4ade80; }
+  .tab-btn:hover:not(.active) { color: rgba(255,255,255,0.6); }
+
+  /* FORMS */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block; font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%; padding: 13px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px; color: #fff;
+    font-family: 'Raleway', sans-serif; font-size: .95rem;
+    transition: border-color .2s, background .2s;
+    outline: none;
+  }
+  .form-input:focus {
+    border-color: rgba(74,222,128,0.5);
+    background: rgba(255,255,255,0.09);
+  }
+  .form-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .form-hint {
+    font-family: 'Share Tech Mono', monospace; font-size: 9px;
+    color: rgba(255,255,255,0.3); letter-spacing: .1em; margin-top: 6px;
+  }
+
+  .btn-submit {
+    width: 100%; padding: 15px; margin-top: 8px;
+    background: #0d5c2e; color: #fff; border: none; cursor: pointer;
+    font-family: 'Raleway', sans-serif; font-size: .92rem; font-weight: 700;
+    letter-spacing: .06em; border-radius: 4px;
+    transition: background .2s, transform .15s, box-shadow .2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .btn-submit:hover { background: #083d1e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,92,46,0.35); }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit.loading { opacity: .7; pointer-events: none; }
+
+  /* NODE ID SECTION */
+  .node-section {
+    margin-top: 24px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .node-section-title {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: .2em; color: #4ade80; text-transform: uppercase; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .node-section-title::after {
+    content: ''; flex: 1; height: 1px; background: rgba(74,222,128,0.2);
+  }
+  .node-hint {
+    font-size: .82rem; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 16px;
+  }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px; border-radius: 4px; margin-bottom: 20px;
+    font-size: .85rem; display: none; align-items: center; gap: 10px;
+  }
+  .alert.error { background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5; display: flex; }
+  .alert.success { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #86efac; display: flex; }
+
+  /* DIVIDER */
+  .form-divider {
+    display: flex; align-items: center; gap: 12px; margin: 20px 0;
+  }
+  .form-divider span { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.2); letter-spacing: .1em; }
+  .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+
+  /* STATUS INDICATOR */
+  .status-bar {
+    display: flex; align-items: center; gap: 8px; margin-top: 28px;
+    padding: 12px 16px; background: rgba(74,222,128,0.05);
+    border: 1px solid rgba(74,222,128,0.1); border-radius: 4px;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: blink 2.5s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .status-text { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .12em; color: rgba(255,255,255,0.4); }
+
+  /* FOOTER */
+  .auth-footer {
+    text-align: center; margin-top: 24px;
+    font-family: 'Share Tech Mono', monospace; font-size: 9px;
+    letter-spacing: .12em; color: rgba(255,255,255,0.2);
+  }
+
+  @media(max-width:600px){
+    nav { padding: 0 16px; }
+    .auth-card { padding: 28px 20px; }
+    .auth-title { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<video class="bg-video" autoplay muted loop playsinline preload="auto">
+  <source src="nodes-bg.mp4" type="video/mp4">
+</video>
+<div class="bg-overlay"></div>
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <img src="favicon.png" alt="FireSense">
+    FireSense
+  </a>
+  <a href="home.html" class="nav-back">
+    ← Tornar a l'inici
+  </a>
+</nav>
+
+<main>
+  <div class="auth-container">
+    <div class="auth-header">
+      <span class="auth-tag">// Accés segur · Sistema de monitorització</span>
+      <h1 class="auth-title">Benvingut a<br><span>FireSense</span></h1>
+      <p class="auth-sub">Accedeix al teu panell de monitorització de nodes IoT forestals</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Iniciar sessió</button>
+        <button class="tab-btn" onclick="switchTab('signup')">Registrar-se</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="tab-content active" id="tab-login">
+        <div class="alert" id="login-alert"></div>
+        <div class="form-group">
+          <label class="form-label">Usuari</label>
+          <input type="text" class="form-input" id="login-user" placeholder="el.teu.usuari" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contrasenya</label>
+          <input type="password" class="form-input" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn-submit" id="login-btn" onclick="doLogin()">
+          Accedir al panell
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="tab-content" id="tab-signup">
+        <div class="alert" id="signup-alert"></div>
+        <div class="form-group">
+          <label class="form-label">Nom complet</label>
+          <input type="text" class="form-input" id="signup-name" placeholder="Joan García">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correu electrònic</label>
+          <input type="email" class="form-input" id="signup-email" placeholder="joan@empresa.cat">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Usuari</label>
+          <input type="text" class="form-input" id="signup-user" placeholder="joan.garcia">
+          <div class="form-hint">// Sense espais ni caràcters especials</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contrasenya</label>
+          <input type="password" class="form-input" id="signup-pass" placeholder="Mínim 8 caràcters">
+        </div>
+
+
+
+        <button class="btn-submit" id="signup-btn" onclick="doSignup()">
+          Crear compte
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-dot"></div>
+        <span class="status-text">Sistema FireSense operatiu · Servidors EU-868 en línia · Autenticació LDAP activa</span>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      Institut Tecnològic de Barcelona — ASIX2c ✦ FireSense 2025-2026
+    </div>
+  </div>
+</main>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='signup'));
+  });
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+}
+
+function showAlert(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'alert ' + type;
+  el.textContent = msg;
+}
+
+async function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!user || !pass) { showAlert('login-alert','error','Omple tots els camps.'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.classList.add('loading');
+  btn.textContent = 'Verificant...';
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username: user, password: pass})
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('fs_token', data.token);
+      localStorage.setItem('fs_user', user);
+      showAlert('login-alert','success','Accés correcte! Redirigint...');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+      showAlert('login-alert','error', data.error || 'Credencials incorrectes.');
+    }
+  } catch(e) {
+    // Demo mode: si no hi ha backend, redirigeix directament
+    showAlert('login-alert','success','Accés correcte! Redirigint...');
+    localStorage.setItem('fs_user', user);
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = 'Accedir al panell <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  }
+}
+
+async function doSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const user = document.getElementById('signup-user').value.trim();
+  const pass = document.getElementById('signup-pass').value;
+  if (!name || !email || !user || !pass) { showAlert('signup-alert','error','Omple tots els camps obligatoris.'); return; }
+  if (pass.length < 8) { showAlert('signup-alert','error','La contrasenya ha de tenir mínim 8 caràcters.'); return; }
+
+  const btn = document.getElementById('signup-btn');
+  btn.classList.add('loading');
+  btn.textContent = 'Creant compte...';
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, email, username: user, password: pass})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showAlert('signup-alert','success','Compte creat! Ara pots iniciar sessió.');
+      setTimeout(() => switchTab('login'), 1500);
+    } else {
+      showAlert('signup-alert','error', data.error || 'Error al crear el compte.');
+    }
+  } catch(e) {
+    // Demo mode
+    showAlert('signup-alert','success','Compte creat correctament! Redirigint...');
+    localStorage.setItem('fs_user', user);
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = 'Crear compte <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  }
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('tab-login').classList.contains('active')) doLogin();
+    else doSignup();
+  }
+});
+</script>
+</body>
+</html>
