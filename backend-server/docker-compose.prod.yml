@@ -214,6 +214,76 @@ services:
       - iot-network
     depends_on:
       - influxdb 
+
+  # ============================================
+  # OPENLDAP - AUTENTICACIÓ USUARIS FIRESENSE
+  # ============================================
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    restart: unless-stopped
+    environment:
+      - LDAP_ORGANISATION=FireSense
+      - LDAP_DOMAIN=${LDAP_DOMAIN}
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+      - LDAP_CONFIG_PASSWORD=${LDAP_CONFIG_PASSWORD}
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=readonly
+      - LDAP_READONLY_USER_PASSWORD=${LDAP_READONLY_PASSWORD}
+      - LDAP_TLS=false
+    volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/ldap/slapd.d
+    networks:
+      - iot-network
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://localhost", "-b", "dc=firesense,dc=io", "-D", "cn=admin,dc=firesense,dc=io", "-w", "${LDAP_ADMIN_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ============================================
+  # PHPLDAPADMIN - GESTIÓ VISUAL LDAP
+  # ============================================
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    ports:
+      - "6443:80"
+    restart: unless-stopped
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    networks:
+      - iot-network
+    depends_on:
+      openldap:
+        condition: service_healthy
+
+  # ============================================
+  # POSTGRESQL - DADES CLIENTS I NODES
+  # ============================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=Europe/Madrid
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - iot-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
 # ============================================
 # REDES
 # ============================================
@@ -241,4 +311,10 @@ volumes:
   grafana-data:
     driver: local
   ha-config:
+    driver: local
+  ldap-data:
+    driver: local
+  ldap-config:
+    driver: local
+  postgres-data:
     driver: local
