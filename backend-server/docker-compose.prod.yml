@@ -188,7 +188,6 @@ services:
       - /home/isard/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
       - /home/isard/certs/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
       - ./mi-web-html-firesense:/usr/share/nginx/html
-      - ./mi-web-html-espurna:/usr/share/nginx/html-espurna
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     networks:
       - iot-network
