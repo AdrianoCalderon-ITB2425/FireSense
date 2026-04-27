@@ -1,228 +1,112 @@
-# Meeting Minutes - Sprint Review
-
-## Sprint Information
-
-**Sprint:**
-- Code / Sprint Name: Sprint 1 - Organization Phase
-- Sprint Dates: 15/12/2025 - 27/01/2026
+## 1. Sprint 1 Objective — Review
+The objective of Sprint 1 was to build the base infrastructure of the FireSense project and the MVP of the IoT forest fire prevention platform. Objective achieved at 100%.
 
 ---
 
-**Meeting Details:**
-- Date: 19/01/2026 15:00
-- Meeting: Sprint Review
-- Attendees:
-  - Erick García Badaraco
-  - Francisco Díaz Encalada
-  - Adrià Montero Sánchez
+## 2. Demo — What was delivered?
+### Completed Tasks (10/10)
+| ID | Task | Assigned | Result |
+|----|------|----------|--------|
+| 1.1 | Kick-off and role assignment | All | Roles defined and team organized |
+| 1.2 | GitHub repository setup | Adriano | dev/main branches, .gitignore, secrets removed |
+| 1.3 | Gantt planning on ProofHub | Adriano | 3 sprints planned with milestones |
+| 1.4 | IsardVDI provisioning and Docker installation | Adriano, Francisco | VM operational with Docker and network configured |
+| 1.6 | OpenLDAP + phpLDAPadmin configuration | Hamza | dc=firesense,dc=io, users/groups OUs created |
+| 1.8 | Docker Compose MING stack | Adriano | Mosquitto + InfluxDB + Node-RED + Grafana operational |
+| 1.9 | ChirpStack v4 Docker | Hamza | chirpstack.toml + eu868.toml configured and working |
+| 1.10 | Kubernetes manifests Mosquitto + InfluxDB | Francisco | Deployments, Services and PVCs created |
+| 1.11 | Kubernetes manifests Node-RED + Grafana | Francisco | Deployments and ConfigMaps functional |
+| 1.12 | Technologies and Hardware | Adriano, Hamza | RAK4631 programmed, gateway configured, data in InfluxDB |
 
 ---
 
-## Sprint Goal
-
-| Task / Topic | Notes | Owner | Status | Last Updated |
-|------|-------|-------------|--------|---------------------|
-| **Task 1.1:** Sprint Planning Meeting + Preliminary Analysis | First team meeting to understand the project, risks, and dependencies. Sprint 1 goal defined: have a clear architecture diagram, technology justification, and a functional MVP. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 19/01/2026 |
-| **Task 1.2:** Definition of Roles and Key Capabilities | Team alignment: 8 key capabilities, role distribution, shared knowledge, and pair programming plan. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 12/01/2026 |
-| **Task 1.3:** Detailed Analysis of P0.1 Requirements | Exhaustively extract functional and non-functional requirements, cross-reference with the rubric to ensure total coverage. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 12/01/2026 |
-| **Task 1.4:** Architecture and Network Topology Design | Create a comprehensive S1-S7 architecture diagram, documenting data flows, ports, protocols, and critical points. | Erick García<br>Adrià Montero | **Completed** | 26/01/2026 |
-| **Task 1.5:** ProofHub Setup | Central tool setup: 3 sprints, dashboard, tasks with dates and assignees. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 12/01/2026 |
-| **Task 1.6:** GitHub Repository Creation and Configuration | Create repository with professional structure, SSH authentication, and version control procedures. | Francisco Díaz<br>Erick García | **Completed** | 12/01/2026 |
-| **Task 1.7:** Meeting and Minutes Protocol | Define protocol: Sprint Planning, Sprint Review. Minutes + ProofHub screenshots. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 12/01/2026 |
-| **Task 1.8:** Markdown Documentation Tree | Create comprehensive structure: README, ARCHITECTURE, INSTALLATION, CONFIGURATION, etc. | Francisco Díaz<br>Erick García<br>Adrià Montero | **Completed** | 12/01/2026 |
-| **Task 1.9:** Database Schema Definition | Design complete schema including image metadata for future evolutions. | Francisco Díaz | **Completed** | 19/01/2026 |
+## 3. Live Demonstration
+During the review, a live demonstration was carried out of:
+- FireSense dashboard accessible via HTTPS with functional LDAP login
+- 4-step onboarding wizard for adding IoT nodes (DevEUI + lat/lng)
+- Interactive Leaflet map with dynamic nodes loaded from PostgreSQL
+- Secure nginx proxy — F12 verification that INFLUX_TOKEN and CHIRPSTACK_KEY are not visible
+- ChirpStack with EU868 Device Profile + 7-byte JavaScript codec
+- Importable Node-RED flow with RAK4631 payload decoding
+- Downloadable client manual DOCX from the wizard (13 sections)
 
 ---
 
-## Instructor Feedback
-
-### Positive comments:
-
-- The minutes format was accepted and will be used for the rest of the project.
-
----
-
-### Proposed improvements:
-
-- Write the title of each task, in addition to its name.
-
----
-
-### ProofHub screenshot:
-
-<div align="center">
-  <img src="../../../../media/erick/proofhub_sprint1.png" alt="ProofHub screenshot">
-</div>
-
----
-
-## Pending Actions
-
-_[Space for Sprint 1 pending actions - Usually none, all completed]_
-
----
-
-## Executive Summary
-
-**Overall Sprint 1 progress:** 100% completed (9 out of 9 main tasks finished) ✅
-
-**Total Sprint duration:** 43 days (15/12/2025 - 27/01/2026)
-
-### Completed tasks:
-
-**Task 1.1:** Planning meeting and preliminary project analysis  
-**Task 1.2:** Definition of team roles, responsibilities, and key capabilities  
-**Task 1.3:** Exhaustive analysis of functional and non-functional requirements  
-**Task 1.4:** Complete 7-server architecture design with topological diagram  
-**Task 1.5:** ProofHub setup with 3 sprints and all assigned tasks  
-**Task 1.6:** GitHub repository creation with professional structure and SSH  
-**Task 1.7:** Establishment of standardized meeting protocols and minutes  
-**Task 1.8:** Creation of comprehensive Markdown documentation structure  
-**Task 1.9:** Detailed database schema design with metadata  
-
----
-
-## Main Milestones Achieved
-
-### 1. Team Alignment
-- Definition of 8 required key capabilities
-- Clear role assignment (Product Owner, Scrum Master, Technical Lead)
-- Establishment of a shared knowledge plan through pair programming
-
-### 2. Technological Research
-- Comparative analysis of Nginx vs Apache
-- In-depth study of PHP-FPM as a scalable alternative
-- Docker and containerization research
-- MySQL analysis for high availability
-- Benchmarking of similar commercial solutions
-
-### 3. Architecture and Design
-- Complete 7-server architecture diagram
-- Documentation of data flows (HTTP, uploads, static, DB)
-- Definition of ports, protocols, and critical points
-- Justification of chosen technologies
-
-### 4. Project Infrastructure
-- GitHub repository configured with SSH authentication
-- Directory structure: /docs, /docker, /src, /static, /database, /sprints
-- .gitignore and first commit executed
-- Version control established
-
-### 5. Project Management
-- ProofHub configured with 3 full sprints
-- All Product Backlog tasks created
-- Standardized meeting protocol
-- Minutes templates for Sprint Planning and Review
-
-### 6. Core Documentation
-- README.md with general overview and index
-- Documents: ARCHITECTURE, INSTALLATION, CONFIGURATION, DEPENDENCIES
-- Documents: MAINTENANCE, TROUBLESHOOTING, SCALING
-- Exhaustive references to sources
-
-### 7. Requirements Analysis
-- List of functional requirements (7 servers, PHP, MySQL, uploads)
-- List of non-functional requirements (high availability, scalability, documentation)
-- Total rubric coverage verified
-
-### 8. Database
-- Initial schema based on the provided posts table
-- Expansion with improved fields (timestamps, BLOB, name, extension, MIME)
-- Entity-Relationship Diagram documented
-- Structure ready for future evolutions
-
----
-
-## Sprint 1 Deliverables
-
-### Documentation
-- P0.1 requirements analysis document
-- Architecture document with diagrams
-- Role definition document
-- Complete Markdown documentation tree
-- Standardized minutes templates
-
-### Code/Configuration
-- Initialized GitHub repository
-- Professional directory structure
-- Base configuration files
-- Configured .gitignore
-
-### Artifacts
-- Topological architecture diagram (visual)
-- DB Entity-Relationship Diagram
-- ProofHub dashboard with sprints
-- Project status screenshots
-
-### Established Processes
-- Meeting protocol
-- Version control procedure
-- Shared knowledge plan
-- Documentation standards
-
----
-
-## Sprint 1 Statistics
-
+## 4. Sprint Metrics
 | Metric | Value |
-|---------|-------|
-| Total main tasks | 9 |
-| Completed tasks | 9 |
-| Completion rate | 100% |
-| Duration in days | 43 |
-| Team members | 3 |
-| Meetings held | 1 (Sprint Planning) |
-| Documents created | 8+ |
-| Architecture components | 7 servers |
-| Identified key capabilities | 8 |
+|--------|-------|
+| Planned tasks | 10 |
+| Completed tasks | 10 |
+| Sprint velocity | 100% |
+| Estimated hours | ~96h |
+| GitHub commits | +40 commits (dev branch) |
+| Active Docker services | 11 containers |
+| Lines of code (approx.) | ~4,000 |
 
 ---
 
-## Identified Key Capabilities
-
-1. **Linux systems administration** - Server configuration, permissions, services
-2. **Architecture design** - Topology, data flows, scalability
-3. **PHP backend development** - Application scripts, DB integration
-4. **Database configuration** - MySQL, schemas, security
-5. **Web server administration** - Nginx, virtual hosts, reverse proxy
-6. **Containerization with Docker** - Dockerfiles, docker-compose, orchestration
-7. **Git version control** - Workflows, commits, collaboration
-8. **Technical documentation** - Clear writing, diagrams, procedures
+## 5. What went well
+- Docker infrastructure fully operational from day one — no container downtime in production
+- Espurna/FireSense separation in independent nginx instances without interference
+- API key security resolved with nginx proxy — INFLUX_TOKEN and CHIRPSTACK_KEY completely hidden from the browser
+- Dynamic nodes working correctly — the wizard adds nodes to PostgreSQL and they appear on the map automatically
+- Complete and detailed client manual (13 sections, full step-by-step flow)
+- Removal of secrets from the GitHub repository with git filter-branch without losing commit history
 
 ---
 
-## Justified Technologies
-
-| Technology | Reason for selection | Advantages |
-|------------|-------------------|----------|
-| **Nginx** | Efficient reverse proxy | Low resource consumption, ideal for load balancing |
-| **PHP-FPM** | Scalable processing | Better performance than mod_php, process separation |
-| **MySQL** | ACID database | Reliability, replication, possible clustering |
-| **Docker** | Containerization | Isolation, portability, reproducibility |
-| **GitHub** | Version control | Collaboration, traceability, industry standards |
-
----
-
-## Preparation for Sprint 2
-
-Sprint 1 has laid a solid foundation so that Sprint 2 can focus on:
-
-1. Installation of the LEMP stack on a single machine
-2. Validation of core functionalities (extagram.php, upload.php)
-3. Creation of Dockerfiles for all services
-4. Definition of docker-compose.yml with orchestration
-5. NGINX reverse proxy configuration
+## 6. What went wrong / Impediments
+| Impediment | Impact | Resolution |
+|-----------|--------|------------|
+| MapTiler key invalidated due to exceeding 100k requests | Map not loading | New token created on 27/04/2026 |
+| Missing Espurna templates in nginx container causing crash loop | nginx-proxy in restart loop | Added `|| true` to entrypoint.sh |
+| Secrets (Mapbox, InfluxDB, ChirpStack) accidentally pushed to GitHub | GitHub push protection blocking pushes | git filter-branch to rewrite history |
+| Hardcoded nodes in config.js visible in F12 | Security issue | Nodes loaded dynamically from /api/nodes |
+| `sed -i` not working inside nginx container (read-only volume) | 2h debugging block | Substitution done on host before build |
 
 ---
 
-## Important Notes
-
-- **Exhaustive documentation** from the start facilitates future maintenance
-- **Well-defined architecture** prevents costly changes later
-- **Aligned team** in vision and roles ensures efficient execution
-- **Established protocols** guarantee consistency in upcoming sprints
-- **Preliminary research** justifies technical decisions before any audit
+## 7. ProofHub Captures — Done Tasks
+![ProofHub Sprint 1 Review](./captures/proofhub_sprint1_review.png)
 
 ---
 
-[Sprints Index](../sprints-index.md)
+## 8. Retrospective
+### Start doing
+- Smaller and more descriptive commits to facilitate code review
+- Document technical decisions at the moment they are made
+
+### Stop doing
+- Hardcoding API keys and secrets in source code
+- Making changes directly to `main` without going through `dev`
+
+### Keep doing
+- Clear separation of responsibilities per component
+- Checking the browser F12 to verify security
+- Documenting each feature in the client manual
+
+---
+
+## 9. Sprint 2 — Planned Tasks
+| ID | Task | Assigned | Priority |
+|----|------|----------|----------|
+| 2.1 | AI alerts system: trend detection and composite risk scoring | Hamza | High |
+| 2.2 | Telegram notifications (bot + automatic alerts) | Adriano | High |
+| 2.3 | External data integration: NASA FIRMS + AEMET/SMC | Hamza | Medium |
+| 2.4 | MeshCore bridge to server (Raspberry Pi + WireGuard + MQTT) | Adriano | Medium |
+| 2.5 | Grafana dashboard: temperature, humidity, battery panels | Adriano | Medium |
+| 2.6 | LoRaWAN field coverage tests | All | Medium |
+| 2.7 | Final technical project documentation | Hamza | Medium |
+
+---
+
+## 10. Team
+| Role | Name |
+|------|------|
+| Scrum Master | Francisco |
+| Backend Developer / Web Frontend FireSense | Hamza Tayibi |
+| Backend Developer | Adriano Calderon |
+
+---
+*Minutes generated: 27/04/2026 — Version 1.0*
+*FireSense IoT Platform — Institut Tecnologic de Barcelona — ASIX2c — 2025/2026*
