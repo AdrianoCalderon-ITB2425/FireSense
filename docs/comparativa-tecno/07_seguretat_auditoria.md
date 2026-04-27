@@ -138,3 +138,32 @@
 - **Automatització completa**: cert-manager renova automàticament els certificats abans de la seva expiració i actualitza els Kubernetes Secrets TLS corresponents, sense intervenció manual. Amb acme.sh caldria gestionar la renovació i l'actualització dels Secrets manualment o via scripts.
 - **CA privada per a serveis interns**: cert-manager pot actuar com a CA privada per generar certificats TLS per als serveis interns del clúster (comunicació entre pods, serveis interns) usant el SelfSigned Issuer, cosa que acme.sh no pot fer.
 - **Integració amb Nginx Ingress**: La combinació cert-manager + Nginx Ingress Controller és la forma estàndard de gestionar TLS a K8s. Només afegint una annotation a l'Ingress, cert-manager sol·licita i gestiona el certificat automàticament.
+
+---
+
+## phpLDAPadmin vs LDAP Account Manager (LAM)
+
+| Criteri | **phpLDAPadmin** | LDAP Account Manager (LAM) |
+|---|---|---|
+| Llicència | GPL 2.0 | GPL 2.0 |
+| Versió actual | 1.2.x | 8.x |
+| Tipus | Interfície web d'administració LDAP genèrica | Interfície web orientada a la gestió d'usuaris/grups |
+| Tecnologia | PHP | PHP |
+| Compatibilitat amb OpenLDAP | Total | Total |
+| Navegació de l'arbre LDAP | Sí, completa (vista d'arbre interactiva) | Limitada (orientada a formularis) |
+| Edició directa d'entrades LDAP | Sí, a qualsevol atribut | Sí, però via formularis predefinits |
+| Gestió d'esquemes LDAP | Sí | Parcial |
+| Creació d'usuaris/grups | Sí (manual, via formulari genèric) | Sí (formularis específics per a usuaris, grups, hosts) |
+| Perfils predefinits | No | Sí (templates per a posixAccount, sambaSamAccount...) |
+| Autenticació de l'aplicació | Usuari LDAP | Usuari LDAP o gestor propi |
+| Consum RAM | Molt baix (PHP + servidor web lleuger) | Molt baix (PHP + servidor web lleuger) |
+| Documentació | Extensa, molt conegut | Bona |
+| Comunitat | Gran, eina molt veterana | Activa, però més petita |
+
+### Justificació de l'elecció: phpLDAPadmin
+
+- **Visibilitat completa de l'arbre LDAP**: phpLDAPadmin permet explorar, editar i depurar qualsevol entrada i atribut de l'arbre LDAP directament, sense restriccions de formularis predefinits. Això és essencial durant la fase de configuració i proves d'OpenLDAP a FireSense, on cal verificar que les entrades d'usuaris, grups i OUs s'han creat correctament.
+- **Eina de referència per a OpenLDAP**: phpLDAPadmin és la interfície web d'administració LDAP més coneguda i documentada del món. Qualsevol guia d'OpenLDAP inclou exemples amb phpLDAPadmin, cosa que facilita enormement la resolució de problemes.
+- **Depuració i administració directa**: En un entorn de desenvolupament i laboratori com FireSense, poder veure i modificar directament qualsevol atribut LDAP (sense passar per formularis que puguin ocultar informació) és una avantatge clara enfront de LAM, que prioritza la facilitat d'ús sobre el control total.
+- **Lleugeresa**: Com LAM, phpLDAPadmin és una aplicació PHP que pot desplegar-se en un contenidor Docker mínim, sense impacte significatiu en els recursos del clúster.
+- **Cas d'ús a FireSense**: S'utilitza com a eina d'administració interna per gestionar els usuaris centralitzats d'OpenLDAP (Grafana, Node-RED, SSH). No és un servei exposat a l'exterior, sinó una eina de gestió interna per a l'equip.
