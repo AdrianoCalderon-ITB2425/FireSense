@@ -25,6 +25,6 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 - Public web portal including an interactive map to view the forest status in real-time, along with a simplified alert panel for forest rangers.
 - Thermal anomaly detection and risk prediction through artificial intelligence, using a CronJob with scikit-learn (Isolation Forest).
 - IoT flow automation and alert dispatching via Node-RED, Postfix, and Telegram.
-- Automated deployment and version control (CI/CD) using Gitea Actions and Helm charts, integrating a private Harbor registry with vulnerability scanning.
+- Automated deployment and version control (CI/CD) using Jenkins and Helm charts, integrating a private Harbor registry with vulnerability scanning.
 - High-security environment (comprehensive hardening) including centralized authentication with OpenLDAP, CIS auditing with kube-bench, vulnerability scanning with Trivy, and secure communications via WireGuard and TLS.
 - REST API for data integration with external civil protection systems (JSON and CSV export).
