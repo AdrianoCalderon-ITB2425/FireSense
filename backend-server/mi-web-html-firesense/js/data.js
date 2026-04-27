@@ -161,7 +161,7 @@ async function fetchAllNodes(){
     var onlineCount=nodeData.filter(function(d){return d&&d.status==='online';}).length;
     document.getElementById('csNodes').textContent=onlineCount+' online';
     document.getElementById('nodeStatus').textContent=onlineCount+' online / 5 desplegats';
-    updateMapMarkers();updateNodeButtons();selNode(selIdx);checkAlerts();renderGrid();
+    updateMapMarkers();updateNodeButtons();if(NODES.length>0)selNode(selIdx);checkAlerts();renderGrid();
   }finally{fetchLock=false;}
 }
 
