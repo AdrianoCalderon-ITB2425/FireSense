@@ -19,6 +19,73 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-image@0.4.0/leaflet-image.js"></script>
+<style>
+#lang-sel{position:fixed;bottom:20px;right:20px;z-index:9999;font-family:"Share Tech Mono",monospace;}
+#lang-btn{background:rgba(10,31,10,.92);border:1px solid rgba(0,229,255,.35);color:#00e5ff;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:.15em;padding:6px 12px;cursor:pointer;border-radius:4px;min-width:38px;text-align:center;transition:border-color .2s;}
+#lang-btn:hover{border-color:rgba(0,229,255,.7);}
+#lang-menu{display:none;position:absolute;bottom:38px;right:0;background:rgba(10,31,10,.96);border:1px solid rgba(0,229,255,.25);border-radius:4px;overflow:hidden;min-width:38px;}
+#lang-menu.open{display:block;}
+.lang-opt{color:rgba(0,229,255,.7);font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:.15em;padding:6px 12px;cursor:pointer;text-align:center;transition:background .15s,color .15s;}
+.lang-opt:hover{background:rgba(0,229,255,.1);color:#00e5ff;}
+</style>
+<script src="/FireSense/js/i18n.js"></script>
+<style id="lang-css">
+#lang-sel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+#lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: 7px 13px;
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: box-shadow .2s, border-color .2s;
+  user-select: none;
+}
+#lang-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.18); border-color: #bbb; }
+#lang-btn img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
+#lang-btn svg.chevron { width: 12px; height: 12px; opacity: .5; transition: transform .2s; }
+#lang-sel.open #lang-btn svg.chevron { transform: rotate(180deg); }
+#lang-menu {
+  display: none;
+  position: absolute;
+  bottom: 46px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  overflow: hidden;
+  min-width: 120px;
+  padding: 4px 0;
+}
+#lang-menu.open { display: block; }
+.lang-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #222;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.lang-opt:hover { background: #f5f5f5; }
+.lang-opt img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
+</style>
 </head>
 <body>
 <div class="hdr" style="position:relative;">
@@ -32,8 +99,8 @@
   <div style="display:flex;gap:16px;flex-wrap:wrap;">
     
     <div class="si"><div class="sdot dot-g"></div><span>ChirpStack: <span id="csStatus">CONNECTING...</span></span></div>
-    <div class="si"><div class="sdot dot-g" id="gwDot"></div><span>Gateway: <span id="gwStatusBar">CONNECTING...</span></span></div>
-    <div class="si"><div class="sdot dot-a" id="nodeDot"></div><span>Nodes: <span id="nodeStatus">en espera...</span></span></div>
+    <div class="si"><div class="sdot dot-g" id="gwDot"></div><span><span data-i18n="gateway">Gateway:</span> <span id="gwStatusBar">CONNECTING...</span></span></div>
+    <div class="si"><div class="sdot dot-a" id="nodeDot"></div><span>Nodes: <span id="nodeStatus"><span data-i18n="en_espera">en espera...</span></span></span></div>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="liveClock" style="color:var(--cyan);letter-spacing:.08em;">—</span>
@@ -65,9 +132,9 @@
       <div style="font-size:17px;color:#00e5ff;letter-spacing:.1em;font-family:Rajdhani,sans-serif;font-weight:700;" id="db-node-title"><span id="db-node-hist-label"></span></div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-      <button class="db-range-btn" data-r="24h" onclick="setDbRange('24h')" style="background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.4);color:#00e5ff;padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;">Últimes 24h</button>
-      <button class="db-range-btn" data-r="7d"  onclick="setDbRange('7d')"  style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;">Últims 7 dies</button>
-      <button class="db-range-btn" data-r="30d" onclick="setDbRange('30d')" style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;">Últims 30 dies</button>
+      <button class="db-range-btn" data-r="24h" onclick="setDbRange('24h')" style="background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.4);color:#00e5ff;padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;"><span data-i18n="ultimes_24h">Últimes 24h</span></button>
+      <button class="db-range-btn" data-r="7d"  onclick="setDbRange('7d')"  style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;"><span data-i18n="ultims_7_dies">Últims 7 dies</span></button>
+      <button class="db-range-btn" data-r="30d" onclick="setDbRange('30d')" style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;"><span data-i18n="ultims_30_dies">Últims 30 dies</span></button>
       <button class="db-range-btn" data-r="1y"  onclick="setDbRange('1y')"  style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 9px;cursor:pointer;font-size:9px;letter-spacing:.1em;font-family:Share Tech Mono,monospace;transition:all .2s;">Últim any</button>
       <div style="width:1px;height:14px;background:rgba(0,229,255,.15);margin:0 2px;"></div>
       <input type="date" id="db-date-picker" onchange="setDbDate(this.value)" style="background:transparent;border:1px solid rgba(0,229,255,.12);color:rgba(0,229,255,.4);padding:4px 7px;font-size:9px;font-family:Share Tech Mono,monospace;cursor:pointer;outline:none;width:108px;letter-spacing:.05em;color-scheme:dark;" title="Dia exacte"/>
@@ -78,19 +145,19 @@
   <!-- STATS BAR -->
   <div id="db-stats-bar" style="display:grid;grid-template-columns:repeat(4,1fr) auto;gap:8px;margin-bottom:8px;align-items:center;">
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.15);padding:8px 12px;">
-      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;">TEMP MIN/MAX/AVG</div>
+      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;"><span data-i18n="temp_minmaxavg">TEMP MIN/MAX/AVG</span></div>
       <div style="font-size:11px;color:#00e5ff;letter-spacing:.05em;" id="db-stat-temp">— / — / —</div>
     </div>
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.15);padding:8px 12px;">
-      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;">HUM AIRE MIN/MAX/AVG</div>
+      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;"><span data-i18n="hum_aire_minmaxavg">HUM AIRE MIN/MAX/AVG</span></div>
       <div style="font-size:11px;color:#00ff88;letter-spacing:.05em;" id="db-stat-hum">— / — / —</div>
     </div>
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.15);padding:8px 12px;">
-      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;">BATERIA MIN/MAX/AVG</div>
+      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;"><span data-i18n="bateria_minmaxavg">BATERIA MIN/MAX/AVG</span></div>
       <div style="font-size:11px;color:#ffab40;letter-spacing:.05em;" id="db-stat-bat">— / — / —</div>
     </div>
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.15);padding:8px 12px;">
-      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;">MOSTRES / ESTAT</div>
+      <div style="font-size:7px;letter-spacing:.2em;color:rgba(0,229,255,.5);margin-bottom:4px;"><span data-i18n="mostres_estat">MOSTRES / ESTAT</span></div>
       <div style="font-size:11px;color:#00e5ff;letter-spacing:.05em;" id="db-stat-count">—</div>
     </div>
     <button onclick="exportDashboardCSV()" style="background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);color:#00e5ff;padding:8px 14px;cursor:pointer;font-size:9px;letter-spacing:.15em;font-family:Share Tech Mono,monospace;white-space:nowrap;height:100%;transition:all .2s;" onmouseover="this.style.background='rgba(0,229,255,.18)'" onmouseout="this.style.background='rgba(0,229,255,.08)'">↓ CSV</button>
@@ -98,27 +165,27 @@
   <!-- CHARTS -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.2);padding:12px;">
-      <div id="db-title-temp" style="font-size:8px;letter-spacing:.2em;color:rgba(0,229,255,.75);margin-bottom:8px;">TEMPERATURA (°C)</div>
+      <div id="db-title-temp" style="font-size:8px;letter-spacing:.2em;color:rgba(0,229,255,.75);margin-bottom:8px;"><span data-i18n="temperatura_c">TEMPERATURA (°C)</span></div>
       <div style="height:160px;"><canvas id="db-chart-temp"></canvas></div>
     </div>
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.2);padding:12px;">
-      <div id="db-title-hum" style="font-size:8px;letter-spacing:.2em;color:rgba(4,180,255,.75);margin-bottom:8px;">HUMITAT AIRE (%)</div>
+      <div id="db-title-hum" style="font-size:8px;letter-spacing:.2em;color:rgba(4,180,255,.75);margin-bottom:8px;"><span data-i18n="humitat_aire">HUMITAT AIRE (%)</span></div>
       <div style="height:160px;"><canvas id="db-chart-hum"></canvas></div>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.2);padding:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div id="db-title-bat" style="font-size:8px;letter-spacing:.2em;color:rgba(0,255,136,.75);">BATERIA (%)</div><div id="db-bat-trend" style="font-size:9px;"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div id="db-title-bat" style="font-size:8px;letter-spacing:.2em;color:rgba(0,255,136,.75);"><span data-i18n="bateria">BATERIA (%)</span></div><div id="db-bat-trend" style="font-size:9px;"></div></div>
       <div style="height:160px;"><canvas id="db-chart-bat"></canvas></div>
     </div>
     <div style="background:#061a2a;border:1px solid rgba(0,229,255,.2);padding:12px;">
-      <div id="db-title-soil" style="font-size:8px;letter-spacing:.2em;color:rgba(212,133,74,.75);margin-bottom:8px;">HUMITAT SÒL (%)</div>
+      <div id="db-title-soil" style="font-size:8px;letter-spacing:.2em;color:rgba(212,133,74,.75);margin-bottom:8px;"><span data-i18n="humitat_sol">HUMITAT SÒL (%)</span></div>
       <div style="height:160px;"><canvas id="db-chart-soil"></canvas></div>
     </div>
   </div>
   <!-- HISTORIAL -->
   <div style="background:#061a2a;border:1px solid rgba(0,229,255,.2);padding:12px;flex:1;overflow-y:auto;min-height:0;">
-    <div style="font-size:8px;letter-spacing:.2em;color:rgba(0,229,255,.4);margin-bottom:8px;">HISTORIAL COMPLET</div>
+    <div style="font-size:8px;letter-spacing:.2em;color:rgba(0,229,255,.4);margin-bottom:8px;"><span data-i18n="historial_complet">HISTORIAL COMPLET</span></div>
     <div id="db-hist-table"></div>
   </div>
 </div>
@@ -140,33 +207,33 @@
       <div id="hmenu-panel">
         <div class="hm-title">◈ FireSense</div>
         <div id="hm-view-carto">
-          <button class="hm-btn" onclick="hmSetMap('sat')"><span>🛰</span><span>Satèl·lit</span></button>
-          <button class="hm-btn" id="hm-edit-carto" onclick="hmEdit()"><span id="hm-edit-icon-c">✎</span><span id="hm-edit-txt-c">Moure Nodes</span></button>
-          <button class="hm-btn" onclick="openCoordsPanel()"><span>🎯</span><span>Coordenades</span></button>
+          <button class="hm-btn" onclick="hmSetMap('sat')"><span>🛰</span><span><span data-i18n="satellit">Satèl·lit</span></span></button>
+          <button class="hm-btn" id="hm-edit-carto" onclick="hmEdit()"><span id="hm-edit-icon-c">✎</span><span id="hm-edit-txt-c"><span data-i18n="moure_nodes">Moure Nodes</span></span></button>
+          <button class="hm-btn" onclick="openCoordsPanel()"><span>🎯</span><span><span data-i18n="coordenades">Coordenades</span></span></button>
         </div>
         <div id="hm-view-sat" style="display:none">
-          <button class="hm-btn" onclick="hmSetMap('carto')"><span>🗺</span><span>Cartogràfic</span></button>
+          <button class="hm-btn" onclick="hmSetMap('carto')"><span>🗺</span><span><span data-i18n="cartografic">Cartogràfic</span></span></button>
           <button class="hm-btn" onclick="hmSetMap('3d')"><span>🏔</span><span>3D Fotorealista</span></button>
-          <button class="hm-btn" id="hm-edit-sat" onclick="hmEdit()"><span id="hm-edit-icon-s">✎</span><span id="hm-edit-txt-s">Moure Nodes</span></button>
-          <button class="hm-btn" onclick="openCoordsPanel()"><span>🎯</span><span>Coordenades</span></button>
+          <button class="hm-btn" id="hm-edit-sat" onclick="hmEdit()"><span id="hm-edit-icon-s">✎</span><span id="hm-edit-txt-s"><span data-i18n="moure_nodes">Moure Nodes</span></span></button>
+          <button class="hm-btn" onclick="openCoordsPanel()"><span>🎯</span><span><span data-i18n="coordenades">Coordenades</span></span></button>
         </div>
         <div id="hm-view-3d" style="display:none">
-          <button class="hm-btn" onclick="hmSetMap('carto')"><span>🗺</span><span>Cartogràfic</span></button>
-          <button class="hm-btn" onclick="hmSetMap('2d')"><span>↩</span><span>Tornar a 2D</span></button>
+          <button class="hm-btn" onclick="hmSetMap('carto')"><span>🗺</span><span><span data-i18n="cartografic">Cartogràfic</span></span></button>
+          <button class="hm-btn" onclick="hmSetMap('2d')"><span>↩</span><span><span data-i18n="tornar_a_2d">Tornar a 2D</span></span></button>
 
         </div>
       <div class="hm-div"></div>
-      <div class="hm-section">Eines</div>
+      <div class="hm-section"><span data-i18n="eines">Eines</span></div>
       <button class="hm-btn" id="hm-power-btn" onclick="togglePowerPanel()"><span>🌡</span><span>Meteorologia - NASA</span></button>
       <button class="hm-btn" id="hm-firms-btn" onclick="toggleFirmsLayer()"><span>🔥</span><span>Punts de Calor - NASA</span></button>
       <button class="hm-btn" id="hm-ndvi-btn" onclick="toggleNDVI()"><span>🌿</span><span>Vegetació - NASA</span></button>
       <button class="hm-btn" id="hm-eonet-btn" onclick="toggleEonetPanel()"><span>🌍</span><span>Incendis - GENCAT</span></button>
       <button class="hm-btn" id="hm-aemet-btn" onclick="toggleAemetPanel()"><span>⚡</span><span>Alertes - AEMET</span></button>
       <button class="hm-btn" id="hm-aq-btn" onclick="toggleAQPanel()"><span>💨</span><span>Qualitat Aire - OpenAQ</span></button>
-      <button class="hm-btn" id="hm-wind-btn" onclick="toggleWindLayer()"><span>🌬</span><span>Vent en Viu</span></button>
+      <button class="hm-btn" id="hm-wind-btn" onclick="toggleWindLayer()"><span>🌬</span><span><span data-i18n="vent_en_viu">Vent en Viu</span></span></button>
       <button class="hm-btn" id="hm-posar" onclick="hmPosar()"><span>📍</span><span>Posar Nodes</span></button>
-      <button class="hm-btn" id="hm-los" onclick="hmLOS()"><span>👁</span><span>Línia de Visió</span></button>
-      <button class="hm-btn" id="hm-cov" onclick="hmCOV()"><span>📡</span><span>Cobertura Antena</span></button>
+      <button class="hm-btn" id="hm-los" onclick="hmLOS()"><span>👁</span><span><span data-i18n="linia_de_visio">Línia de Visió</span></span></button>
+      <button class="hm-btn" id="hm-cov" onclick="hmCOV()"><span>📡</span><span><span data-i18n="cobertura_antena">Cobertura Antena</span></span></button>
       </div>
       <div id="los-hint" style="display:none;"></div>
       <div id="burned-panel" style="display:none;position:absolute;bottom:12px;left:12px;z-index:1500;width:290px;max-height:45vh;background:rgba(2,8,14,.96);border:1px solid rgba(255,68,68,.35);border-radius:6px;overflow-y:auto;font-family:Share Tech Mono,monospace;box-shadow:0 0 30px rgba(255,50,0,.15);">
@@ -236,27 +303,27 @@
       <div id="pn-dots-wrap" style="display:none;position:absolute;top:10px;left:10px;z-index:2002;">
         <button id="pn-dots-btn" onclick="event.stopPropagation();togglePNMenu()">⋮</button>
         <div id="pn-dots-menu">
-          <button class="los-menu-item" onclick="event.stopPropagation();pnSetMode('gateway')"><span>📡</span><span>Posar Gateway</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();pnSetMode('sensor')"><span><svg width="14" height="14" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><circle cx="250" cy="250" r="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/><circle cx="250" cy="250" r="185" fill="#EE2C2C"/><g fill="white"><circle cx="250" cy="235" r="30"/><path d="M235 260 L265 260 L275 340 L225 340 Z"/><g fill="none" stroke="white" stroke-width="18" stroke-linecap="round"><path d="M210 195 A60 60 0 0 0 210 275"/><path d="M290 195 A60 60 0 0 1 290 275"/><path d="M185 170 A95 95 0 0 0 185 300"/><path d="M315 170 A95 95 0 0 1 315 300"/></g></g></svg></span><span>Posar Node Sensor</span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();pnSetMode('gateway')"><span>📡</span><span><span data-i18n="posar_gateway">Posar Gateway</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();pnSetMode('sensor')"><span><svg width="14" height="14" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><circle cx="250" cy="250" r="200" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/><circle cx="250" cy="250" r="185" fill="#EE2C2C"/><g fill="white"><circle cx="250" cy="235" r="30"/><path d="M235 260 L265 260 L275 340 L225 340 Z"/><g fill="none" stroke="white" stroke-width="18" stroke-linecap="round"><path d="M210 195 A60 60 0 0 0 210 275"/><path d="M290 195 A60 60 0 0 1 290 275"/><path d="M185 170 A95 95 0 0 0 185 300"/><path d="M315 170 A95 95 0 0 1 315 300"/></g></g></svg></span><span><span data-i18n="posar_node_sensor">Posar Node Sensor</span></span></button>
           <button class="los-menu-item" onclick="event.stopPropagation();pnSetMode('torre')"><span><svg width="14" height="12" viewBox="100 135 380 380" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bgBlue3" cx="32%" cy="24%" r="78%"><stop offset="0%" stop-color="#57a8f3"/><stop offset="38%" stop-color="#2c87d8"/><stop offset="72%" stop-color="#0f6fbe"/><stop offset="100%" stop-color="#005ea8"/></radialGradient></defs><circle cx="290" cy="325" r="190" fill="#f4f4f4"/><circle cx="290" cy="325" r="183" fill="url(#bgBlue3)"/><g fill="#f4f4f4"><path d="M194 233 H230 V255 H248 V233 H281 V255 H299 V233 H332 V255 H350 V233 H386 V286 H194 Z"/><path d="M214 296 H366 V451 H327 V362 C327 327 253 327 253 362 V451 H214 V296 Z"/><rect x="206" y="392" width="18" height="59"/><rect x="356" y="392" width="18" height="59"/></g><path d="M271 451 V366 C271 334 309 334 309 366 V451 Z" fill="#0f6fbe"/></svg></span><span>Posar Torre</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();pnMenuOpen=false;document.getElementById('pn-dots-menu').classList.remove('open');openCoordsPanel(true)"><span>🎯</span><span>Coordenades</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();pnClearAll()"><span>🗑</span><span>Netejar tot</span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();pnMenuOpen=false;document.getElementById('pn-dots-menu').classList.remove('open');openCoordsPanel(true)"><span>🎯</span><span><span data-i18n="coordenades">Coordenades</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();pnClearAll()"><span>🗑</span><span><span data-i18n="netejar_tot">Netejar tot</span></span></button>
         </div>
       </div>
       <div id="los-dots-wrap" style="display:none;position:absolute;top:10px;left:10px;z-index:2002;">
         <button id="los-dots-btn" onclick="event.stopPropagation();toggleLOSMenu()">⋮</button>
         <div id="los-dots-menu">
-          <button class="los-menu-item" onclick="event.stopPropagation();losAddPoint()"><span>➕</span><span>Afegir punt</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();losRemovePoint()"><span>➖</span><span>Eliminar últim punt</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();hmClear()"><span>🗑</span><span>Netejar tot</span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();losAddPoint()"><span>➕</span><span><span data-i18n="afegir_punt">Afegir punt</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();losRemovePoint()"><span>➖</span><span><span data-i18n="eliminar_ultim_punt">Eliminar últim punt</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();hmClear()"><span>🗑</span><span><span data-i18n="netejar_tot">Netejar tot</span></span></button>
         </div>
       </div>
       <div id="rf-dots-wrap" style="display:none;position:absolute;top:10px;left:10px;z-index:2002;">
         <button id="rf-dots-btn" onclick="event.stopPropagation();toggleRFMenu()">⋮</button>
         <div id="rf-dots-menu">
-          <button class="los-menu-item" onclick="event.stopPropagation();rfMenuOpen=false;document.getElementById('rf-dots-menu').classList.remove('open');rfOpenPanel()"><span>📡</span><span>Paràmetres RF</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();exportMapPNG()"><span>📷</span><span>Exportar PNG</span></button>
-          <button class="los-menu-item" onclick="event.stopPropagation();rfClearCoverage()"><span>🗑</span><span>Netejar tot</span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();rfMenuOpen=false;document.getElementById('rf-dots-menu').classList.remove('open');rfOpenPanel()"><span>📡</span><span><span data-i18n="parametres_rf">Paràmetres RF</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();exportMapPNG()"><span>📷</span><span><span data-i18n="exportar_png">Exportar PNG</span></span></button>
+          <button class="los-menu-item" onclick="event.stopPropagation();rfClearCoverage()"><span>🗑</span><span><span data-i18n="netejar_tot">Netejar tot</span></span></button>
         </div>
       </div>
       <div id="tool-info" style="display:none;position:absolute;bottom:40px;right:12px;z-index:2001;background:rgba(4,21,32,.95);border:1px solid rgba(0,229,255,.3);color:var(--txt2);font-family:var(--font-main);font-size:8.5px;letter-spacing:.06em;padding:10px 14px;max-width:220px;line-height:1.6;pointer-events:none;"></div>
@@ -265,13 +332,13 @@
           <div style="background:rgba(2,8,14,.97);border:1px solid rgba(0,229,255,.4);border-radius:8px;padding:20px 24px;min-width:280px;font-family:Share Tech Mono,monospace;">
             <div id="pn-modal-title" style="color:#00e5ff;font-size:11px;font-weight:bold;letter-spacing:.08em;margin-bottom:14px;">📍 NOM DEL NODE</div>
             <div style="display:flex;gap:8px;margin-bottom:12px;">
-              <button id="pn-tech-lorawan" onclick="pnSelectTech('lorawan')" style="flex:1;padding:6px;background:rgba(0,229,255,.15);border:2px solid #00e5ff;color:#fff;font-family:Share Tech Mono,monospace;font-size:9px;border-radius:4px;cursor:pointer;">LoRaWAN</button>
-              <button id="pn-tech-meshcore" onclick="pnSelectTech('meshcore')" style="flex:1;padding:6px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.3);color:#fff;font-family:Share Tech Mono,monospace;font-size:9px;border-radius:4px;cursor:pointer;">MeshCore</button>
+              <button id="pn-tech-lorawan" onclick="pnSelectTech('lorawan')" style="flex:1;padding:6px;background:rgba(0,229,255,.15);border:2px solid #00e5ff;color:#fff;font-family:Share Tech Mono,monospace;font-size:9px;border-radius:4px;cursor:pointer;"><span data-i18n="lorawan">LoRaWAN</span></button>
+              <button id="pn-tech-meshcore" onclick="pnSelectTech('meshcore')" style="flex:1;padding:6px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.3);color:#fff;font-family:Share Tech Mono,monospace;font-size:9px;border-radius:4px;cursor:pointer;"><span data-i18n="meshcore">MeshCore</span></button>
             </div>
             <input id="pn-modal-input" type="text" placeholder="Ex: Gateway ITB, Torre Valldaura..." style="width:100%;box-sizing:border-box;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.3);border-radius:4px;color:#fff;font-family:Share Tech Mono,monospace;font-size:10px;padding:8px 10px;outline:none;margin-bottom:14px;">
             <div style="display:flex;gap:8px;justify-content:flex-end;">
-              <button onclick="pnModalCancel()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-family:Share Tech Mono,monospace;font-size:9px;padding:6px 14px;border-radius:4px;cursor:pointer;">Cancel·lar</button>
-              <button onclick="pnModalConfirm()" style="background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.4);color:#00e5ff;font-family:Share Tech Mono,monospace;font-size:9px;padding:6px 14px;border-radius:4px;cursor:pointer;">Confirmar</button>
+              <button onclick="pnModalCancel()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-family:Share Tech Mono,monospace;font-size:9px;padding:6px 14px;border-radius:4px;cursor:pointer;"><span data-i18n="cancellar">Cancel·lar</span></button>
+              <button onclick="pnModalConfirm()" style="background:rgba(0,229,255,.15);border:1px solid rgba(0,229,255,.4);color:#00e5ff;font-family:Share Tech Mono,monospace;font-size:9px;padding:6px 14px;border-radius:4px;cursor:pointer;"><span data-i18n="confirmar">Confirmar</span></button>
             </div>
           </div>
         </div>
@@ -285,12 +352,12 @@
       </div>
       <!-- RF LLEGENDA -->
       <div id="rf-legend" style="display:none;position:absolute;bottom:12px;left:12px;z-index:9999;background:rgba(2,8,14,.90);border:1px solid rgba(0,229,255,.22);padding:8px 12px;font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:.07em;flex-direction:column;gap:3px;backdrop-filter:blur(6px);border-radius:4px;">
-        <div style="color:rgba(0,229,255,.6);letter-spacing:.15em;margin-bottom:5px;font-size:8px;">COBERTURA RF</div>
+        <div style="color:rgba(0,229,255,.6);letter-spacing:.15em;margin-bottom:5px;font-size:8px;"><span data-i18n="cobertura_rf">COBERTURA RF</span></div>
         <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(30,220,60,.8);"></div><span style="color:rgba(255,255,255,.8);">Bona senyal &gt; -82 dBm</span></div>
-        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(140,220,30,.75);"></div><span style="color:rgba(255,255,255,.7);">Acceptable -82..-92 dBm</span></div>
-        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(230,180,20,.70);"></div><span style="color:rgba(255,255,255,.7);">Feble -92..-102 dBm</span></div>
-        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(230,100,20,.65);"></div><span style="color:rgba(255,255,255,.7);">Molt feble -102..-115 dBm</span></div>
-        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(200,40,40,.55);"></div><span style="color:rgba(255,255,255,.7);">Sin senyal -115..-137 dBm</span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(140,220,30,.75);"></div><span style="color:rgba(255,255,255,.7);"><span data-i18n="acceptable_8292_dbm">Acceptable -82..-92 dBm</span></span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(230,180,20,.70);"></div><span style="color:rgba(255,255,255,.7);"><span data-i18n="feble_92102_dbm">Feble -92..-102 dBm</span></span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(230,100,20,.65);"></div><span style="color:rgba(255,255,255,.7);"><span data-i18n="molt_feble_102115_dbm">Molt feble -102..-115 dBm</span></span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><div style="width:12px;height:12px;border-radius:50%;background:rgba(200,40,40,.55);"></div><span style="color:rgba(255,255,255,.7);"><span data-i18n="sin_senyal_115137_dbm">Sin senyal -115..-137 dBm</span></span></div>
       </div>
       <div id="tool-info"      <div id="tool-info" style="display:none;position:absolute;bottom:40px;right:12px;z-index:2001;background:rgba(4,21,32,.95);border:1px solid rgba(0,229,255,.3);color:var(--txt2);font-family:var(--font-main);font-size:8.5px;letter-spacing:.06em;padding:10px 14px;max-width:220px;line-height:1.6;pointer-events:none;"></div>
       <div id="map">
@@ -302,7 +369,7 @@
         <div style="margin-top:6px;border-top:1px solid rgba(0,229,255,.12);padding-top:6px;">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
             <div style="width:50px;height:7px;background:linear-gradient(90deg,rgba(255,255,255,.15),rgba(255,255,255,.85));border-radius:2px;"></div>
-            <span style="color:rgba(0,229,255,.45);font-size:8px;">Feble → Forta</span>
+            <span style="color:rgba(0,229,255,.45);font-size:8px;"><span data-i18n="feble_forta">Feble → Forta</span></span>
           </div>
         </div>
         <div style="margin-top:4px;">
@@ -315,39 +382,39 @@
   <div class="right-panel">
     <div class="card card-l-cyan">
       <div class="card-title ct-c">◈ ChirpStack v4</div>
-      <div class="drow"><span>SERVIDOR</span><span class="dval">isard.nuvulet.itb.cat</span></div>
-      <div class="drow"><span>GATEWAY STATUS</span><span class="dval r" id="csGwSt">OFFLINE</span></div>
-      <div class="drow"><span>ACTIVACIÓ</span><span class="dval g">OTAA · JOINED</span></div>
-      <div class="drow"><span>NODES ONLINE</span><span class="dval" id="csNodes">—</span></div>
-      <div class="drow"><span>LAST JOIN</span><span class="dval" id="csJoin">—</span></div>
+      <div class="drow"><span><span data-i18n="servidor">SERVIDOR</span></span><span class="dval">isard.nuvulet.itb.cat</span></div>
+      <div class="drow"><span><span data-i18n="gateway_status">GATEWAY STATUS</span></span><span class="dval r" id="csGwSt"><span data-i18n="offline">OFFLINE</span></span></div>
+      <div class="drow"><span><span data-i18n="activacio">ACTIVACIÓ</span></span><span class="dval g">OTAA · JOINED</span></div>
+      <div class="drow"><span><span data-i18n="nodes_online">NODES ONLINE</span></span><span class="dval" id="csNodes">—</span></div>
+      <div class="drow"><span><span data-i18n="last_join">LAST JOIN</span></span><span class="dval" id="csJoin">—</span></div>
     </div>
     <div class="alert-box" id="alertBox">
       <div class="alert-ttl">⚠ ALERTA RISC D'INCENDI</div>
       <div class="alert-msg" id="alertMsg">—</div>
     </div>
     <div class="card card-l-stale stale-card" id="liveCardBorder">
-      <div class="card-title ct-s" id="liveCardTitle"><div class="stale-dot"></div>DADES EN ESPERA</div>
+      <div class="card-title ct-s" id="liveCardTitle"><div class="stale-dot"></div><span data-i18n="dades_en_espera">DADES EN ESPERA</span></div>
       <div class="node-sel" id="node-sel-container" style="overflow-x:auto;white-space:nowrap;scrollbar-width:thin;scrollbar-color:rgba(0,229,255,.3) transparent;padding-bottom:4px;">
       </div>
       <div class="mbig">
-        <div class="mbig-lbl">Temperatura</div>
+        <div class="mbig-lbl"><span data-i18n="temperatura">Temperatura</span></div>
         <div class="mbig-val vt" id="mainT">—</div>
         <div class="mbig-unit">°C</div>
       </div>
       <div class="mrow">
-        <div class="mmini"><div class="mmini-lbl">Hum. Aire</div><div class="mmini-val vh" id="mainH">—</div><div class="mmini-unit">% RH</div></div>
-        <div class="mmini"><div class="mmini-lbl">Hum. Sòl</div><div class="mmini-val vs" id="mainS">—</div><div class="mmini-unit">% VWC</div></div>
+        <div class="mmini"><div class="mmini-lbl"><span data-i18n="hum_aire">Hum. Aire</span></div><div class="mmini-val vh" id="mainH">—</div><div class="mmini-unit"><span data-i18n="rh">% RH</span></div></div>
+        <div class="mmini"><div class="mmini-lbl"><span data-i18n="hum_sol">Hum. Sòl</span></div><div class="mmini-val vs" id="mainS">—</div><div class="mmini-unit"><span data-i18n="vwc">% VWC</span></div></div>
       </div>
-      <div class="drow" style="padding:4px 0;"><span>ESTAT</span><span class="dval" id="riskSt">—</span></div>
-      <div class="drow" style="padding:4px 0;"><span>UBICACIÓ</span><span class="dval" id="nodeCoords" style="font-size:8px;">—</span></div>
-      <div class="drow" style="padding:4px 0;"><span>ÚLTIMA DADA FA</span><span class="dval" id="lastSeen">—</span></div>
-      <div class="drow" style="padding:4px 0;"><span>FRAME COUNT</span><span class="dval" id="fCnt">—</span></div>
+      <div class="drow" style="padding:4px 0;"><span><span data-i18n="estat">ESTAT</span></span><span class="dval" id="riskSt">—</span></div>
+      <div class="drow" style="padding:4px 0;"><span><span data-i18n="ubicacio">UBICACIÓ</span></span><span class="dval" id="nodeCoords" style="font-size:8px;">—</span></div>
+      <div class="drow" style="padding:4px 0;"><span><span data-i18n="ultima_dada_fa">ÚLTIMA DADA FA</span></span><span class="dval" id="lastSeen">—</span></div>
+      <div class="drow" style="padding:4px 0;"><span><span data-i18n="frame_count">FRAME COUNT</span></span><span class="dval" id="fCnt">—</span></div>
       <div class="drow" style="padding:4px 0;"><span>BATERIA</span><span class="dval" id="batPct">—</span></div>
-      <div class="drow" style="padding:4px 0;"><span>PROPER ENVIAMENT</span><span class="dval" id="nextTx">—</span></div>
+      <div class="drow" style="padding:4px 0;"><span><span data-i18n="proper_enviament">PROPER ENVIAMENT</span></span><span class="dval" id="nextTx">—</span></div>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--cyan);font-size:11px;padding-left:0;display:flex;align-items:center;justify-content:space-between;"><div style="display:flex;flex-direction:column;line-height:1.3;"><span style="font-size:10px;letter-spacing:.15em;color:rgba(0,229,255,.4);">HISTORIAL</span><span id="histLbl" style="font-size:12px;font-weight:700;"><span id="db-node-hist-label"></span></span></div><button onclick="openNodeDashboard()" title="Obrir dashboard" style="background:transparent;border:none;color:rgba(0,229,255,.55);width:28px;height:28px;cursor:pointer;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;width:28px;height:28px;transition:all .2s;" onmouseover="this.querySelector('svg').style.opacity='1'" onmouseout="this.querySelector('svg').style.opacity='0.55'"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.55;transition:opacity .2s;"><line x1="0" y1="6" x2="13" y2="6" stroke="#00e5ff" stroke-width="1.8"/><polyline points="8,1 14,6 8,11" fill="none" stroke="#00e5ff" stroke-width="1.8" stroke-linejoin="round"/></svg></button></div>
-      <div id="histList"><div class="hrow" style="font-style:italic;"><span>Carregant...</span></div></div>
+      <div class="card-title" style="color:var(--cyan);font-size:11px;padding-left:0;display:flex;align-items:center;justify-content:space-between;"><div style="display:flex;flex-direction:column;line-height:1.3;"><span style="font-size:10px;letter-spacing:.15em;color:rgba(0,229,255,.4);"><span data-i18n="historial">HISTORIAL</span></span><span id="histLbl" style="font-size:12px;font-weight:700;"><span id="db-node-hist-label"></span></span></div><button onclick="openNodeDashboard()" title="Obrir dashboard" style="background:transparent;border:none;color:rgba(0,229,255,.55);width:28px;height:28px;cursor:pointer;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;width:28px;height:28px;transition:all .2s;" onmouseover="this.querySelector('svg').style.opacity='1'" onmouseout="this.querySelector('svg').style.opacity='0.55'"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.55;transition:opacity .2s;"><line x1="0" y1="6" x2="13" y2="6" stroke="#00e5ff" stroke-width="1.8"/><polyline points="8,1 14,6 8,11" fill="none" stroke="#00e5ff" stroke-width="1.8" stroke-linejoin="round"/></svg></button></div>
+      <div id="histList"><div class="hrow" style="font-style:italic;"><span><span data-i18n="carregant">Carregant...</span></span></div></div>
     </div>
   </div>
 </div>
@@ -358,23 +425,23 @@
 </div>
 <div class="sensor-section">
   <div class="sec-hdr">
-    <h2>Telemetria en Viu</h2>
+    <h2><span data-i18n="telemetria_en_viu">Telemetria en Viu</span></h2>
     <span class="sec-sub">— EU868 / ACTUALITZACIÓ: <span id="interval-label">—</span></span>
-    <button onclick="showAddNodeModal()" style="margin-left:auto;margin-right:12px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:.12em;padding:6px 12px;cursor:pointer;border-radius:3px;transition:background .2s;" onmouseover="this.style.background='rgba(74,222,128,0.25)'" onmouseout="this.style.background='rgba(74,222,128,0.12)'">+ AFEGIR NODE</button>
+    <button onclick="showAddNodeModal()" style="margin-left:auto;margin-right:12px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:.12em;padding:6px 12px;cursor:pointer;border-radius:3px;transition:background .2s;" onmouseover="this.style.background='rgba(74,222,128,0.25)'" onmouseout="this.style.background='rgba(74,222,128,0.12)'"><span data-i18n="afegir_node">+ AFEGIR NODE</span></button>
     <div class="live-dot"></div>
   </div>
   <div class="sgrid" id="sgrid"></div>
 </div>
 <div class="specs">
-  <div class="spec"><div class="spec-lbl">Freqüència</div><div class="spec-val">868 <span class="spec-unit">MHz</span></div></div>
-  <div class="spec"><div class="spec-lbl">Protocol</div><div class="spec-val" style="font-size:12px;">LoRaWAN</div></div>
-  <div class="spec"><div class="spec-lbl">Activació</div><div class="spec-val" style="font-size:12px;">OTAA</div></div>
-  <div class="spec"><div class="spec-lbl">Enviament</div><div class="spec-val" style="font-size:12px;"><span id="spec-interval">—</span> <span class="spec-unit">int</span></div></div>
-  <div class="spec"><div class="spec-lbl">Payload</div><div class="spec-val">7 <span class="spec-unit">bytes</span></div></div>
+  <div class="spec"><div class="spec-lbl"><span data-i18n="frequencia">Freqüència</span></div><div class="spec-val">868 <span class="spec-unit">MHz</span></div></div>
+  <div class="spec"><div class="spec-lbl"><span data-i18n="protocol">Protocol</span></div><div class="spec-val" style="font-size:12px;"><span data-i18n="lorawan">LoRaWAN</span></div></div>
+  <div class="spec"><div class="spec-lbl">Activació</div><div class="spec-val" style="font-size:12px;"><span data-i18n="otaa">OTAA</span></div></div>
+  <div class="spec"><div class="spec-lbl"><span data-i18n="enviament">Enviament</span></div><div class="spec-val" style="font-size:12px;"><span id="spec-interval">—</span> <span class="spec-unit">int</span></div></div>
+  <div class="spec"><div class="spec-lbl"><span data-i18n="payload">Payload</span></div><div class="spec-val">7 <span class="spec-unit">bytes</span></div></div>
 </div>
 <div class="btm">
   <span>Projecte Final · FireSense · ITB ASIX2c 2025/2026</span>
-  <span id="apiSt" style="color:var(--txt3);">API: inicialitzant...</span>
+  <span id="apiSt" style="color:var(--txt3);"><span data-i18n="api_inicialitzant">API: inicialitzant...</span></span>
 </div>
 <script src="js/config.js"></script>
 <script src="js/helpers.js"></script>
@@ -389,26 +456,26 @@
 <div id="rf-panel" style="display:none;">
   <button onclick="rfClosePanel()" style="position:absolute;top:8px;right:8px;background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.3);color:#ff5555;width:24px;height:24px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:10px;color:rgba(0,229,255,.8);">
-    <label>Potència Tx (dBm)<br><input id="rf-txpower" type="number" value="27" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
-    <label>Freqüència (MHz)<br><input id="rf-freq" type="number" value="868" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
-    <label>Guany Tx (dBi)<br><input id="rf-txgain" type="number" value="3" step="0.5" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
-    <label>Guany Rx (dBi)<br><input id="rf-rxgain" type="number" value="2" step="0.5" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
+    <label><span data-i18n="potencia_tx_dbm">Potència Tx (dBm)</span><br><input id="rf-txpower" type="number" value="27" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
+    <label><span data-i18n="frequencia_mhz">Freqüència (MHz)</span><br><input id="rf-freq" type="number" value="868" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
+    <label><span data-i18n="guany_tx_dbi">Guany Tx (dBi)</span><br><input id="rf-txgain" type="number" value="3" step="0.5" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
+    <label><span data-i18n="guany_rx_dbi">Guany Rx (dBi)</span><br><input id="rf-rxgain" type="number" value="2" step="0.5" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
     <label>Alçada antena (m)<br><input id="rf-txh" type="number" value="10" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
-    <label>Sensibilitat Rx (dBm)<br><input id="rf-sens" type="number" value="-137" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
+    <label><span data-i18n="sensibilitat_rx_dbm">Sensibilitat Rx (dBm)</span><br><input id="rf-sens" type="number" value="-137" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
     <label>Radi màxim (m)<br><input id="rf-radius" type="number" value="3000" step="500" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;"></label>
     <label>Entorn<br><select id="rf-env" style="width:100%;background:#000;border:1px solid rgba(0,229,255,.3);color:#00e5ff;padding:5px;font-family:inherit;margin-top:3px;">
-      <option value="rural">Rural / Bosc</option>
+      <option value="rural"><span data-i18n="rural_bosc">Rural / Bosc</span></option>
       <option value="suburban">Suburbà</option>
-      <option value="urban" selected>Urbà</option>
+      <option value="urban" selected><span data-i18n="urba">Urbà</span></option>
     </select></label>
   </div>
   <div style="display:flex;gap:8px;margin-top:14px;">
     <button onclick="rfLaunch()" style="flex:1;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.4);color:#00e5ff;padding:9px;font-family:inherit;font-size:10px;letter-spacing:.1em;cursor:pointer;">＋ AFEGIR NODE</button>
   </div>
   <div style="margin-top:14px;border-top:1px solid rgba(0,229,255,.15);padding-top:10px;">
-    <div style="font-size:9px;letter-spacing:.15em;color:rgba(0,229,255,.5);margin-bottom:6px;">NODES ACTIUS</div>
+    <div style="font-size:9px;letter-spacing:.15em;color:rgba(0,229,255,.5);margin-bottom:6px;"><span data-i18n="nodes_actius">NODES ACTIUS</span></div>
     <div id="rf-node-list" style="font-size:11px;">
-      <div style="color:rgba(0,229,255,.3);font-size:9px;text-align:center;padding:8px;">Cap node calculat</div>
+      <div style="color:rgba(0,229,255,.3);font-size:9px;text-align:center;padding:8px;"><span data-i18n="cap_node_calculat">Cap node calculat</span></div>
     </div>
   </div>
   <div style="margin-top:10px;font-size:8px;color:rgba(0,229,255,.35);text-align:center;">Els enllaços entre nodes es calculen automàticament</div>
@@ -458,7 +525,7 @@
     <div style="padding:22px 26px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.08);position:sticky;top:0;background:#ffffff;z-index:10;">
       <div>
         <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.22em;color:#0d5c2e;text-transform:uppercase;margin-bottom:3px;">// Configuració de node · FireSense</div>
-        <div style="font-size:1rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;" id="ws-header-title">Afegir nou node IoT</div>
+        <div style="font-size:1rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;" id="ws-header-title"><span data-i18n="afegir_nou_node_iot">Afegir nou node IoT</span></div>
       </div>
       <button onclick="hideAddNodeModal()" style="background:none;border:none;color:rgba(0,0,0,0.3);cursor:pointer;font-size:1.5rem;line-height:1;padding:4px;transition:color .2s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='rgba(0,0,0,0.3)'">&times;</button>
     </div>
@@ -466,10 +533,10 @@
     <!-- PROGRESS TABS -->
     <div style="padding:14px 26px 0;">
       <div style="display:flex;gap:0;" id="ws-tabs">
-        <div class="ws-tab active" id="ws-tab-1"><div class="ws-num">01</div><div class="ws-label">Inici</div></div>
-        <div class="ws-tab" id="ws-tab-2"><div class="ws-num">02</div><div class="ws-label">Connexió</div></div>
+        <div class="ws-tab active" id="ws-tab-1"><div class="ws-num">01</div><div class="ws-label"><span data-i18n="inici">Inici</span></div></div>
+        <div class="ws-tab" id="ws-tab-2"><div class="ws-num">02</div><div class="ws-label"><span data-i18n="connexio">Connexió</span></div></div>
         <div class="ws-tab" id="ws-tab-3"><div class="ws-num">03</div><div class="ws-label">ChirpStack</div></div>
-        <div class="ws-tab" id="ws-tab-4"><div class="ws-num">04</div><div class="ws-label">Vincular</div></div>
+        <div class="ws-tab" id="ws-tab-4"><div class="ws-num">04</div><div class="ws-label"><span data-i18n="vincular">Vincular</span></div></div>
       </div>
     </div>
 
@@ -482,8 +549,8 @@
           <div style="width:52px;height:52px;border-radius:50%;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <div style="font-size:1.2rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;margin-bottom:8px;">Benvingut al configurador<br>de nodes FireSense</div>
-          <div style="font-size:.82rem;color:rgba(0,0,0,0.5);line-height:1.7;max-width:380px;margin:0 auto;">Aquest assistent et guiarà pas a pas. Primer indica com tens connectat el teu gateway.</div>
+          <div style="font-size:1.2rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;margin-bottom:8px;"><span data-i18n="benvingut_al_configurador">Benvingut al configurador</span><br>de nodes FireSense</div>
+          <div style="font-size:.82rem;color:rgba(0,0,0,0.5);line-height:1.7;max-width:380px;margin:0 auto;"><span data-i18n="aquest_assistent_et_guiara_pas_a_pas_pri">Aquest assistent et guiarà pas a pas. Primer indica com tens connectat el teu gateway.</span></div>
         </div>
 
         <div style="margin-bottom:18px;">
@@ -491,13 +558,13 @@
           <div style="display:flex;gap:10px;">
             <div class="ws-path-btn" id="path-yes" onclick="selectPath('yes')">
               <div class="ws-path-icon">🌐</div>
-              <div class="ws-path-title">Sí, accés directe</div>
-              <div class="ws-path-desc">Ethernet, 4G o WiFi<br>amb IP pública o router</div>
+              <div class="ws-path-title"><span data-i18n="si_acces_directe">Sí, accés directe</span></div>
+              <div class="ws-path-desc"><span data-i18n="ethernet_4g_o_wifi">Ethernet, 4G o WiFi</span><br><span data-i18n="amb_ip_publica_o_router">amb IP pública o router</span></div>
             </div>
             <div class="ws-path-btn" id="path-no" onclick="selectPath('no')">
               <div class="ws-path-icon">🔒</div>
-              <div class="ws-path-title">No, xarxa privada</div>
-              <div class="ws-path-desc">Xarxa interna del centre<br>o empresa (VPN necessari)</div>
+              <div class="ws-path-title"><span data-i18n="no_xarxa_privada">No, xarxa privada</span></div>
+              <div class="ws-path-desc"><span data-i18n="xarxa_interna_del_centre">Xarxa interna del centre</span><br>o empresa (VPN necessari)</div>
             </div>
           </div>
         </div>
@@ -505,7 +572,7 @@
         <div style="background:#f8faf8;border:1px solid rgba(0,0,0,0.07);border-radius:4px;padding:12px;margin-bottom:18px;">
           <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(0,0,0,0.35);margin-bottom:8px;">// NECESSITES PER CONTINUAR</div>
           <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(0,0,0,0.55);"><div style="width:4px;height:4px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div>Node RAK4631 amb firmware LoRaWAN</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(0,0,0,0.55);"><div style="width:4px;height:4px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div><span data-i18n="node_rak4631_amb_firmware_lorawan">Node RAK4631 amb firmware LoRaWAN</span></div>
             <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(0,0,0,0.55);"><div style="width:4px;height:4px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div>Gateway RAK7289V2 o compatible EU868</div>
             <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:rgba(0,0,0,0.55);"><div style="width:4px;height:4px;border-radius:50%;background:#4ade80;flex-shrink:0;"></div>Credencials del servidor ChirpStack</div>
           </div>
@@ -526,35 +593,35 @@
       <div class="ws-step" id="ws-step-2">
         <div id="ws-step-2-direct">
           <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:#0d5c2e;margin-bottom:14px;">// PAS 1 — INSTAL·LA CHIRPSTACK (servidor propi)</div>
-          <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong>Instal·la ChirpStack amb Docker</strong>Al teu servidor Linux: <code>curl -fsSL https://get.docker.com | sh</code><br>Consulta el manual PDF per als fitxers de configuració complets (docker-compose.yml, chirpstack.toml, eu868.toml).</div></div>
-          <div class="ws-check"><div class="ws-check-num">2</div><div class="ws-check-text"><strong>Obté la IP del teu servidor</strong><code>ip addr show | grep "inet " | grep -v 127.0.0.1</code><br>Anota aquesta IP — la necessitaràs al gateway i Node-RED.</div></div>
+          <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong><span data-i18n="installa_chirpstack_amb_docker">Instal·la ChirpStack amb Docker</span></strong>Al teu servidor Linux: <code>curl -fsSL https://get.docker.com | sh</code><br>Consulta el manual PDF per als fitxers de configuració complets (docker-compose.yml, chirpstack.toml, eu868.toml).</div></div>
+          <div class="ws-check"><div class="ws-check-num">2</div><div class="ws-check-text"><strong><span data-i18n="obte_la_ip_del_teu_servidor">Obté la IP del teu servidor</span></strong><code>ip addr show | grep "inet " | grep -v 127.0.0.1</code><br>Anota aquesta IP — la necessitaràs al gateway i Node-RED.</div></div>
           <div class="ws-check"><div class="ws-check-num">3</div><div class="ws-check-text"><strong>Crea Device Profile + Application a ChirpStack</strong>Device Profiles → Add → Regió: <code>EU868</code> · MAC: <code>LoRaWAN 1.0.3</code> · OTAA · Interval: <code>3600s</code> · Codec 7 bytes (del manual)<br>Applications → Add → <code>firesense-nodes</code></div></div>
-          <div class="ws-check"><div class="ws-check-num">4</div><div class="ws-check-text"><strong>Registra el node i genera la AppKey</strong>Add device → DevEUI de l'etiqueta (sense dos punts)<br>OTAA Keys → genera AppKey → <strong>copia-la</strong> (la necessites al firmware)</div></div>
+          <div class="ws-check"><div class="ws-check-num">4</div><div class="ws-check-text"><strong><span data-i18n="registra_el_node_i_genera_la_appkey">Registra el node i genera la AppKey</span></strong>Add device → DevEUI de l'etiqueta (sense dos punts)<br>OTAA Keys → genera AppKey → <strong>copia-la</strong> (la necessites al firmware)</div></div>
           <div class="ws-check"><div class="ws-check-num">5</div><div class="ws-check-text"><strong>Verifica que ChirpStack funciona</strong>Accedeix a <code>http://TU_IP:8080</code> i comprova que veus el panel sense errors.</div></div>
         </div>
         <div id="ws-step-2-vpn" style="display:none;">
           <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:#0d5c2e;margin-bottom:14px;">// CHIRPSTACK CLOUD FIRESENSE</div>
-          <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong>Accedeix al panel FireSense Cloud</strong>Credencials rebudes per email:<br><code>https://chirpstack.firesense.io</code></div></div>
-          <div class="ws-check"><div class="ws-check-num">2</div><div class="ws-check-text"><strong>Registra el teu node</strong>Applications → firesense-nodes → Add device<br>DevEUI (sense dos punts) · Genera AppKey · copia-la per al firmware</div></div>
-          <div class="ws-check"><div class="ws-check-num">3</div><div class="ws-check-text"><strong>Configura el gateway</strong>MQTT Broker: <code>mqtt.firesense.io</code> · Port: <code>1883</code></div></div>
+          <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong><span data-i18n="accedeix_al_panel_firesense_cloud">Accedeix al panel FireSense Cloud</span></strong>Credencials rebudes per email:<br><code>https://chirpstack.firesense.io</code></div></div>
+          <div class="ws-check"><div class="ws-check-num">2</div><div class="ws-check-text"><strong><span data-i18n="registra_el_teu_node">Registra el teu node</span></strong>Applications → firesense-nodes → Add device<br>DevEUI (sense dos punts) · Genera AppKey · copia-la per al firmware</div></div>
+          <div class="ws-check"><div class="ws-check-num">3</div><div class="ws-check-text"><strong><span data-i18n="configura_el_gateway">Configura el gateway</span></strong>MQTT Broker: <code>mqtt.firesense.io</code> · Port: <code>1883</code></div></div>
         </div>
         <div style="display:flex;gap:10px;margin-top:18px;">
-          <button class="ws-btn-secondary" onclick="prevStep(2)">← Enrere</button>
-          <button class="ws-btn-primary" onclick="nextStep(2)">Continuar →</button>
+          <button class="ws-btn-secondary" onclick="prevStep(2)"><span data-i18n="enrere">← Enrere</span></button>
+          <button class="ws-btn-primary" onclick="nextStep(2)"><span data-i18n="continuar">Continuar →</span></button>
         </div>
       </div>
 
       <!-- STEP 3: FIRMWARE + GATEWAY -->
       <div class="ws-step" id="ws-step-3">
         <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:#0d5c2e;margin-bottom:14px;">// PAS 2 — PROGRAMA EL FIRMWARE I CONFIGURA EL GATEWAY</div>
-        <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong>Programa el firmware al RAK4631</strong>Arduino IDE → codi del manual PDF · Substitueix <code>nodeDevEui</code> i <code>nodeAppKey</code> (generada a ChirpStack)<br>Conversió DevEUI: <code>AC:1F:09:FF → {0xAC, 0x1F, 0x09, 0xFF...}</code></div></div>
+        <div class="ws-check"><div class="ws-check-num">1</div><div class="ws-check-text"><strong><span data-i18n="programa_el_firmware_al_rak4631">Programa el firmware al RAK4631</span></strong>Arduino IDE → codi del manual PDF · Substitueix <code>nodeDevEui</code> i <code>nodeAppKey</code> (generada a ChirpStack)<br>Conversió DevEUI: <code>AC:1F:09:FF → {0xAC, 0x1F, 0x09, 0xFF...}</code></div></div>
         <div class="ws-check"><div class="ws-check-num">2</div><div class="ws-check-text"><strong>Upload i verifica al Monitor Serie (115200 baud)</strong>Veuràs <code>JoinRequest</code>. El <code>JoinAccept</code> arribarà quan el gateway estigui Online — és normal no veure'l encara.</div></div>
         <div class="ws-check"><div class="ws-check-num">3</div><div class="ws-check-text"><strong>Configura el gateway RAK7289V2</strong>Accedeix a <code>http://192.168.1.1</code> (root/root)<br>LoRa → Network Settings → Protocol: <code>LoRa Gateway MQTT Bridge · ChirpStack 4.x</code><br>MQTT Broker: IP del teu servidor ChirpStack · Port: <code>1883</code></div></div>
-        <div class="ws-check"><div class="ws-check-num">4</div><div class="ws-check-text"><strong>Configura Node-RED</strong>Importa el JSON del manual PDF · Doble clic "MQTT ChirpStack" → canvia <code>localhost</code> per la IP del servidor<br>Doble clic "InfluxDB" → URL, token i bucket <code>sensor_data</code></div></div>
+        <div class="ws-check"><div class="ws-check-num">4</div><div class="ws-check-text"><strong><span data-i18n="configura_nodered">Configura Node-RED</span></strong>Importa el JSON del manual PDF · Doble clic "MQTT ChirpStack" → canvia <code>localhost</code> per la IP del servidor<br>Doble clic "InfluxDB" → URL, token i bucket <code>sensor_data</code></div></div>
         <div class="ws-check"><div class="ws-check-num">5</div><div class="ws-check-text"><strong>Verifica que tot funciona ✓</strong>ChirpStack → Gateways: punt verd ✓<br>ChirpStack → Device → LoRaWAN Frames: <code>JoinRequest + JoinAccept</code> ✓<br>InfluxDB bucket <code>sensor_data</code> conté dades ✓</div></div>
         <div style="display:flex;gap:10px;margin-top:18px;">
-          <button class="ws-btn-secondary" onclick="prevStep(3)">← Enrere</button>
-          <button class="ws-btn-primary" onclick="nextStep(3)">Continuar →</button>
+          <button class="ws-btn-secondary" onclick="prevStep(3)"><span data-i18n="enrere">← Enrere</span></button>
+          <button class="ws-btn-primary" onclick="nextStep(3)"><span data-i18n="continuar">Continuar →</span></button>
         </div>
       </div>
 
@@ -564,12 +631,12 @@
           <div style="width:52px;height:52px;border-radius:50%;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
           </div>
-          <div style="font-size:1.1rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;margin-bottom:8px;">Tot a punt!<br>Vincula el node al teu compte</div>
-          <div style="font-size:.8rem;color:rgba(0,0,0,0.5);line-height:1.7;">Introdueix el Device EUI del teu node per vincular-lo al teu compte FireSense i monitoritza les seves dades al mapa en temps real.</div>
+          <div style="font-size:1.1rem;font-weight:800;color:#0a1f0a;font-family:Georgia,serif;margin-bottom:8px;"><span data-i18n="tot_a_punt">Tot a punt!</span><br><span data-i18n="vincula_el_node_al_teu_compte">Vincula el node al teu compte</span></div>
+          <div style="font-size:.8rem;color:rgba(0,0,0,0.5);line-height:1.7;"><span data-i18n="introdueix_el_device_eui_del_teu_node_pe">Introdueix el Device EUI del teu node per vincular-lo al teu compte FireSense i monitoritza les seves dades al mapa en temps real.</span></div>
         </div>
 
         <div style="margin-bottom:18px;">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:rgba(0,0,0,0.4);margin-bottom:7px;">DEVICE EUI / NODE ID</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.18em;color:rgba(0,0,0,0.4);margin-bottom:7px;"><span data-i18n="device_eui_node_id">DEVICE EUI / NODE ID</span></div>
           <input id="modal-node-eui" type="text" maxlength="16" placeholder="0011223344556677"
             style="width:100%;padding:12px 14px;background:#f8faf8;border:1px solid rgba(0,0,0,0.12);border-radius:4px;color:#0a1f0a;font-family:'Share Tech Mono',monospace;font-size:.95rem;letter-spacing:.1em;outline:none;box-sizing:border-box;transition:border-color .2s;"
             onfocus="this.style.borderColor='#0d5c2e'"
@@ -596,7 +663,7 @@
         <div id="modal-alert" style="display:none;margin-bottom:14px;padding:10px 14px;border-radius:4px;font-size:.8rem;font-family:'Share Tech Mono',monospace;letter-spacing:.03em;"></div>
 
         <div style="display:flex;gap:10px;">
-          <button class="ws-btn-secondary" onclick="prevStep(4)">← Enrere</button>
+          <button class="ws-btn-secondary" onclick="prevStep(4)"><span data-i18n="enrere">← Enrere</span></button>
           <button class="ws-btn-primary" id="ws-submit-btn" onclick="submitAddNode()">
             + Vincular node
           </button>
@@ -605,9 +672,9 @@
         <!-- SUCCESS STATE -->
         <div id="ws-success" style="display:none;text-align:center;padding:20px 0 8px;">
           <div style="font-size:2rem;margin-bottom:12px;">✅</div>
-          <div style="font-size:1rem;font-weight:800;color:#0d5c2e;font-family:Georgia,serif;margin-bottom:8px;">Node vinculat correctament!</div>
-          <div style="font-size:.8rem;color:rgba(0,0,0,0.5);line-height:1.7;">El node apareixerà al mapa en breus moments, un cop enviï les primeres dades.</div>
-          <button onclick="hideAddNodeModal()" style="margin-top:16px;padding:11px 28px;background:#0d5c2e;border:none;color:#fff;font-family:'Raleway',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border-radius:4px;">Veure mapa →</button>
+          <div style="font-size:1rem;font-weight:800;color:#0d5c2e;font-family:Georgia,serif;margin-bottom:8px;"><span data-i18n="node_vinculat_correctament">Node vinculat correctament!</span></div>
+          <div style="font-size:.8rem;color:rgba(0,0,0,0.5);line-height:1.7;"><span data-i18n="el_node_apareixera_al_mapa_en_breus_mome">El node apareixerà al mapa en breus moments, un cop enviï les primeres dades.</span></div>
+          <button onclick="hideAddNodeModal()" style="margin-top:16px;padding:11px 28px;background:#0d5c2e;border:none;color:#fff;font-family:'Raleway',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border-radius:4px;"><span data-i18n="veure_mapa">Veure mapa →</span></button>
         </div>
       </div>
 
@@ -813,5 +880,14 @@ submitAddNode = async function() {
   setTimeout(() => loadUserNodes(), 1500);
 };
 </script>
+
+<div id="lang-sel">
+  <div id="lang-menu"></div>
+  <div id="lang-btn" onclick="toggleLang()">
+    <img id="lang-flag" src="/FireSense/assets/flags/ca.svg">
+    <span id="lang-label">CA</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</div>
 </body>
 </html>
