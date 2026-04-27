@@ -1,11 +1,11 @@
 // ── CONFIG ─────────────────────────────────────────────────
-const INFLUX_URL = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/influxdb';
+const INFLUX_URL = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/influx';
 const INFLUX_ORG = 'ProjecteEspVRna';
-const INFLUX_TOKEN = '${INFLUX_TOKEN}';
+// token ocult al servidor
 const INFLUX_BUCKET = 'sensor_data';
-const CS  = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/chirpstack-api';
-const KEY = '${CHIRPSTACK_KEY}';
-const HDR = {'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
+const CS  = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/chirpstack';
+// key oculta al servidor
+const HDR = {'Content-Type':'application/json'};
 const OFFLINE_MS    = 60 * 60 * 1000;
 const BURST_BEFORE_MS = 5 * 1000;
 const GW = {label:'GW-ITB',lat:41.45318,lng:2.18622};
