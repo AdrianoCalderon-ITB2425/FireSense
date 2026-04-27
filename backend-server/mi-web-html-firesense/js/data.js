@@ -3,7 +3,7 @@ async function influxQuery(flux){
   var bust=Date.now();
   var r=await fetch(INFLUX_URL+'/api/v2/query?org='+encodeURIComponent(INFLUX_ORG)+'&_t='+bust,{
     method:'POST',cache:'no-store',
-    headers:{'Authorization':'Token '+INFLUX_TOKEN,'Content-Type':'application/vnd.flux','Accept':'application/csv','Cache-Control':'no-store, no-cache','Pragma':'no-cache'},
+    headers:{'Content-Type':'application/vnd.flux','Accept':'application/csv','Cache-Control':'no-store, no-cache','Pragma':'no-cache'},
     body:flux
   });
   if(!r.ok)throw new Error('InfluxDB HTTP '+r.status);
