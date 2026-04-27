@@ -327,7 +327,7 @@ async function doLogin() {
       localStorage.setItem('fs_token', data.token);
       localStorage.setItem('fs_user', user);
       showAlert('login-alert','success','Accés correcte! Redirigint...');
-      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+      setTimeout(() => window.location.href = 'index.html', 1000);
     } else {
       showAlert('login-alert','error', data.error || 'Credencials incorrectes.');
     }
@@ -335,7 +335,7 @@ async function doLogin() {
     // Demo mode: si no hi ha backend, redirigeix directament
     showAlert('login-alert','success','Accés correcte! Redirigint...');
     localStorage.setItem('fs_user', user);
-    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    setTimeout(() => window.location.href = 'index.html', 1000);
   } finally {
     btn.classList.remove('loading');
     btn.innerHTML = 'Accedir al panell <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
@@ -377,7 +377,7 @@ async function doSignup() {
     // Demo mode
     showAlert('signup-alert','success','Compte creat correctament! Redirigint...');
     localStorage.setItem('fs_user', user);
-    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    setTimeout(() => window.location.href = 'index.html', 1200);
   } finally {
     btn.classList.remove('loading');
     btn.innerHTML = 'Crear compte <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
