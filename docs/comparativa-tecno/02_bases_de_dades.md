@@ -51,3 +51,33 @@
 - **Retention policies simples**: InfluxDB té un sistema natiu de polítiques de retenció de dades (quant de temps guardar les lectures) que és trivial de configurar, cosa molt útil per gestionar l'espai en disc en un entorn de laboratori.
 - **Versió 1.8 com a opció lleugera**: Per a entorns amb recursos limitats, InfluxDB v1.8 (encara mantinguda com a LTS) consumeix significativament menys recursos que la v2.x, oferint una opció de fallback si les VMs d'IsardVDI tenen limitacions.
 - **Grafana datasource natiu**: El plugin oficial d'InfluxDB a Grafana és un dels més madurs i complets de la plataforma.
+
+---
+
+## PostgreSQL vs MySQL / MariaDB
+
+| Criteri | **PostgreSQL** | MySQL / MariaDB |
+|---|---|---|
+| Llicència | PostgreSQL License (lliure, similar a BSD) | GPL 2.0 (MySQL) / GPL 2.0 (MariaDB) |
+| Versió actual | 16.x | MySQL 8.x / MariaDB 11.x |
+| Tipus | Base de dades relacional objecte-relacional | Base de dades relacional |
+| Compliment ACID | Total | Total (InnoDB) |
+| Suport JSON natiu | Molt avançat (jsonb, índexs sobre JSON) | Bàsic (MySQL 8+) / Bàsic (MariaDB) |
+| Tipus de dades avançats | UUID, arrays, hstore, tipus geogràfics, enums | Menys tipus natius |
+| Procediments emmagatzemats | PL/pgSQL, PL/Python, PL/Perl... | SQL + limitades |
+| Escalabilitat | Molt alta (particionament, replicació lògica) | Alta |
+| Consum RAM | ~100–300 MB | ~100–200 MB |
+| Integritat referencial | Molt estricta | Estricta (InnoDB) |
+| Extensions | Molt extens (PostGIS, pg_trgm, uuid-ossp...) | Més limitat |
+| Integració amb ChirpStack | Requerida nativament | No suportada per ChirpStack |
+| Comunitat | Molt gran, molt activa | Molt gran (MySQL) / Gran (MariaDB) |
+| Propietari / comercial | Completament independent i lliure | MySQL propietat d'Oracle |
+
+### Justificació de l'elecció: PostgreSQL
+
+- **Requisit de ChirpStack**: ChirpStack v4 requereix PostgreSQL com a base de dades de forma nativa. Ja que FireSense usa ChirpStack, PostgreSQL és una dependència obligatòria del projecte. Aprofitar aquesta instància per emmagatzemar també els comptes d'usuaris de l'aplicació/portal web és una decisió eficient que evita desplegar un motor addicional.
+- **Cas d'ús a FireSense**: PostgreSQL s'utilitza per emmagatzemar els IDs, credencials i dades dels usuaris que es registren al portal web/aplicació de FireSense. El model de dades relacional és l'adequat per a aquest tipus d'informació estructurada (usuaris, rols, sessions, permisos).
+- **Suport JSON avançat (jsonb)**: PostgreSQL permet emmagatzemar i indexar documents JSON de forma eficient amb el tipus `jsonb`, cosa útil si el portal web necessita guardar configuracions o preferències d'usuari en format flexible sense necessitat d'un motor documental separat.
+- **Independència d'Oracle**: MySQL pertany a Oracle des de 2010, cosa que genera incertesa sobre el seu futur com a projecte lliure. PostgreSQL és completament independent, governat per la PostgreSQL Global Development Group, sense cap empresa propietària.
+- **Integritat i fiabilitat**: PostgreSQL és reconegut per ser el motor relacional open source més robust i respectuós amb l'estàndard SQL. Per a dades crítiques com comptes d'usuaris, la seva estricta integritat referencial i el seu compliment ACID complet el fan la millor opció.
+- **Extensions útils**: Extensions com `uuid-ossp` (per generar UUIDs d'usuaris) i `pgcrypto` (per gestionar contrasenyes de forma segura) estan disponibles nativament a PostgreSQL sense configuració addicional.
