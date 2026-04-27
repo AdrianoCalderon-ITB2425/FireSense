@@ -14,7 +14,7 @@
 |-----|-----|-------------|
 | Hamza Tayibi | Backend Developer / Web Frontend FireSense | Present |
 | Adriano Calderon | Backend Developer | Present |
-| Francisco | Scrum Master / Coordinació | Present |
+| Francisco Diaz | Scrum Master / Coordinació | Present |
 
 ---
 
@@ -107,7 +107,7 @@ Una tasca es considera completada quan:
 ## 8. Equip
 | Rol | Nom |
 |-----|-----|
-| Scrum Master | Francisco |
+| Scrum Master | Francisco Diaz |
 | Backend Developer / Web Frontend FireSense | Hamza Tayibi |
 | Backend Developer | Adriano Calderon |
 
