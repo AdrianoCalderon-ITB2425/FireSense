@@ -85,22 +85,10 @@ During the review, a live demonstration was carried out of:
 - Checking the browser F12 to verify security
 - Documenting each feature in the client manual
 
----
-
-## 9. Sprint 2 — Planned Tasks
-| ID | Task | Assigned | Priority |
-|----|------|----------|----------|
-| 2.1 | AI alerts system: trend detection and composite risk scoring | Hamza | High |
-| 2.2 | Telegram notifications (bot + automatic alerts) | Adriano | High |
-| 2.3 | External data integration: NASA FIRMS + AEMET/SMC | Hamza | Medium |
-| 2.4 | MeshCore bridge to server (Raspberry Pi + WireGuard + MQTT) | Adriano | Medium |
-| 2.5 | Grafana dashboard: temperature, humidity, battery panels | Adriano | Medium |
-| 2.6 | LoRaWAN field coverage tests | All | Medium |
-| 2.7 | Final technical project documentation | Hamza | Medium |
 
 ---
 
-## 10. Team
+## 9. Team
 | Role | Name |
 |------|------|
 | Scrum Master | Francisco |
