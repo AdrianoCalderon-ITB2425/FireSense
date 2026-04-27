@@ -577,6 +577,21 @@
             oninput="validateEUI(this)">
           <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(0,0,0,0.45);letter-spacing:.08em;margin-top:6px;">// 16 caràcters hexadecimals · Format EUI-64 · Sense dos punts</div>
         </div>
+        <div style="display:flex;gap:10px;margin-top:14px;">
+          <div style="flex:1;">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(0,0,0,0.4);margin-bottom:6px;">//  LATITUD</div>
+            <input id="modal-node-lat" type="number" step="0.000001" placeholder="41.453520"
+              style="width:100%;padding:12px 14px;background:#f8faf8;border:1px solid rgba(0,0,0,0.12);border-radius:4px;color:#0a1f0a;font-family:'Share Tech Mono',monospace;font-size:.95rem;outline:none;box-sizing:border-box;transition:border-color .2s;"
+              onfocus="this.style.borderColor='#0d5c2e'" onblur="this.style.borderColor='rgba(0,0,0,0.12)'">
+          </div>
+          <div style="flex:1;">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(0,0,0,0.4);margin-bottom:6px;">//  LONGITUD</div>
+            <input id="modal-node-lng" type="number" step="0.000001" placeholder="2.186453"
+              style="width:100%;padding:12px 14px;background:#f8faf8;border:1px solid rgba(0,0,0,0.12);border-radius:4px;color:#0a1f0a;font-family:'Share Tech Mono',monospace;font-size:.95rem;outline:none;box-sizing:border-box;transition:border-color .2s;"
+              onfocus="this.style.borderColor='#0d5c2e'" onblur="this.style.borderColor='rgba(0,0,0,0.12)'">
+          </div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(0,0,0,0.3);margin-top:5px;">// Clic dret a Google Maps → "Què hi ha aquí?" per obtenir les coordenades</div>
 
         <div id="modal-alert" style="display:none;margin-bottom:14px;padding:10px 14px;border-radius:4px;font-size:.8rem;font-family:'Share Tech Mono',monospace;letter-spacing:.03em;"></div>
 
@@ -683,7 +698,7 @@ async function submitAddNode() {
     const res = await fetch('/api/nodes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ nodeId: eui })
+      body: JSON.stringify({ nodeId: eui, lat: parseFloat(document.getElementById('modal-node-lat').value)||null, lon: parseFloat(document.getElementById('modal-node-lng').value)||null })
     });
     const data = await res.json();
     if (res.ok) {
