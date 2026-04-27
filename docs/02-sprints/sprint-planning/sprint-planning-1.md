@@ -1,116 +1,115 @@
-# ACTA — Sprint 1 Planning
-## Informació de la Reunió
-| Camp | Valor |
-|------|-------|
-| Data | 14/04/2026 |
-| Hora | 15:30 - 16:30 |
-| Lloc | Aula ASIX — ITB |
+# Acta — Sprint 1 Planning
+## Meeting Information
+| Field | Value |
+|-------|-------|
+| Date | 14/04/2026 |
+| Time | 15:30 - 16:30 |
+| Location | ASIX Classroom — ITB |
 | Sprint | Sprint 1 |
-| Durada Sprint | 14/04/2026 - 27/04/2026 |
-| Versió | 1.0 |
+| Sprint Duration | 14/04/2026 - 27/04/2026 |
+| Version | 1.0 |
 
-## Assistents
-| Nom | Rol | Assistència |
-|-----|-----|-------------|
+## Attendees
+| Name | Role | Attendance |
+|------|------|------------|
 | Hamza Tayibi | Backend Developer / Web Frontend FireSense | Present |
 | Adriano Calderon | Backend Developer | Present |
-| Francisco Diaz | Scrum Master / Coordinació | Present |
+| Francisco | Scrum Master / Coordination | Present |
 
 ---
 
-## 1. Objectiu del Sprint 1
-Construir la infraestructura base del projecte FireSense i el MVP de la plataforma IoT de prevenció d'incendis forestals:
-- Stack IoT complet: RAK4631 → ChirpStack v4 → Node-RED → InfluxDB v2 → Dashboard web
-- Infraestructura Docker amb nginx proxy a IsardVDI
-- Dashboard web FireSense: mapa interactiu Leaflet/CesiumJS + dades en temps real
-- Dashboard web Espurna: mapa independent amb nodes IoT propis
-- Sistema d'autenticació LDAP + PostgreSQL + JWT
-- Seguretat: API keys ocultes via proxy nginx (InfluxDB + ChirpStack)
-- Manual de configuració client (DOCX, 13 seccions)
+## 1. Sprint 1 Objective
+Build the base infrastructure of the FireSense project and the MVP of the IoT forest fire prevention platform:
+- Complete IoT stack: RAK4631 → ChirpStack v4 → Node-RED → InfluxDB v2 → Web Dashboard
+- Docker infrastructure with nginx proxy on IsardVDI
+- FireSense web dashboard: interactive map Leaflet/CesiumJS + real-time data
+- Espurna web dashboard: independent map with own IoT nodes
+- Authentication system LDAP + PostgreSQL + JWT
+- Security: API keys hidden via nginx proxy (InfluxDB + ChirpStack)
+- Client configuration manual (DOCX, 13 sections)
 
 ---
 
-## 2. Arquitectura Implementada
-| Component | Tecnologia | Estat |
-|-----------|-----------|-------|
-| Node IoT sensor | RAK4631 (nRF52840 + SX1262) + RAK1901 + RAK12035 | Operatiu |
-| Gateway LoRaWAN | RAK7289V2 — EU868 OTAA | Operatiu |
-| Network Server | ChirpStack v4 (Docker) | Operatiu |
-| Message Broker | Mosquitto MQTT v2 | Operatiu |
-| Processament dades | Node-RED (flow importable) | Operatiu |
-| Base de dades time-series | InfluxDB v2 — bucket sensor_data | Operatiu |
-| Base de dades relacional | PostgreSQL — users + nodes | Operatiu |
-| Directori d'usuaris | OpenLDAP — dc=firesense,dc=io | Operatiu |
-| Autenticació | Auth-service Flask + JWT + ldap3 | Operatiu |
-| Web proxy / servidor | Nginx (Docker) — HTTPS + proxy segur | Operatiu |
-| Dashboard FireSense | HTML/CSS/JS + Leaflet + CesiumJS | Operatiu |
-| Dashboard Espurna | HTML/CSS/JS + Leaflet (nginx independent) | Operatiu |
-| Visualització | Grafana (Docker) — panels InfluxDB | Operatiu |
+## 2. Implemented Architecture
+| Component | Technology | Status |
+|-----------|-----------|--------|
+| IoT sensor node | RAK4631 (nRF52840 + SX1262) + RAK1901 + RAK12035 | Operational |
+| LoRaWAN Gateway | RAK7289V2 — EU868 OTAA | Operational |
+| Network Server | ChirpStack v4 (Docker) | Operational |
+| Message Broker | Mosquitto MQTT v2 | Operational |
+| Data processing | Node-RED (importable flow) | Operational |
+| Time-series database | InfluxDB v2 — bucket sensor_data | Operational |
+| Relational database | PostgreSQL — users + nodes | Operational |
+| User directory | OpenLDAP — dc=firesense,dc=io | Operational |
+| Authentication | Auth-service Flask + JWT + ldap3 | Operational |
+| Web proxy / server | Nginx (Docker) — HTTPS + secure proxy | Operational |
+| FireSense dashboard | HTML/CSS/JS + Leaflet + CesiumJS | Operational |
+| Espurna dashboard | HTML/CSS/JS + Leaflet (independent nginx) | Operational |
+| Visualization | Grafana (Docker) — InfluxDB panels | Operational |
 
 ---
 
-## 3. Backlog del Sprint — Tasques Completades
-| ID | Tasca | Assignat | Est. | Estat |
-|----|-------|----------|------|-------|
-| 1.1 | Kick-off i repartiment de rols | Tots | 2h | Fet |
-| 1.2 | Configuració repositori GitHub (branques dev/main, .gitignore, secrets) | Adriano | 3h | Fet |
-| 1.3 | Planificació Gantt a ProofHub (sprints, milestones) | Adriano | 4h | Fet |
-| 1.4 | Provisió IsardVDI i instal·lació Docker | Adriano, Francisco | 4h | Fet |
-| 1.6 | Configuració OpenLDAP + phpLDAPadmin  | Hamza | 5h | Fet |
-| 1.8 | Docker Compose stack MING (Mosquitto+InfluxDB+Node-RED+Grafana) | Adriano | 6h | Fet |
-| 1.9 | ChirpStack v4 Docker + chirpstack.toml + eu868.toml | Hamza | 5h | Fet |
-| 1.10 | Manifests Kubernetes per a Mosquitto i InfluxDB | Francisco | 6h | Fet |
-| 1.11 | Manifests Kubernetes per a Node-RED i Grafana | Francisco | 4h | Fet |
-| 1.12 | Tecnologias i Hardware | Adriano, Hamza | 16h | Fet |
+## 3. Sprint Backlog — Assigned Tasks
+| ID | Task | Assigned | Est. | Status |
+|----|------|----------|------|--------|
+| 1.1 | Kick-off and role assignment | All | 2h | Done |
+| 1.2 | GitHub repository setup (dev/main branches, .gitignore, secrets) | Adriano | 3h | Done |
+| 1.3 | Gantt planning on ProofHub (sprints, milestones) | Adriano | 4h | Done |
+| 1.4 | IsardVDI provisioning and Docker installation | Adriano, Francisco | 4h | Done |
+| 1.6 | OpenLDAP + phpLDAPadmin configuration | Hamza | 5h | Done |
+| 1.8 | Docker Compose MING stack (Mosquitto+InfluxDB+Node-RED+Grafana) | Adriano | 6h | Done |
+| 1.9 | ChirpStack v4 Docker + chirpstack.toml + eu868.toml | Hamza | 5h | Done |
+| 1.10 | Kubernetes manifests for Mosquitto and InfluxDB | Francisco | 6h | Done |
+| 1.11 | Kubernetes manifests for Node-RED and Grafana | Francisco | 4h | Done |
+| 1.12 | Technologies and Hardware | Adriano, Hamza | 16h | Done |
 
-**Total estimat: ~96h**
-
----
-
-## 4. Definició de Done (DoD)
-Una tasca es considera completada quan:
-- El codi/configuració funciona correctament al servidor IsardVDI
-- Documentat al repositori GitHub (branca dev → merge main)
-- Les APIs no exposen claus sensibles al navegador (F12 net)
-- El dashboard web carrega sense errors de consola
-- Commit pujat a GitHub amb missatge descriptiu
+**Total estimated: ~96h**
 
 ---
 
-## 5. Riscos Identificats i Resolts
-| Risc | Probabilitat | Impacte | Acció aplicada |
-|------|-------------|---------|----------------|
-| Secrets exposats al GitHub (Mapbox, ChirpStack, InfluxDB) | Alta | Crític | Resolt: git filter-branch + proxy nginx |
-| Límit MapTiler 100k requests superat | Alta | Alt | Resolt: nou token creat 27/04/2026 |
-| Templates Espurna inexistents al contenidor nginx | Mitjana | Alt | Resolt: `\|\| true` a entrypoint.sh |
-| NODES hardcodejats al config.js visible al F12 | Alta | Mitjà | Resolt: nodes carregats des de /api/nodes |
-| Gateway Offline (RAK7289V2 apagat) | Baixa | Baix | Pendent: gateway físic al laboratori |
-| Join OTAA falla si AppKey no coincideix | Mitjana | Alt | Documentat al manual client (pas 4.2) |
+## 4. Definition of Done (DoD)
+A task is considered complete when:
+- The code/configuration works correctly on the IsardVDI server
+- Documented in the GitHub repository (dev branch → merge to main)
+- APIs do not expose sensitive keys in the browser (clean F12)
+- The web dashboard loads without console errors
+- Commit pushed to GitHub with a descriptive message
 
 ---
 
-## 6. Captures ProofHub — Tasques Sprint 1
-![ProofHub Sprint 1](./captures/proofhub_sprint1_planning.png)
+## 5. Identified Risks
+| Risk | Probability | Impact | Action |
+|------|-------------|--------|--------|
+| Secrets exposed on GitHub (Mapbox, ChirpStack, InfluxDB) | High | Critical | Resolved: git filter-branch + nginx proxy |
+| MapTiler 100k requests limit exceeded | High | High | Resolved: new token created 27/04/2026 |
+| Espurna templates missing in nginx container | Medium | High | Resolved: added `|| true` in entrypoint.sh |
+| Hardcoded NODES in config.js visible in F12 | High | Medium | Resolved: nodes loaded dynamically from /api/nodes |
+| Gateway Offline (RAK7289V2 off) | Low | Low | Pending: physical gateway in lab |
+| Join OTAA fails if AppKey does not match | Medium | High | Documented in client manual (step 4.2) |
 
 ---
 
-## 7. Propera Reunió
-| Tipus | Data | Hora | Objectiu |
-|-------|------|------|----------|
-| Sprint Review 1 | 27/04/2026 | 16:00 | Presentar MVP FireSense al professor |
-| Sprint 2 Planning | 28/04/2026 | 15:30 | Definir tasques fase 2 |
-| Daily Standup | Diari | 15:00 | Seguiment tasques en curs |
-
+## 6. ProofHub Captures — Sprint 1 Tasks
+![ProofHub Sprint 1 Planning](./captures/proofhub_sprint1_planning.png)
 
 ---
 
-## 8. Equip
-| Rol | Nom |
-|-----|-----|
-| Scrum Master | Francisco Diaz |
+## 7. Next Meeting
+| Type | Date | Time | Objective |
+|------|------|------|-----------|
+| Sprint Review 1 | 27/04/2026 | 16:00 | Present FireSense MVP to professor |
+| Sprint 2 Planning | 28/04/2026 | 15:30 | Define phase 2 tasks |
+| Daily Standup | Daily | 15:00 | Task progress follow-up |
+
+---
+
+## 8. Team
+| Role | Name |
+|------|------|
+| Scrum Master | Francisco |
 | Backend Developer / Web Frontend FireSense | Hamza Tayibi |
 | Backend Developer | Adriano Calderon |
 
 ---
-*Acta generada: 27/04/2026 — Versió 1.0*
-*FireSense IoT Platform — Institut Tecnològic de Barcelona — ASIX2c — 2025/2026*
+*Minutes generated: 27/04/2026 — Version 1.0*
+*FireSense IoT Platform — Institut Tecnologic de Barcelona — ASIX2c — 2025/2026*
