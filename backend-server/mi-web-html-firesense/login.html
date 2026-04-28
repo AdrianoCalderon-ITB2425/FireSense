@@ -410,11 +410,8 @@ async function doLogin() {
   }
 }
 
-async function doSignup(hcaptchaToken) {
-  if (!hcaptchaToken) {
-    hcaptcha.execute();
-    return;
-  }
+async function doSignup() {
+  const hcaptchaToken = hcaptcha.getResponse();
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const user = document.getElementById('signup-user').value.trim();
