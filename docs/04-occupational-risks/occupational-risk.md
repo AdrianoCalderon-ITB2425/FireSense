@@ -1,348 +1,348 @@
-# Avaluació de Riscos Laborals — Projecte FireSense
+# Occupational Risk Assessment — FireSense Project
 
-> Document elaborat d'acord amb la **Llei 31/1995 de Prevenció de Riscos Laborals** i el **Reial Decret 39/1997** pel qual s'aprova el Reglament dels Serveis de Prevenció.
-
----
-
-## Índex
-
-- [Avaluació de Riscos Laborals — Projecte FireSense](#avaluació-de-riscos-laborals--projecte-firesense)
-  - [Índex](#índex)
-  - [1. Identificació del projecte](#1-identificació-del-projecte)
-  - [2. Metodologia d'avaluació](#2-metodologia-davaluació)
-  - [3. Riscos ergonòmics i posturals](#3-riscos-ergonòmics-i-posturals)
-    - [Descripció](#descripció)
-    - [Riscos identificats](#riscos-identificats)
-    - [Mesures preventives](#mesures-preventives)
-  - [4. Riscos per fatiga visual](#4-riscos-per-fatiga-visual)
-    - [Descripció](#descripció-1)
-    - [Riscos identificats](#riscos-identificats-1)
-    - [Mesures preventives](#mesures-preventives-1)
-  - [5. Riscos elèctrics](#5-riscos-elèctrics)
-    - [Descripció](#descripció-2)
-    - [Riscos identificats](#riscos-identificats-2)
-    - [Mesures preventives](#mesures-preventives-2)
-  - [6. Riscos per manipulació de maquinari](#6-riscos-per-manipulació-de-maquinari)
-    - [Descripció](#descripció-3)
-    - [Riscos identificats](#riscos-identificats-3)
-    - [Mesures preventives](#mesures-preventives-3)
-  - [7. Riscos ambientals (soroll i temperatura)](#7-riscos-ambientals-soroll-i-temperatura)
-    - [Descripció](#descripció-4)
-    - [Riscos identificats](#riscos-identificats-4)
-    - [Mesures preventives](#mesures-preventives-4)
-  - [8. Riscos psicosocials](#8-riscos-psicosocials)
-    - [Descripció](#descripció-5)
-    - [Riscos identificats](#riscos-identificats-5)
-    - [Mesures preventives](#mesures-preventives-5)
-  - [9. Riscos per treball amb components electrònics](#9-riscos-per-treball-amb-components-electrònics)
-    - [Descripció](#descripció-6)
-    - [Riscos identificats](#riscos-identificats-6)
-    - [Mesures preventives](#mesures-preventives-6)
-  - [10. Riscos associats al treball en entorns de CPD / sala de servidors](#10-riscos-associats-al-treball-en-entorns-de-cpd--sala-de-servidors)
-    - [Descripció](#descripció-7)
-    - [Riscos identificats](#riscos-identificats-7)
-    - [Mesures preventives](#mesures-preventives-7)
-  - [11. Taula resum de riscos](#11-taula-resum-de-riscos)
-  - [12. Pla de mesures preventives](#12-pla-de-mesures-preventives)
-    - [Riscos de nivell Important (acció prioritària)](#riscos-de-nivell-important-acció-prioritària)
-    - [Riscos de nivell Moderat (acció en termini breu)](#riscos-de-nivell-moderat-acció-en-termini-breu)
+> Document prepared in accordance with **Law 31/1995 on Occupational Risk Prevention** and **Royal Decree 39/1997** approving the Regulation of Prevention Services.
 
 ---
 
-## 1. Identificació del projecte
+## Table of Contents
 
-| Camp | Detall |
+- [Occupational Risk Assessment — FireSense Project](#occupational-risk-assessment--firesense-project)
+  - [Table of Contents](#table-of-contents)
+  - [1. Project Identification](#1-project-identification)
+  - [2. Assessment Methodology](#2-assessment-methodology)
+  - [3. Ergonomic and Postural Risks](#3-ergonomic-and-postural-risks)
+    - [Description](#description)
+    - [Identified Risks](#identified-risks)
+    - [Preventive Measures](#preventive-measures)
+  - [4. Visual Fatigue Risks](#4-visual-fatigue-risks)
+    - [Description](#description-1)
+    - [Identified Risks](#identified-risks-1)
+    - [Preventive Measures](#preventive-measures-1)
+  - [5. Electrical Risks](#5-electrical-risks)
+    - [Description](#description-2)
+    - [Identified Risks](#identified-risks-2)
+    - [Preventive Measures](#preventive-measures-2)
+  - [6. Hardware Handling Risks](#6-hardware-handling-risks)
+    - [Description](#description-3)
+    - [Identified Risks](#identified-risks-3)
+    - [Preventive Measures](#preventive-measures-3)
+  - [7. Environmental Risks (Noise and Temperature)](#7-environmental-risks-noise-and-temperature)
+    - [Description](#description-4)
+    - [Identified Risks](#identified-risks-4)
+    - [Preventive Measures](#preventive-measures-4)
+  - [8. Psychosocial Risks](#8-psychosocial-risks)
+    - [Description](#description-5)
+    - [Identified Risks](#identified-risks-5)
+    - [Preventive Measures](#preventive-measures-5)
+  - [9. Risks from Working with Electronic Components](#9-risks-from-working-with-electronic-components)
+    - [Description](#description-6)
+    - [Identified Risks](#identified-risks-6)
+    - [Preventive Measures](#preventive-measures-6)
+  - [10. Risks Associated with Working in Data Centre / Server Room Environments](#10-risks-associated-with-working-in-data-centre--server-room-environments)
+    - [Description](#description-7)
+    - [Identified Risks](#identified-risks-7)
+    - [Preventive Measures](#preventive-measures-7)
+  - [11. Risk Summary Table](#11-risk-summary-table)
+  - [12. Preventive Measures Plan](#12-preventive-measures-plan)
+    - [Important-level Risks (Priority Action)](#important-level-risks-priority-action)
+    - [Moderate-level Risks (Action Within Short Timeframe)](#moderate-level-risks-action-within-short-timeframe)
+
+---
+
+## 1. Project Identification
+
+| Field | Detail |
 |---|---|
-| **Nom del projecte** | FireSense — Sistema IoT de Monitorització Forestal per a la Prevenció d'Incendis |
-| **Centre** | Institut Tecnològic de Barcelona (ITB) |
-| **Equip** | Hamza Tayibi, Adriano Calderón, Alejandro Díaz |
-| **Durada** | Final de març – final de maig 2026 |
-| **Entorn de treball** | Aules informàtiques ITB i treball remot |
-| **Activitats principals** | Configuració de VMs (IsardVDI), desplegament de clúster K8s, programació de pipelines CI/CD, muntatge i prova de maquinari IoT (RAK WisBlock, gateway LoRaWAN), documentació tècnica |
+| **Project name** | FireSense — IoT Forest Monitoring System for Fire Prevention |
+| **Institution** | Institut Tecnològic de Barcelona (ITB) |
+| **Team** | Hamza Tayibi, Adriano Calderón, Alejandro Díaz |
+| **Duration** | Late March – Late May 2026 |
+| **Work environment** | ITB computer classrooms and remote work |
+| **Main activities** | VM configuration (IsardVDI), K8s cluster deployment, CI/CD pipeline programming, IoT hardware assembly and testing (RAK WisBlock, LoRaWAN gateway), technical documentation |
 
 ---
 
-## 2. Metodologia d'avaluació
+## 2. Assessment Methodology
 
-Cada risc s'avalua segons dos paràmetres:
+Each risk is assessed according to two parameters:
 
-- **Probabilitat (P)**: Baixa / Mitjana / Alta
-- **Gravetat (G)**: Lleu / Greu / Molt greu
+- **Probability (P)**: Low / Medium / High
+- **Severity (S)**: Minor / Serious / Very serious
 
-La combinació d'ambdós dona el **Nivell de risc (NR)**:
+The combination of both determines the **Risk Level (RL)**:
 
-| | Lleu | Greu | Molt greu |
+| | Minor | Serious | Very serious |
 |---|---|---|---|
-| **Baixa** | Trivial | Tolerable | Moderat |
-| **Mitjana** | Tolerable | Moderat | Important |
-| **Alta** | Moderat | Important | Intolerable |
+| **Low** | Trivial | Tolerable | Moderate |
+| **Medium** | Tolerable | Moderate | Important |
+| **High** | Moderate | Important | Intolerable |
 
 ---
 
-## 3. Riscos ergonòmics i posturals
+## 3. Ergonomic and Postural Risks
 
-### Descripció
+### Description
 
-El projecte implica sessions prolongades davant d'ordinadors per configurar servidors, escriure codi, redactar documentació i gestionar el clúster K8s via terminal. Aquestes sessions poden durar diverses hores consecutives sense descansos adequats.
+The project involves prolonged sessions in front of computers to configure servers, write code, draft documentation and manage the K8s cluster via terminal. These sessions can last several consecutive hours without adequate breaks.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| ERG-01 | Dolor cervical i lumbar | Postura incorrecta davant del PC durant hores | Alta | Greu | **Important** |
-| ERG-02 | Trastorns musculoesquelètics en extremitats superiors | Ús intensiu de teclat i ratolí (síndrome del túnel carpià) | Mitjana | Greu | **Moderat** |
-| ERG-03 | Mala circulació en extremitats inferiors | Posició asseguda prolongada sense moviment | Mitjana | Lleu | **Tolerable** |
-| ERG-04 | Dolor de cap per tensió muscular | Tensió acumulada al coll i espatlles | Mitjana | Lleu | **Tolerable** |
+| ERG-01 | Cervical and lower back pain | Incorrect posture in front of the PC for hours | High | Serious | **Important** |
+| ERG-02 | Musculoskeletal disorders in upper limbs | Intensive use of keyboard and mouse (carpal tunnel syndrome) | Medium | Serious | **Moderate** |
+| ERG-03 | Poor circulation in lower limbs | Prolonged seated position without movement | Medium | Minor | **Tolerable** |
+| ERG-04 | Headache from muscle tension | Accumulated tension in neck and shoulders | Medium | Minor | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Ajustar la cadira de manera que les cuixes quedin paral·leles al terra i els peus reposin completament.
-- Mantenir la pantalla a una distància de 50–70 cm i al nivell dels ulls o lleugerament per sota.
-- Aplicar la regla **20-20-20**: cada 20 minuts, mirar un punt a 20 peus (~6 metres) durant 20 segons.
-- Fer pauses actives de 5 minuts cada hora: aixecar-se, caminar i estirar coll, espatlles i canells.
-- Utilitzar suports per al canell en sessions d'escriptura prolongada.
+- Adjust the chair so that the thighs are parallel to the floor and the feet rest flat.
+- Keep the screen at a distance of 50–70 cm and at eye level or slightly below.
+- Apply the **20-20-20 rule**: every 20 minutes, look at a point 20 feet (~6 metres) away for 20 seconds.
+- Take 5-minute active breaks every hour: stand up, walk and stretch the neck, shoulders and wrists.
+- Use wrist supports during prolonged writing sessions.
 
 ---
 
-## 4. Riscos per fatiga visual
+## 4. Visual Fatigue Risks
 
-### Descripció
+### Description
 
-El treball amb múltiples pantalles simultànies (terminals, dashboards de Grafana, IDE, documentació) exposa l'equip a una càrrega visual elevada i sostinguda.
+Working with multiple simultaneous screens (terminals, Grafana dashboards, IDE, documentation) exposes the team to a high and sustained visual load.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| VIS-01 | Fatiga ocular (asthenopia) | Exposició prolongada a pantalles sense descansos | Alta | Lleu | **Moderat** |
-| VIS-02 | Sequedat ocular | Reducció del parpelleig davant de pantalles | Alta | Lleu | **Moderat** |
-| VIS-03 | Mal de cap per fatiga visual | Contrast inadequat, llum artificial excessiva | Mitjana | Lleu | **Tolerable** |
+| VIS-01 | Eye strain (asthenopia) | Prolonged screen exposure without breaks | High | Minor | **Moderate** |
+| VIS-02 | Dry eyes | Reduced blinking in front of screens | High | Minor | **Moderate** |
+| VIS-03 | Headache from visual fatigue | Inadequate contrast, excessive artificial light | Medium | Minor | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Ajustar la lluminositat i el contrast de la pantalla a les condicions ambientals.
-- Activar el mode de llum nocturna (reducció de llum blava) durant sessions nocturnes.
-- Garantir que la il·luminació de l'aula no generi reflexos directes a la pantalla.
-- Aplicar la regla **20-20-20** esmentada a la secció anterior.
-- En cas de portar ulleres, assegurar-se que la graduació és correcta per a la distància de treball amb pantalla.
+- Adjust screen brightness and contrast to ambient conditions.
+- Enable night light mode (blue light reduction) during evening sessions.
+- Ensure classroom lighting does not create direct reflections on the screen.
+- Apply the **20-20-20 rule** mentioned in the previous section.
+- If wearing glasses, ensure the prescription is correct for the screen working distance.
 
 ---
 
-## 5. Riscos elèctrics
+## 5. Electrical Risks
 
-### Descripció
+### Description
 
-El projecte inclou treball amb maquinari físic: nodes RAK WisBlock, gateway LoRaWAN i fonts d'alimentació. A més, les VMs corren sobre servidors físics a IsardVDI que impliquen infraestructura elèctrica del centre.
+The project includes work with physical hardware: RAK WisBlock nodes, LoRaWAN gateway and power supplies. In addition, the VMs run on physical servers at IsardVDI which involves the centre's electrical infrastructure.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| ELE-01 | Contacte elèctric directe | Manipulació de components energitzats sense protecció | Baixa | Molt greu | **Moderat** |
-| ELE-02 | Contacte elèctric indirecte | Fallada d'aïllament en cables o adaptadors de corrent | Baixa | Greu | **Tolerable** |
-| ELE-03 | Curtcircuit en protoboard | Connexions incorrectes en el muntatge del maquinari IoT | Mitjana | Greu | **Moderat** |
-| ELE-04 | Sobreescalfament de bateria | Ús inadequat o curtcircuit de la bateria de 9V del node | Baixa | Greu | **Tolerable** |
-| ELE-05 | Danys als components per descàrrega electrostàtica (ESD) | Manipulació sense protecció antiestàtica | Mittana | Lleu | **Tolerable** |
+| ELE-01 | Direct electrical contact | Handling energised components without protection | Low | Very serious | **Moderate** |
+| ELE-02 | Indirect electrical contact | Insulation failure in cables or power adapters | Low | Serious | **Tolerable** |
+| ELE-03 | Short circuit on breadboard | Incorrect connections during IoT hardware assembly | Medium | Serious | **Moderate** |
+| ELE-04 | Battery overheating | Improper use or short circuit of the 9V node battery | Low | Serious | **Tolerable** |
+| ELE-05 | Component damage from electrostatic discharge (ESD) | Handling without antistatic protection | Medium | Minor | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Desconnectar sempre l'alimentació abans de modificar connexions en la protoboard.
-- No treballar mai amb components energitzats a més de 5V sense supervisió del professor.
-- Verificar les connexions en la protoboard amb el multímetre **abans** d'alimentar el circuit.
-- Utilitzar polsera antiestàtica (ESD wrist strap) en manipular el RAK WisBlock i components sensibles.
-- No deixar bateries connectades sense supervisió.
-- En cas de detecció d'olor a cremat o sobreescalfament, desconnectar immediatament l'alimentació.
+- Always disconnect the power supply before modifying connections on the breadboard.
+- Never work with components energised above 5V without the teacher's supervision.
+- Verify breadboard connections with a multimeter **before** powering the circuit.
+- Use an ESD wrist strap when handling the RAK WisBlock and sensitive components.
+- Do not leave batteries connected unattended.
+- If a burning smell or overheating is detected, immediately disconnect the power supply.
 
 ---
 
-## 6. Riscos per manipulació de maquinari
+## 6. Hardware Handling Risks
 
-### Descripció
+### Description
 
-El muntatge físic dels nodes IoT, la connexió de cables, la manipulació de plaques de circuit i el treball amb components petits impliquen riscos de tall, cop i dany per caiguda d'objectes.
+The physical assembly of IoT nodes, cable connections, circuit board handling and work with small components involve risks of cuts, impacts and damage from falling objects.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| MAN-01 | Talls lleus | Manipulació de connectors, borns o cablejat amb extrems afilats | Mitjana | Lleu | **Tolerable** |
-| MAN-02 | Cops i contusions | Caiguda de maquinari (switch, servidor, equipament de rack) | Baixa | Lleu | **Trivial** |
-| MAN-03 | Pèrdua o dany de components petits | Caiguda de resistències, connectors, pins | Alta | Lleu | **Moderat** |
-| MAN-04 | Ingestió o contacte ocular accidental de components | Manipulació descurada de components petits | Baixa | Greu | **Tolerable** |
+| MAN-01 | Minor cuts | Handling connectors, terminals or cabling with sharp ends | Medium | Minor | **Tolerable** |
+| MAN-02 | Impacts and bruises | Falling hardware (switch, server, rack equipment) | Low | Minor | **Trivial** |
+| MAN-03 | Loss or damage of small components | Dropping resistors, connectors, pins | High | Minor | **Moderate** |
+| MAN-04 | Accidental ingestion or eye contact with components | Careless handling of small components | Low | Serious | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Mantenir l'espai de treball ordenat i lliure d'objectes innecessaris durant el muntatge.
-- Usar safates o catifes antiestàtiques per evitar la caiguda de components petits.
-- No portar components petits a la boca ni tocar-se els ulls durant el treball.
-- Revisar l'estat dels cables i connectors abans de cada sessió de treball amb maquinari.
+- Keep the workspace tidy and free of unnecessary objects during assembly.
+- Use antistatic trays or mats to prevent small components from falling.
+- Do not put small components in the mouth or touch the eyes during work.
+- Check the condition of cables and connectors before each hardware work session.
 
 ---
 
-## 7. Riscos ambientals (soroll i temperatura)
+## 7. Environmental Risks (Noise and Temperature)
 
-### Descripció
+### Description
 
-Les aules de servidors i els laboratoris de xarxes del centre generen soroll constant pels ventiladors dels equips. A més, els espais amb alta densitat d'equipament actiu poden assolir temperatures elevades.
+Server rooms and network laboratories at the centre generate constant noise from equipment fans. Additionally, spaces with a high density of active equipment can reach elevated temperatures.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| AMB-01 | Exposició a soroll continu | Ventiladors de servidors i equips de xarxa actius | Mittana | Lleu | **Tolerable** |
-| AMB-02 | Estrès tèrmic lleu | Temperatura elevada en sala de servidors o laboratori amb poca ventilació | Baixa | Lleu | **Trivial** |
-| AMB-03 | Deshidratació en sessions llargues | Sessions intenses sense ingesta d'aigua | Mittana | Lleu | **Tolerable** |
+| AMB-01 | Exposure to continuous noise | Fans from active servers and network equipment | Medium | Minor | **Tolerable** |
+| AMB-02 | Mild heat stress | Elevated temperature in server room or laboratory with poor ventilation | Low | Minor | **Trivial** |
+| AMB-03 | Dehydration during long sessions | Intensive sessions without fluid intake | Medium | Minor | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Limitar el temps de permanència a la sala de servidors als moments estrictament necessaris (no treballar-hi de forma prolongada quan es pot fer remotament via SSH).
-- Mantenir una botella d'aigua a l'espai de treball durant sessions llargues.
-- Assegurar que la ventilació de l'aula és adequada.
-- En cas de treball prolongat en entorns sorollosos, usar proteccions auditives si el nivell supera els 80 dB(A).
+- Limit time spent in the server room to strictly necessary moments (avoid prolonged work there when it can be done remotely via SSH).
+- Keep a water bottle at the workstation during long sessions.
+- Ensure adequate classroom ventilation.
+- When working for extended periods in noisy environments, use hearing protection if the level exceeds 80 dB(A).
 
 ---
 
-## 8. Riscos psicosocials
+## 8. Psychosocial Risks
 
-### Descripció
+### Description
 
-El projecte té una data d'entrega fixa (final de maig 2026), una alta complexitat tècnica (K8s, CI/CD, LoRaWAN, seguretat, IA) i requereix coordinació constant entre tres membres de l'equip. Aquests factors poden generar estrès, conflictes interpersonals i fatiga mental.
+The project has a fixed delivery date (late May 2026), high technical complexity (K8s, CI/CD, LoRaWAN, security, AI) and requires constant coordination between three team members. These factors can generate stress, interpersonal conflicts and mental fatigue.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| PSI-01 | Estrès per càrrega de treball elevada | Alt nombre de tecnologies a implementar en poc temps | Alta | Greu | **Important** |
-| PSI-02 | Fatiga mental (burnout) | Sessions de treball intenses sense descansos adequats | Mittana | Greu | **Moderat** |
-| PSI-03 | Conflictes interpersonals a l'equip | Diferències de criteri, repartiment de tasques desigual, pressions | Mittana | Lleu | **Tolerable** |
-| PSI-04 | Ansietat per bloqueig tècnic | Errors difícils de resoldre que generen frustració acumulada | Alta | Lleu | **Moderat** |
-| PSI-05 | Alteració del son | Treball nocturn per complir terminis | Mittana | Greu | **Moderat** |
+| PSI-01 | Stress from high workload | Large number of technologies to implement in a short time | High | Serious | **Important** |
+| PSI-02 | Mental fatigue (burnout) | Intensive work sessions without adequate breaks | Medium | Serious | **Moderate** |
+| PSI-03 | Interpersonal team conflicts | Differences of opinion, unequal task distribution, pressure | Medium | Minor | **Tolerable** |
+| PSI-04 | Anxiety from technical blockages | Difficult errors that generate accumulated frustration | High | Minor | **Moderate** |
+| PSI-05 | Sleep disruption | Night work to meet deadlines | Medium | Serious | **Moderate** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Planificar el projecte amb sprints clars i tasques distribuïdes equitativament (tal com es fa amb el CSV de sprints del projecte).
-- Establir horaris de treball raonables i respectar les hores de descans i son.
-- Comunicar els bloqueigs tècnics a l'equip de manera immediata, sense acumular frustració en solitari.
-- Celebrar les fites assolides per mantenir la motivació de l'equip.
-- En cas de conflicte intern, recórrer al tutor del projecte com a mediador.
-- No iniciar sessions de configuració de sistemes crítics (K8s, pipelines CI/CD) en estat de cansament elevat, ja que els errors en aquests entorns poden tenir un impacte important.
+- Plan the project with clear sprints and evenly distributed tasks (as done with the project sprint CSV).
+- Establish reasonable working hours and respect rest and sleep time.
+- Communicate technical blockages to the team immediately, without accumulating frustration alone.
+- Celebrate achieved milestones to maintain team motivation.
+- In the event of internal conflict, turn to the project tutor as a mediator.
+- Do not start critical system configuration sessions (K8s, CI/CD pipelines) in a state of high fatigue, as errors in these environments can have a significant impact.
 
 ---
 
-## 9. Riscos per treball amb components electrònics
+## 9. Risks from Working with Electronic Components
 
-### Descripció
+### Description
 
-El prototipatge del maquinari IoT (nodes RAK WisBlock, connexions de sensors de temperatura i humitat del sòl, divisors de tensió) implica treball amb soldadura i compostos químics en determinades fases del projecte.
+IoT hardware prototyping (RAK WisBlock nodes, soil temperature and humidity sensor connections, voltage dividers) involves soldering and chemical compounds in certain phases of the project.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| ELC-01 | Inhalació de fums de soldadura | Soldadura d'estany sense ventilació adequada | Mittana | Greu | **Moderat** |
-| ELC-02 | Cremades per ferro de soldar | Contacte accidental amb el ferro de soldar a ~350°C | Mittana | Lleu | **Tolerable** |
-| ELC-03 | Contacte cutani amb flux de soldadura | Manipulació de pasta de soldadura sense guants | Mittana | Lleu | **Tolerable** |
-| ELC-04 | Projecció d'estany fos | Soldadura en posicions incorrectes o amb massa estany | Baixa | Greu | **Tolerable** |
+| ELC-01 | Inhalation of soldering fumes | Tin soldering without adequate ventilation | Medium | Serious | **Moderate** |
+| ELC-02 | Burns from soldering iron | Accidental contact with the soldering iron at ~350°C | Medium | Minor | **Tolerable** |
+| ELC-03 | Skin contact with soldering flux | Handling soldering paste without gloves | Medium | Minor | **Tolerable** |
+| ELC-04 | Molten tin projection | Soldering in incorrect positions or with too much tin | Low | Serious | **Tolerable** |
 
-### Mesures preventives
+### Preventive Measures
 
-- Soldar sempre en zones ben ventilades o amb extractor de fums de soldadura.
-- Usar ulleres de protecció durant la soldadura per evitar projeccions.
-- No deixar el ferro de soldar desatès quan està calent; usar sempre el suport corresponent.
-- Rentar-se les mans després de treballar amb components electrònics i estany.
-- Usar guants de làtex o nitril quan es manipuli flux de soldadura o pasta.
+- Always solder in well-ventilated areas or with a fume extractor.
+- Use protective goggles during soldering to prevent projections.
+- Never leave the soldering iron unattended when hot; always use the corresponding stand.
+- Wash hands after working with electronic components and tin.
+- Use latex or nitrile gloves when handling soldering flux or paste.
 
 ---
 
-## 10. Riscos associats al treball en entorns de CPD / sala de servidors
+## 10. Risks Associated with Working in Data Centre / Server Room Environments
 
-### Descripció
+### Description
 
-L'accés a IsardVDI i als servidors físics del centre implica presència ocasional en sales de CPD (Centre de Processament de Dades) o laboratoris de racks, que presenten riscos específics.
+Access to IsardVDI and the centre's physical servers involves occasional presence in data centre (DC) rooms or rack laboratories, which present specific risks.
 
-### Riscos identificats
+### Identified Risks
 
-| ID | Risc | Causa | P | G | NR |
+| ID | Risk | Cause | P | S | RL |
 |---|---|---|---|---|---|
-| CPD-01 | Trepitjada de cables | Cablejat de xarxa i alimentació al terra sense canalitzar | Mittana | Lleu | **Tolerable** |
-| CPD-02 | Cops amb portes de rack | Obertura brusca de portes de rack de 19" | Baixa | Lleu | **Trivial** |
-| CPD-03 | Caiguda d'equipament de rack | Extracció incorrecta de servidors o switches en ràcks | Baixa | Greu | **Tolerable** |
-| CPD-04 | Exposició a agents extintors (CO₂) | Activació accidental o necessària del sistema d'extinció d'incendis de la sala | Baixa | Molt greu | **Moderat** |
+| CPD-01 | Tripping over cables | Network and power cabling on the floor without cable management | Medium | Minor | **Tolerable** |
+| CPD-02 | Impacts from rack doors | Abrupt opening of 19" rack doors | Low | Minor | **Trivial** |
+| CPD-03 | Rack equipment falling | Incorrect removal of servers or switches from racks | Low | Serious | **Tolerable** |
+| CPD-04 | Exposure to extinguishing agents (CO₂) | Accidental or necessary activation of the room fire suppression system | Low | Very serious | **Moderate** |
 
-### Mesures preventives
+### Preventive Measures
 
-- No accedir a la sala de servidors sense autorització del professor o tècnic responsable.
-- Canalitzar o senyalitzar els cables al terra per evitar ensopegades.
-- Manipular l'equipament de rack amb dos operaris quan el pes o la mida ho requereixin.
-- Conèixer la ubicació dels polsadors d'emergència i les vies d'evacuació de la sala.
-- En cas d'activació del sistema d'extinció per CO₂, evacuar immediatament: el CO₂ desplaça l'oxigen i pot causar asfíxia en espais tancats.
+- Do not access the server room without authorisation from the teacher or responsible technician.
+- Channel or mark floor cables to prevent tripping.
+- Handle rack equipment with two operators when weight or size requires it.
+- Know the location of emergency stop buttons and evacuation routes in the room.
+- In the event of CO₂ suppression system activation, evacuate immediately: CO₂ displaces oxygen and can cause asphyxiation in enclosed spaces.
 
 ---
 
-## 11. Taula resum de riscos
+## 11. Risk Summary Table
 
-| ID | Descripció del risc | NR |
+| ID | Risk Description | RL |
 |---|---|---|
-| ERG-01 | Dolor cervical i lumbar per postura incorrecta | **Important** |
-| ERG-02 | Trastorns musculoesquelètics en extremitats superiors | **Moderat** |
-| ERG-03 | Mala circulació per posició asseguda prolongada | **Tolerable** |
-| ERG-04 | Dolor de cap per tensió muscular | **Tolerable** |
-| VIS-01 | Fatiga ocular per exposició a pantalles | **Moderat** |
-| VIS-02 | Sequedat ocular per reducció del parpelleig | **Moderat** |
-| VIS-03 | Mal de cap per fatiga visual | **Tolerable** |
-| ELE-01 | Contacte elèctric directe | **Moderat** |
-| ELE-02 | Contacte elèctric indirecte | **Tolerable** |
-| ELE-03 | Curtcircuit en protoboard | **Moderat** |
-| ELE-04 | Sobreescalfament de bateria | **Tolerable** |
-| ELE-05 | Danys per descàrrega electrostàtica (ESD) | **Tolerable** |
-| MAN-01 | Talls lleus per manipulació de connectors | **Tolerable** |
-| MAN-02 | Cops per caiguda de maquinari | **Trivial** |
-| MAN-03 | Pèrdua o dany de components petits | **Moderat** |
-| MAN-04 | Ingestió o contacte ocular de components | **Tolerable** |
-| AMB-01 | Exposició a soroll continu de ventiladors | **Tolerable** |
-| AMB-02 | Estrès tèrmic lleu en sala de servidors | **Trivial** |
-| AMB-03 | Deshidratació en sessions llargues | **Tolerable** |
-| PSI-01 | Estrès per càrrega de treball elevada | **Important** |
-| PSI-02 | Fatiga mental (burnout) | **Moderat** |
-| PSI-03 | Conflictes interpersonals a l'equip | **Tolerable** |
-| PSI-04 | Ansietat per bloqueig tècnic | **Moderat** |
-| PSI-05 | Alteració del son per treball nocturn | **Moderat** |
-| ELC-01 | Inhalació de fums de soldadura | **Moderat** |
-| ELC-02 | Cremades per ferro de soldar | **Tolerable** |
-| ELC-03 | Contacte cutani amb flux de soldadura | **Tolerable** |
-| ELC-04 | Projecció d'estany fos | **Tolerable** |
-| CPD-01 | Trepitjada de cables al terra del CPD | **Tolerable** |
-| CPD-02 | Cops amb portes de rack | **Trivial** |
-| CPD-03 | Caiguda d'equipament de rack | **Tolerable** |
-| CPD-04 | Exposició a agents extintors (CO₂) | **Moderat** |
+| ERG-01 | Cervical and lower back pain from incorrect posture | **Important** |
+| ERG-02 | Musculoskeletal disorders in upper limbs | **Moderate** |
+| ERG-03 | Poor circulation from prolonged seated position | **Tolerable** |
+| ERG-04 | Headache from muscle tension | **Tolerable** |
+| VIS-01 | Eye strain from screen exposure | **Moderate** |
+| VIS-02 | Dry eyes from reduced blinking | **Moderate** |
+| VIS-03 | Headache from visual fatigue | **Tolerable** |
+| ELE-01 | Direct electrical contact | **Moderate** |
+| ELE-02 | Indirect electrical contact | **Tolerable** |
+| ELE-03 | Short circuit on breadboard | **Moderate** |
+| ELE-04 | Battery overheating | **Tolerable** |
+| ELE-05 | Component damage from electrostatic discharge (ESD) | **Tolerable** |
+| MAN-01 | Minor cuts from connector handling | **Tolerable** |
+| MAN-02 | Impacts from falling hardware | **Trivial** |
+| MAN-03 | Loss or damage of small components | **Moderate** |
+| MAN-04 | Accidental ingestion or eye contact with components | **Tolerable** |
+| AMB-01 | Exposure to continuous fan noise | **Tolerable** |
+| AMB-02 | Mild heat stress in server room | **Trivial** |
+| AMB-03 | Dehydration during long sessions | **Tolerable** |
+| PSI-01 | Stress from high workload | **Important** |
+| PSI-02 | Mental fatigue (burnout) | **Moderate** |
+| PSI-03 | Interpersonal team conflicts | **Tolerable** |
+| PSI-04 | Anxiety from technical blockages | **Moderate** |
+| PSI-05 | Sleep disruption from night work | **Moderate** |
+| ELC-01 | Inhalation of soldering fumes | **Moderate** |
+| ELC-02 | Burns from soldering iron | **Tolerable** |
+| ELC-03 | Skin contact with soldering flux | **Tolerable** |
+| ELC-04 | Molten tin projection | **Tolerable** |
+| CPD-01 | Tripping over floor cables in DC | **Tolerable** |
+| CPD-02 | Impacts from rack doors | **Trivial** |
+| CPD-03 | Rack equipment falling | **Tolerable** |
+| CPD-04 | Exposure to CO₂ extinguishing agents | **Moderate** |
 
 ---
 
-## 12. Pla de mesures preventives
+## 12. Preventive Measures Plan
 
-### Riscos de nivell Important (acció prioritària)
+### Important-level Risks (Priority Action)
 
-| ID | Risc | Acció | Responsable | Termini |
+| ID | Risk | Action | Responsible | Deadline |
 |---|---|---|---|---|
-| ERG-01 | Dolor cervical i lumbar | Ajustar mobiliari i fer pauses actives cada hora | Tot l'equip | Immediat |
-| PSI-01 | Estrès per càrrega de treball | Revisar planificació de sprints i redistribuir tasques | Tot l'equip + tutor | Immediat |
+| ERG-01 | Cervical and lower back pain | Adjust furniture and take active breaks every hour | Entire team | Immediate |
+| PSI-01 | Stress from workload | Review sprint planning and redistribute tasks | Entire team + tutor | Immediate |
 
-### Riscos de nivell Moderat (acció en termini breu)
+### Moderate-level Risks (Action Within Short Timeframe)
 
-| ID | Risc | Acció | Responsable | Termini |
+| ID | Risk | Action | Responsible | Deadline |
 |---|---|---|---|---|
-| ERG-02 | Trastorns musculoesquelètics | Ús de suports per al canell, pauses cada hora | Tot l'equip | 1 setmana |
-| VIS-01 | Fatiga ocular | Aplicar regla 20-20-20, ajustar lluminositat | Tot l'equip | Immediat |
-| VIS-02 | Sequedat ocular | Llàgrimes artificials si cal, ventilació adequada | Tot l'equip | 1 setmana |
-| ELE-01 | Contacte elèctric directe | Protocol de treball amb maquinari desconnectat | Tot l'equip | Immediat |
-| ELE-03 | Curtcircuit en protoboard | Verificació amb multímetre abans d'alimentar | Tot l'equip | Immediat |
-| MAN-03 | Pèrdua de components petits | Usar safates de treball i espai ordenat | Tot l'equip | Immediat |
-| PSI-02 | Fatiga mental | Establir horaris i respectar descansos | Tot l'equip | Immediat |
-| PSI-04 | Ansietat per bloqueig tècnic | Comunicació oberta a l'equip, suport del tutor | Tot l'equip | Continu |
-| PSI-05 | Alteració del son | Evitar sessions nocturnes de sistemes crítics | Tot l'equip | Immediat |
-| ELC-01 | Inhalació de fums de soldadura | Ventilació o extractor de fums en soldadura | Tot l'equip | Abans de soldar |
-| CPD-04 | Exposició a CO₂ extintors | Conèixer vies d'evacuació de la sala de servidors | Tot l'equip | 1 setmana |
+| ERG-02 | Musculoskeletal disorders | Use wrist supports, breaks every hour | Entire team | 1 week |
+| VIS-01 | Eye strain | Apply 20-20-20 rule, adjust brightness | Entire team | Immediate |
+| VIS-02 | Dry eyes | Artificial tears if needed, adequate ventilation | Entire team | 1 week |
+| ELE-01 | Direct electrical contact | Work protocol with hardware disconnected | Entire team | Immediate |
+| ELE-03 | Short circuit on breadboard | Multimeter verification before powering | Entire team | Immediate |
+| MAN-03 | Loss of small components | Use work trays and keep workspace tidy | Entire team | Immediate |
+| PSI-02 | Mental fatigue | Set schedules and respect rest periods | Entire team | Immediate |
+| PSI-04 | Anxiety from technical blockages | Open team communication, tutor support | Entire team | Ongoing |
+| PSI-05 | Sleep disruption | Avoid night sessions for critical systems | Entire team | Immediate |
+| ELC-01 | Inhalation of soldering fumes | Ventilation or fume extractor during soldering | Entire team | Before soldering |
+| CPD-04 | Exposure to CO₂ extinguishers | Know the evacuation routes of the server room | Entire team | 1 week |
 
 ---
 
-> **Nota legal**: Aquest document s'ha elaborat amb finalitats acadèmiques en el marc del Projecte Final de cicle ASIR del curs 2025–2026 a l'ITB. No substitueix una avaluació de riscos laborals professional realitzada per un tècnic de prevenció habilitat, tal com estableix el Reial Decret 39/1997.
+> **Legal note**: This document has been prepared for academic purposes as part of the ASIR cycle Final Project for the 2025–2026 academic year at ITB. It does not replace a professional occupational risk assessment carried out by a qualified prevention technician, as established by Royal Decree 39/1997.
