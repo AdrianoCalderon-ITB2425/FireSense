@@ -1,4 +1,4 @@
-# MINUTES — Sprint 2 Planning
+# Acta — Sprint 2 Planning
 ## Meeting Information
 | Field | Value |
 |-------|-------|
