@@ -265,6 +265,7 @@
 .lang-opt:hover { background: #f5f5f5; }
 .lang-opt img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
 </style>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 </head>
 <body>
 
@@ -338,6 +339,7 @@
 
 
         <button class="btn-submit" id="signup-btn" onclick="doSignup()">
+          <div class="h-captcha" data-sitekey="97f82682-3b56-4b18-98b0-5f0e1cb4a26e" style="margin-bottom:12px;transform:scale(0.85);transform-origin:left;"></div>
           Crear compte
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
@@ -431,7 +433,8 @@ async function doSignup() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({name, email, username: user, password: pass})
+      const htoken = document.querySelector('[name=h-captcha-response]')?.value || '';
+      body: JSON.stringify({name, email, username: user, password: pass, 'h-captcha-response': htoken})
     });
     const data = await res.json();
     if (res.ok) {

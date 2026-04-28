@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ldap3 import Server, Connection, ALL, NTLM, MODIFY_REPLACE
@@ -83,10 +84,25 @@ def register():
     email = data.get('email', '').strip()
     name = data.get('name', '').strip()
     org = data.get('org', '').strip()
+    hcaptcha_token = data.get('h-captcha-response', '')
     if not username or not password or not email or not name:
         return jsonify({'error': 'Camps obligatoris'}), 400
     if len(password) < 8:
         return jsonify({'error': 'Contrasenya massa curta'}), 400
+    # Verificar hCaptcha
+    import os
+    hcaptcha_secret = os.environ.get('HCAPTCHA_SECRET', '')
+    if hcaptcha_secret:
+        try:
+            r = requests.post('https://api.hcaptcha.com/siteverify', data={
+                'secret': hcaptcha_secret,
+                'response': hcaptcha_token
+            }, timeout=5)
+            result = r.json()
+            if not result.get('success'):
+                return jsonify({'error': 'Verificació CAPTCHA fallida. Torna-ho a intentar.'}), 400
+        except Exception:
+            pass  # Si falla hCaptcha, continuar (no bloquejar)
     try:
         # Verificar si ja existeix a PostgreSQL
         pg = get_pg()
