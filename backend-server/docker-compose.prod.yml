@@ -279,7 +279,7 @@ services:
     image: osixia/phpldapadmin:0.9.0
     container_name: phpldapadmin
     ports:
-      - "6443:80"
+      - "8443:80"
     restart: unless-stopped
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=openldap

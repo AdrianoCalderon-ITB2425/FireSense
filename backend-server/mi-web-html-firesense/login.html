@@ -38,7 +38,7 @@
   .bg-video {
     position: fixed; inset: 0; width: 100%; height: 100%;
     object-fit: cover; z-index: 0;
-    filter: brightness(0.35) saturate(1.2);
+    filter: brightness(0.95) saturate(1.2);
   }
   .bg-overlay {
     position: fixed; inset: 0; z-index: 1;
@@ -70,7 +70,7 @@
   }
   .auth-title span { color: #8FFFB8; }
   .auth-sub {
-    font-size: .88rem; color: rgba(255,255,255,0.55);
+    font-size: .88rem; color: rgba(255,255,255,0.75);
     margin-top: 10px; line-height: 1.6;
     font-family: 'Share Tech Mono', monospace; letter-spacing: .02em;
   }
@@ -107,13 +107,13 @@
   .form-group { margin-bottom: 20px; }
   .form-label {
     display: block; font-family: 'Share Tech Mono', monospace;
-    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,0.5);
+    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,0.65);
     text-transform: uppercase; margin-bottom: 8px;
   }
   .form-input {
     width: 100%; padding: 13px 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.45);
     border-radius: 4px; color: #fff;
     font-family: 'Raleway', sans-serif; font-size: .95rem;
     transition: border-color .2s, background .2s;
@@ -124,7 +124,7 @@
     background: rgba(255,255,255,0.09);
   }
   .form-input.error { border-color: rgba(220,38,38,0.8); background: rgba(220,38,38,0.08); box-shadow: 0 0 0 2px rgba(220,38,38,0.2); }
-  .form-input::placeholder { color: rgba(255,255,255,0.25); }
+  .form-input::placeholder { color: rgba(255,255,255,0.65); }
 
   .form-hint {
     font-family: 'Share Tech Mono', monospace; font-size: 9px;
@@ -172,7 +172,7 @@
   .form-divider {
     display: flex; align-items: center; gap: 12px; margin: 20px 0;
   }
-  .form-divider span { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.2); letter-spacing: .1em; }
+  .form-divider span { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.75); letter-spacing: .1em; }
   .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
 
   /* STATUS INDICATOR */
@@ -189,7 +189,7 @@
   .auth-footer {
     text-align: center; margin-top: 24px;
     font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    letter-spacing: .12em; color: rgba(255,255,255,0.2);
+    letter-spacing: .12em; color: rgba(255,255,255,0.75);
   }
 
   @media(max-width:600px){
@@ -197,6 +197,73 @@
     .auth-card { padding: 28px 20px; }
     .auth-title { font-size: 1.8rem; }
   }
+</style>
+<style>
+#lang-sel{position:fixed;bottom:20px;right:20px;z-index:9999;font-family:"Share Tech Mono",monospace;}
+#lang-btn{background:rgba(10,31,10,.92);border:1px solid rgba(0,229,255,.35);color:#00e5ff;font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:.15em;padding:6px 12px;cursor:pointer;border-radius:4px;min-width:38px;text-align:center;transition:border-color .2s;}
+#lang-btn:hover{border-color:rgba(0,229,255,.7);}
+#lang-menu{display:none;position:absolute;bottom:38px;right:0;background:rgba(10,31,10,.96);border:1px solid rgba(0,229,255,.25);border-radius:4px;overflow:hidden;min-width:38px;}
+#lang-menu.open{display:block;}
+.lang-opt{color:rgba(0,229,255,.7);font-family:"Share Tech Mono",monospace;font-size:11px;letter-spacing:.15em;padding:6px 12px;cursor:pointer;text-align:center;transition:background .15s,color .15s;}
+.lang-opt:hover{background:rgba(0,229,255,.1);color:#00e5ff;}
+</style>
+<script src="/FireSense/js/i18n.js"></script>
+<style id="lang-css">
+#lang-sel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+#lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: 7px 13px;
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: box-shadow .2s, border-color .2s;
+  user-select: none;
+}
+#lang-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.18); border-color: #bbb; }
+#lang-btn img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
+#lang-btn svg.chevron { width: 12px; height: 12px; opacity: .5; transition: transform .2s; }
+#lang-sel.open #lang-btn svg.chevron { transform: rotate(180deg); }
+#lang-menu {
+  display: none;
+  position: absolute;
+  bottom: 46px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  overflow: hidden;
+  min-width: 120px;
+  padding: 4px 0;
+}
+#lang-menu.open { display: block; }
+.lang-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #222;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.lang-opt:hover { background: #f5f5f5; }
+.lang-opt img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
 </style>
 </head>
 <body>
@@ -212,37 +279,37 @@
     FireSense
   </a>
   <a href="home.html" class="nav-back">
-    ← Tornar a l'inici
+    <span data-i18n="tornar_inici">← Tornar a l'inici</span>
   </a>
 </nav>
 
 <main>
   <div class="auth-container">
     <div class="auth-header">
-      <span class="auth-tag">// Accés segur · Sistema de monitorització</span>
-      <h1 class="auth-title">Benvingut a<br><span>FireSense</span></h1>
-      <p class="auth-sub">Accedeix al teu panell de monitorització de nodes IoT forestals</p>
+      <span class="auth-tag" data-i18n="acces_segur">// Accés segur · Sistema de monitorització</span>
+      <h1 class="auth-title"><span style="color:#fff" data-i18n="benvingut_a">Benvingut a</span><br><span>FireSense</span></h1>
+      <p class="auth-sub"><span data-i18n="accedeix_al_teu_panell_de_monitoritzacio">Accedeix al teu panell de monitorització de nodes IoT forestals</span></p>
     </div>
 
     <div class="auth-card">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('login')">Iniciar sessió</button>
-        <button class="tab-btn" onclick="switchTab('signup')">Registrar-se</button>
+        <button class="tab-btn active" onclick="switchTab('login')"><span data-i18n="iniciar_sessio">Iniciar sessió</span></button>
+        <button class="tab-btn" onclick="switchTab('signup')"><span data-i18n="registrarse">Registrar-se</span></button>
       </div>
 
       <!-- LOGIN -->
       <div class="tab-content active" id="tab-login">
         <div class="alert" id="login-alert"></div>
         <div class="form-group">
-          <label class="form-label">Usuari</label>
+          <label class="form-label"><span data-i18n="usuari">Usuari</span></label>
           <input type="text" class="form-input" id="login-user" placeholder="el.teu.usuari" autocomplete="username">
         </div>
         <div class="form-group">
-          <label class="form-label">Contrasenya</label>
+          <label class="form-label"><span data-i18n="contrasenya">Contrasenya</span></label>
           <input type="password" class="form-input" id="login-pass" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn-submit" id="login-btn" onclick="doLogin()">
-          Accedir al panell
+          <span data-i18n="accedir_panell">Accedir al panell</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
       </div>
@@ -251,21 +318,21 @@
       <div class="tab-content" id="tab-signup">
         <div class="alert" id="signup-alert"></div>
         <div class="form-group">
-          <label class="form-label">Nom complet</label>
+          <label class="form-label"><span data-i18n="nom_complet">Nom complet</span></label>
           <input type="text" class="form-input" id="signup-name" placeholder="Nom complet">
         </div>
         <div class="form-group">
-          <label class="form-label">Correu electrònic</label>
+          <label class="form-label"><span data-i18n="correu_electronic">Correu electrònic</span></label>
           <input type="email" class="form-input" id="signup-email" placeholder="username@gmail.com">
         </div>
         <div class="form-group">
-          <label class="form-label">Usuari</label>
+          <label class="form-label"><span data-i18n="usuari">Usuari</span></label>
           <input type="text" class="form-input" id="signup-user" placeholder="username">
           <div class="form-hint">// Sense espais ni caràcters especials</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Contrasenya</label>
-          <input type="password" class="form-input" id="signup-pass" placeholder="Mínim 8 caràcters">
+          <label class="form-label"><span data-i18n="contrasenya">Contrasenya</span></label>
+          <input type="password" class="form-input" id="signup-pass" placeholder="Mínim 8 caràcters" data-i18n-ph="minim_8">
         </div>
 
 
@@ -278,7 +345,7 @@
 
       <div class="status-bar">
         <div class="status-dot"></div>
-        <span class="status-text">Sistema FireSense operatiu · Servidors EU-868 en línia · Autenticació LDAP activa</span>
+        <span class="status-text"><span data-i18n="sistema_firesense_operatiu_servidors_eu8">Sistema FireSense operatiu · Servidors EU-868 en línia</span></span>
       </div>
     </div>
 
@@ -392,5 +459,14 @@ document.addEventListener('keydown', e => {
   }
 });
 </script>
+
+<div id="lang-sel">
+  <div id="lang-menu"></div>
+  <div id="lang-btn" onclick="toggleLang()">
+    <img id="lang-flag" src="/FireSense/assets/flags/ca.svg">
+    <span id="lang-label">CA</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</div>
 </body>
 </html>

@@ -708,3 +708,7 @@ body.dashboard-open #pn-dots-wrap,
 body.dashboard-open #pn-panel,
 body.dashboard-open #wind-legend{display:none!important;}
 
+
+[data-i18n], [data-i18n-ph] {
+  text-transform: none !important;
+}
