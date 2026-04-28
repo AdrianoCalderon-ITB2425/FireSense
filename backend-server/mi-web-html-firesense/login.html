@@ -339,7 +339,6 @@
 
 
         <button class="btn-submit" id="signup-btn" onclick="doSignup()">
-          <div class="h-captcha" data-sitekey="97f82682-3b56-4b18-98b0-5f0e1cb4a26e" style="margin-bottom:12px;transform:scale(0.85);transform-origin:left;"></div>
           Crear compte
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
@@ -411,7 +410,11 @@ async function doLogin() {
   }
 }
 
-async function doSignup() {
+async function doSignup(hcaptchaToken) {
+  if (!hcaptchaToken) {
+    hcaptcha.execute();
+    return;
+  }
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const user = document.getElementById('signup-user').value.trim();
@@ -433,11 +436,11 @@ async function doSignup() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      const htoken = document.querySelector('[name=h-captcha-response]')?.value || '';
-      body: JSON.stringify({name, email, username: user, password: pass, 'h-captcha-response': htoken})
+      body: JSON.stringify({name, email, username: user, password: pass, 'h-captcha-response': hcaptchaToken||''})
     });
     const data = await res.json();
     if (res.ok) {
+      if(typeof hcaptcha!=='undefined') hcaptcha.reset();
       showAlert('signup-alert','success','Sol·licitud enviada correctament. L\'administrador revisarà el teu compte en breu i rebràs confirmació per email.');
       document.getElementById('signup-form').style.opacity = '0.5';
       document.getElementById('signup-form').style.pointerEvents = 'none';
