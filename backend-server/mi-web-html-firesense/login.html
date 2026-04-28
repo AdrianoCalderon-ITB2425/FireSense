@@ -38,7 +38,7 @@
   .bg-video {
     position: fixed; inset: 0; width: 100%; height: 100%;
     object-fit: cover; z-index: 0;
-    filter: brightness(0.35) saturate(1.2);
+    filter: brightness(0.95) saturate(1.2);
   }
   .bg-overlay {
     position: fixed; inset: 0; z-index: 1;
@@ -70,7 +70,7 @@
   }
   .auth-title span { color: #8FFFB8; }
   .auth-sub {
-    font-size: .88rem; color: rgba(255,255,255,0.55);
+    font-size: .88rem; color: rgba(255,255,255,0.75);
     margin-top: 10px; line-height: 1.6;
     font-family: 'Share Tech Mono', monospace; letter-spacing: .02em;
   }
@@ -107,13 +107,13 @@
   .form-group { margin-bottom: 20px; }
   .form-label {
     display: block; font-family: 'Share Tech Mono', monospace;
-    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,0.5);
+    font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,0.65);
     text-transform: uppercase; margin-bottom: 8px;
   }
   .form-input {
     width: 100%; padding: 13px 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.45);
     border-radius: 4px; color: #fff;
     font-family: 'Raleway', sans-serif; font-size: .95rem;
     transition: border-color .2s, background .2s;
@@ -124,7 +124,7 @@
     background: rgba(255,255,255,0.09);
   }
   .form-input.error { border-color: rgba(220,38,38,0.8); background: rgba(220,38,38,0.08); box-shadow: 0 0 0 2px rgba(220,38,38,0.2); }
-  .form-input::placeholder { color: rgba(255,255,255,0.25); }
+  .form-input::placeholder { color: rgba(255,255,255,0.65); }
 
   .form-hint {
     font-family: 'Share Tech Mono', monospace; font-size: 9px;
@@ -172,7 +172,7 @@
   .form-divider {
     display: flex; align-items: center; gap: 12px; margin: 20px 0;
   }
-  .form-divider span { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.2); letter-spacing: .1em; }
+  .form-divider span { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.75); letter-spacing: .1em; }
   .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
 
   /* STATUS INDICATOR */
@@ -189,7 +189,7 @@
   .auth-footer {
     text-align: center; margin-top: 24px;
     font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    letter-spacing: .12em; color: rgba(255,255,255,0.2);
+    letter-spacing: .12em; color: rgba(255,255,255,0.75);
   }
 
   @media(max-width:600px){
@@ -279,14 +279,14 @@
     FireSense
   </a>
   <a href="home.html" class="nav-back">
-    ← Tornar a l'inici
+    <span data-i18n="tornar_inici">← Tornar a l'inici</span>
   </a>
 </nav>
 
 <main>
   <div class="auth-container">
     <div class="auth-header">
-      <span class="auth-tag">// Accés segur · Sistema de monitorització</span>
+      <span class="auth-tag" data-i18n="acces_segur">// Accés segur · Sistema de monitorització</span>
       <h1 class="auth-title"><span style="color:#fff" data-i18n="benvingut_a">Benvingut a</span><br><span>FireSense</span></h1>
       <p class="auth-sub"><span data-i18n="accedeix_al_teu_panell_de_monitoritzacio">Accedeix al teu panell de monitorització de nodes IoT forestals</span></p>
     </div>
@@ -309,7 +309,7 @@
           <input type="password" class="form-input" id="login-pass" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn-submit" id="login-btn" onclick="doLogin()">
-          Accedir al panell
+          <span data-i18n="accedir_panell">Accedir al panell</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
       </div>
@@ -332,7 +332,7 @@
         </div>
         <div class="form-group">
           <label class="form-label"><span data-i18n="contrasenya">Contrasenya</span></label>
-          <input type="password" class="form-input" id="signup-pass" placeholder="Mínim 8 caràcters">
+          <input type="password" class="form-input" id="signup-pass" placeholder="Mínim 8 caràcters" data-i18n-ph="minim_8">
         </div>
 
 
@@ -345,7 +345,7 @@
 
       <div class="status-bar">
         <div class="status-dot"></div>
-        <span class="status-text"><span data-i18n="sistema_firesense_operatiu_servidors_eu8">Sistema FireSense operatiu · Servidors EU-868 en línia · Autenticació LDAP activa</span></span>
+        <span class="status-text"><span data-i18n="sistema_firesense_operatiu_servidors_eu8">Sistema FireSense operatiu · Servidors EU-868 en línia</span></span>
       </div>
     </div>
 
