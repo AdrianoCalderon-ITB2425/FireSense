@@ -435,7 +435,9 @@ async function doSignup() {
     });
     const data = await res.json();
     if (res.ok) {
-      showAlert('signup-alert','success','Compte creat! Ara pots iniciar sessió.');
+      showAlert('signup-alert','success','Sol·licitud enviada correctament. L\'administrador revisarà el teu compte en breu i rebràs confirmació per email.');
+      document.getElementById('signup-form').style.opacity = '0.5';
+      document.getElementById('signup-form').style.pointerEvents = 'none';
       setTimeout(() => switchTab('login'), 1500);
     } else {
       showAlert('signup-alert','error', data.error || 'Error al crear el compte.');

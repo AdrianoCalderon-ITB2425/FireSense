@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireSense — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#0d5c2e;--green-mid:#166534;--green-light:#4ade80;
+  --cyan:#00e5ff;--bg:#040d04;--surface:#071207;--border:rgba(0,229,255,.12);
+  --text:#e8f5e8;--muted:rgba(232,245,232,.45);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(7,18,7,.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.topbar-logo{display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green-light);letter-spacing:.08em;}
+.topbar-logo span{width:8px;height:8px;background:var(--green-light);border-radius:50%;animation:pulse 2s infinite;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.admin-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--cyan);background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);padding:4px 10px;border-radius:3px;}
+.btn-logout{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--muted);background:transparent;border:1px solid rgba(255,255,255,.1);padding:5px 12px;border-radius:3px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{color:var(--text);border-color:rgba(255,255,255,.3);}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:40px 24px;}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:.06em;color:var(--text);margin-bottom:4px;}
+.page-sub{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--muted);margin-bottom:32px;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;line-height:1;}
+.stat-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);margin-top:4px;}
+.stat.pending .stat-val{color:#fbbf24;}
+.stat.approved .stat-val{color:var(--green-light);}
+.stat.rejected .stat-val{color:#f87171;}
+.stat.total .stat-val{color:var(--cyan);}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;margin-bottom:20px;}
+.filter-btn{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.15em;padding:6px 14px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.filter-btn.active,.filter-btn:hover{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.table-header{display:grid;grid-template-columns:2fr 2fr 1.5fr 1fr 1fr 1.5fr;gap:0;padding:0 20px;background:rgba(0,229,255,.04);border-bottom:1px solid var(--border);}
+.th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);padding:12px 8px;}
+.user-row{display:grid;grid-template-columns:2fr 2fr 1.5fr 1fr 1fr 1.5fr;gap:0;padding:0 20px;border-bottom:1px solid rgba(0,229,255,.05);transition:background .15s;align-items:center;}
+.user-row:last-child{border-bottom:none;}
+.user-row:hover{background:rgba(0,229,255,.03);}
+.td{padding:14px 8px;font-size:.85rem;}
+.user-name{font-weight:500;color:var(--text);}
+.user-email{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.user-username{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--cyan);}
+.user-org{font-size:.8rem;color:var(--muted);}
+.date{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--muted);}
+
+/* STATUS BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;padding:4px 9px;border-radius:3px;}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;}
+.badge.pending{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.badge.pending::before{background:#fbbf24;box-shadow:0 0 6px #fbbf24;}
+.badge.approved{background:rgba(74,222,128,.1);color:var(--green-light);border:1px solid rgba(74,222,128,.2);}
+.badge.approved::before{background:var(--green-light);box-shadow:0 0 6px var(--green-light);}
+.badge.rejected{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2);}
+.badge.rejected::before{background:#f87171;}
+
+/* ACTIONS */
+.actions{display:flex;gap:6px;}
+.btn-approve{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green-light);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.1em;padding:5px 10px;border-radius:3px;cursor:pointer;transition:all .2s;}
+.btn-approve:hover{background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.5);}
+.btn-reject{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.1em;padding:5px 10px;border-radius:3px;cursor:pointer;transition:all .2s;}
+.btn-reject:hover{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);}
+.btn-disabled{opacity:.25;cursor:not-allowed;pointer-events:none;}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.2em;}
+
+/* LOGIN SCREEN */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:48px 40px;width:100%;max-width:380px;}
+.login-title{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:4px;}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);margin-bottom:32px;}
+.form-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--muted);display:block;margin-bottom:6px;}
+.form-inp{width:100%;background:rgba(0,229,255,.04);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.85rem;padding:10px 14px;border-radius:5px;outline:none;transition:border-color .2s;margin-bottom:16px;}
+.form-inp:focus{border-color:rgba(0,229,255,.4);}
+.btn-login{width:100%;background:var(--green);border:none;color:#fff;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.08em;padding:12px;border-radius:5px;cursor:pointer;transition:background .2s;}
+.btn-login:hover{background:var(--green-mid);}
+.login-err{color:#f87171;font-family:'Share Tech Mono',monospace;font-size:10px;margin-top:10px;display:none;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.1em;padding:12px 24px;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.4);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;}
+.toast.ok{border-color:rgba(74,222,128,.4);color:var(--green-light);}
+.toast.err{border-color:rgba(248,113,113,.4);color:#f87171;}
+
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@media(max-width:768px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .table-header,.user-row{grid-template-columns:1fr 1fr 1fr;}
+  .th:nth-child(n+4),.td:nth-child(n+4){display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-title">FireSense Admin</div>
+    <div class="login-sub">// PANELL D'ADMINISTRACIÓ</div>
+    <label class="form-lbl">USUARI</label>
+    <input class="form-inp" id="adm-user" type="text" placeholder="admin" autocomplete="username">
+    <label class="form-lbl">CONTRASENYA</label>
+    <input class="form-inp" id="adm-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-login" onclick="adminLogin()">Accedir</button>
+    <div class="login-err" id="login-err">Credencials incorrectes</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <span></span> FireSense
+    </div>
+    <div class="topbar-right">
+      <div class="admin-badge">ADMIN PANEL</div>
+      <button class="btn-logout" onclick="logout()">SORTIR</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-title">Gestió d'Usuaris</div>
+    <div class="page-sub">// SOL·LICITUDS DE REGISTRE · APROVACIÓ I CONTROL D'ACCÉS</div>
+
+    <div class="stats">
+      <div class="stat total"><div class="stat-val" id="st-total">—</div><div class="stat-lbl">TOTAL</div></div>
+      <div class="stat pending"><div class="stat-val" id="st-pending">—</div><div class="stat-lbl">PENDENTS</div></div>
+      <div class="stat approved"><div class="stat-val" id="st-approved">—</div><div class="stat-lbl">APROVATS</div></div>
+      <div class="stat rejected"><div class="stat-val" id="st-rejected">—</div><div class="stat-lbl">REBUTJATS</div></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">TOTS</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">PENDENTS</button>
+      <button class="filter-btn" onclick="setFilter('approved',this)">APROVATS</button>
+      <button class="filter-btn" onclick="setFilter('rejected',this)">REBUTJATS</button>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="th">USUARI</div>
+        <div class="th">EMAIL</div>
+        <div class="th">ORGANITZACIÓ</div>
+        <div class="th">DATA</div>
+        <div class="th">ESTAT</div>
+        <div class="th">ACCIONS</div>
+      </div>
+      <div id="users-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = '';
+let _token = localStorage.getItem('fs_admin_token');
+let _users = [];
+let _filter = 'all';
+
+async function adminLogin() {
+  const user = document.getElementById('adm-user').value.trim();
+  const pass = document.getElementById('adm-pass').value;
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({username: user, password: pass})
+    });
+    const d = await r.json();
+    if (!r.ok || !d.token) {
+      document.getElementById('login-err').style.display = 'block';
+      return;
+    }
+    if (d.username !== 'admin') {
+      document.getElementById('login-err').textContent = 'No tens permisos d\'administrador';
+      document.getElementById('login-err').style.display = 'block';
+      return;
+    }
+    _token = d.token;
+    localStorage.setItem('fs_admin_token', _token);
+    showDashboard();
+  } catch(e) {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+async function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  await loadUsers();
+}
+
+async function loadUsers() {
+  try {
+    const r = await fetch('/api/admin/requests', {
+      headers: {'Authorization': 'Bearer ' + _token}
+    });
+    const d = await r.json();
+    _users = d.users || [];
+    updateStats();
+    renderUsers();
+  } catch(e) { showToast('Error carregant usuaris', 'err'); }
+}
+
+function updateStats() {
+  document.getElementById('st-total').textContent = _users.length;
+  document.getElementById('st-pending').textContent = _users.filter(u=>u.status==='pending').length;
+  document.getElementById('st-approved').textContent = _users.filter(u=>u.status==='approved').length;
+  document.getElementById('st-rejected').textContent = _users.filter(u=>u.status==='rejected').length;
+}
+
+function setFilter(f, btn) {
+  _filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderUsers();
+}
+
+function renderUsers() {
+  const list = document.getElementById('users-list');
+  const filtered = _filter === 'all' ? _users : _users.filter(u=>u.status===_filter);
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">// CAP USUARI TROBAT</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(u => `
+    <div class="user-row">
+      <div class="td">
+        <div class="user-name">${u.name||'—'}</div>
+        <div class="user-username">@${u.username}</div>
+      </div>
+      <div class="td"><div class="user-email">${u.email}</div></div>
+      <div class="td"><div class="user-org">${u.org||'—'}</div></div>
+      <div class="td"><div class="date">${u.created_at ? u.created_at.slice(0,10) : '—'}</div></div>
+      <div class="td"><span class="badge ${u.status}">${u.status.toUpperCase()}</span></div>
+      <div class="td">
+        <div class="actions">
+          <button class="btn-approve ${u.status==='approved'?'btn-disabled':''}" onclick="action(${u.id},'approve')">APROVAR</button>
+          <button class="btn-reject ${u.status==='rejected'?'btn-disabled':''}" onclick="action(${u.id},'reject')">REBUTJAR</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function action(id, act) {
+  try {
+    const r = await fetch(`/api/admin/approve/${id}`, {
+      method: 'POST',
+      headers: {'Authorization':'Bearer '+_token,'Content-Type':'application/json'},
+      body: JSON.stringify({action: act})
+    });
+    const d = await r.json();
+    if (!r.ok) { showToast(d.error||'Error', 'err'); return; }
+    showToast(d.message, 'ok');
+    await loadUsers();
+  } catch(e) { showToast('Error de connexió', 'err'); }
+}
+
+function logout() {
+  localStorage.removeItem('fs_admin_token');
+  _token = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// Enter key login
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter' && document.getElementById('login-screen').style.display!=='none') adminLogin();
+});
+
+// Auto-login si ja té token
+if (_token) showDashboard();
+</script>
+</body>
+</html>
