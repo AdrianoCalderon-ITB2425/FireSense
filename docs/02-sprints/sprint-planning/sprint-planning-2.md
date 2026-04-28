@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | Date | 28/04/2026 |
-| Time | 15:30 - 16:30 |
+| Time | 15:00 - 15:30 |
 | Location | ASIX Classroom — ITB |
 | Sprint | Sprint 2 |
 | Sprint Duration | 28/04/2026 - 04/05/2026 |
