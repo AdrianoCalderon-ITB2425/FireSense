@@ -412,6 +412,10 @@ async function doLogin() {
 
 async function doSignup() {
   const hcaptchaToken = hcaptcha.getResponse();
+  if (!hcaptchaToken) {
+    showAlert('signup-alert','error','Completa la verificació CAPTCHA.');
+    return;
+  }
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const user = document.getElementById('signup-user').value.trim();
