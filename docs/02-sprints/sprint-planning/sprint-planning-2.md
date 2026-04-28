@@ -1,4 +1,4 @@
-# Acta — Sprint 2 Planning
+# MINUTES — Sprint 2 Planning
 ## Meeting Information
 | Field | Value |
 |-------|-------|
@@ -19,57 +19,62 @@
 ---
 
 ## 1. Sprint 2 Objective
-Extend the FireSense platform with advanced infrastructure components: Kubernetes deployment on K3s, IoT data pipeline validation, security hardening with TLS and WireGuard VPN, hybrid cloud setup with AWS EKS, CI/CD pipelines, database management with backups, and additional services including Telegram alerts and monitoring.
+Extend the FireSense platform with advanced infrastructure: ChirpStack on K3s, IoT data pipeline end-to-end validation, TLS security hardening with cert-manager, CI/CD pipelines with Jenkins and Helm, database management with MongoDB and backups, Harbor registry, monitoring with Prometheus, and additional services including Telegram alerts.
 
 ---
 
-## 2. Architecture Extensions — Sprint 2
-| Component | Technology | Status |
-|-----------|-----------|--------|
-| Container orchestration | K3s (local) + AWS EKS (cloud) | Planned |
-| TLS certificates | cert-manager + Let's Encrypt / self-signed | Planned |
-| VPN tunnel | WireGuard — IsardVDI ↔ AWS EKS | Planned |
-| Secret management | Sealed Secrets + Trivy/kube-bench audit | Planned |
-| Container registry | Harbor Registry (Helm) | Planned |
-| CI/CD pipeline | Jenkins + GitHub Actions + Helm Charts | Planned |
-| Ingress + autoscaling | Nginx Ingress Controller + HPA | Planned |
-| Document database | MongoDB StatefulSet | Planned |
-| Backup strategy | CronJobs InfluxDB + MongoDB + DRP plan | Planned |
-| Alerting | Postfix email + Telegram bot via Node-RED | Planned |
-| Monitoring | Prometheus + node-exporter + kube-state-metrics | Planned |
-| File sharing | Samba server | Planned |
-| DNS + network | CoreDNS + ISC DHCP + VLANs IoT segment | Planned |
+## 2. Sprint Backlog — Assigned Tasks
 
----
-
-## 3. Sprint Backlog — Assigned Tasks
+### IoT and LoRaWAN
 | ID | Task | Assigned | Due | Priority |
 |----|------|----------|-----|----------|
 | 2.1 | ChirpStack configuration and LoRaWAN gateway — Deploy ChirpStack on K3s, configure LoRaWAN network, create applications and device profiles | Hamza | 29 Apr | High |
 | 2.2 | RAK WisBlock node programming — Firmware for temperature/humidity sensors, LoRaWAN data encryption | Adriano | 01 May | High |
 | 2.3 | IoT data pipeline Node-RED and end-to-end validation — Node-RED flows: MQTT subscription → JSON parsing → database write | Adriano | 02 May | High |
-| 2.4 | TLS and cert-manager — Install cert-manager, configure ClusterIssuer (Let's Encrypt/self-signed) | Francisco | 29 Apr | High |
-| 2.5 | WireGuard VPN — Configure WireGuard between IsardVDI and AWS EKS, and for external access | Hamza | 30 Apr | High |
+
+### Security and Hardening
+| ID | Task | Assigned | Due | Priority |
+|----|------|----------|-----|----------|
+| 2.4 | TLS and cert-manager — Install cert-manager, configure ClusterIssuer (Let's Encrypt / self-signed) | Francisco | 29 Apr | High |
 | 2.6 | Encrypted secrets and Trivy/kube-bench audit — Configure Sealed Secrets, remove plaintext secrets, image scanning and security audits | Hamza | 04 May | High |
-| 2.7 | AWS EKS provisioning and K3s → EKS replication — Create EKS cluster on AWS, nodegroups, adapt manifests for EKS | Adriano | 05 May | Medium |
-| 2.8 | CI/CD pipeline Jenkins Actions and Helm Charts — Create workflows: Docker build → Trivy scan → Harbor push → Helm deploy | Adriano | 06 May | Medium |
+
+### CI/CD and Infrastructure
+| ID | Task | Assigned | Due | Priority |
+|----|------|----------|-----|----------|
+| 2.8 | CI/CD pipeline Jenkins Actions and Helm Charts — Workflows: Docker build → Trivy scan → Harbor push → Helm deploy | Adriano | 06 May | Medium |
 | 2.9 | Nginx Ingress Controller and HPA — Deploy Nginx Ingress, configure rules for Grafana (TLS) and Horizontal Pod Autoscaler | Hamza | 07 May | Medium |
+
+### Databases and Backups
+| ID | Task | Assigned | Due | Priority |
+|----|------|----------|-----|----------|
 | 2.10 | MongoDB StatefulSet and InfluxDB retention policies — Deploy MongoDB as StatefulSet and configure retention policies in InfluxDB | Adriano | 07 May | Medium |
 | 2.11 | Backup CronJobs and DRP — Configure CronJobs for InfluxDB and MongoDB backup, disaster recovery plan | Hamza | 08 May | Medium |
+
+### Additional Services
+| ID | Task | Assigned | Due | Priority |
+|----|------|----------|-----|----------|
 | 2.12 | Postfix email alerts and Telegram bot — Deploy Postfix, integrate with Grafana Alerting and Node-RED for notifications | Adriano | 06 May | Medium |
 | 2.13 | Prometheus monitoring and Samba — Deploy Prometheus + node-exporter + kube-state-metrics and Samba server | Francisco | 09 May | Medium |
-| 2.14 | Harbor Registry deployment — Install Harbor with Helm, configure HTTPS, create private projects and enable scanning | Francisco | 07 May | Medium |
-| 2.15 | Network and DNS configuration — CoreDNS internal, ISC DHCP for IoT segment, VLAN configuration | Adriano | 07 May | Medium |
+
+### Base Infrastructure (carried over from Sprint 1)
+| ID | Task | Assigned | Due | Note |
+|----|------|----------|-----|------|
+| 2.14 | Harbor Registry deployment — Install Harbor with Helm, configure HTTPS, create private projects and enable scanning | Francisco | 07 May | Carried over from Sprint 1 |
+| 2.15 | Network and DNS configuration — CoreDNS internal, ISC DHCP for IoT segment, VLAN configuration | Adriano | 07 May | Carried over from Sprint 1 |
+
+### General
+| ID | Task | Assigned | Due | Priority |
+|----|------|----------|-----|----------|
 | 2.16 | Market research — Research whether this solution already exists in the market | Adriano | 06 May | Low |
 | 2.17 | Occupational risk analysis — Analyse the occupational risks of the project | Adriano | 06 May | Low |
 
-**Total tasks: 17**
+**Total tasks: 15**
 
 ---
 
-## 4. Definition of Done (DoD)
+## 3. Definition of Done (DoD)
 A task is considered complete when:
-- The code/configuration works correctly on the IsardVDI or AWS EKS cluster
+- The code/configuration works correctly on the IsardVDI K3s cluster
 - Kubernetes manifests or Helm charts committed to GitHub (dev branch)
 - Security: no plaintext secrets in repository (Sealed Secrets or env vars)
 - Services accessible via Ingress with valid TLS certificate
@@ -77,24 +82,23 @@ A task is considered complete when:
 
 ---
 
-## 5. Identified Risks
+## 4. Identified Risks
 | Risk | Probability | Impact | Action |
 |------|-------------|--------|--------|
-| AWS EKS costs exceed free tier | Medium | High | Monitor AWS billing daily, use t3.micro instances |
-| WireGuard tunnel instability between IsardVDI and EKS | Medium | High | Test connectivity before deploying dependent services |
 | cert-manager fails with self-signed on IsardVDI | Low | Medium | Fall back to manual TLS certificates if needed |
 | Harbor disk space exhaustion | Low | Medium | Configure image retention policies from day one |
 | Telegram bot token exposed in repository | Medium | Critical | Use Sealed Secrets or Kubernetes secrets, never hardcode |
-| K3s and EKS manifest incompatibilities | Medium | Medium | Test manifests on K3s first before adapting to EKS |
+| K3s manifest incompatibilities | Medium | Medium | Test manifests on K3s thoroughly before deploying |
+| Tasks 2.14 and 2.15 carried over from Sprint 1 may block others | Medium | High | Prioritise these tasks in the first days of the sprint |
 
 ---
 
-## 6. ProofHub Captures — Sprint 2 Tasks
+## 5. ProofHub Captures — Sprint 2 Tasks
 ![ProofHub Sprint 2 Planning](./captures/proofhub_sprint2_planning.png)
 
 ---
 
-## 7. Next Meeting
+## 6. Next Meeting
 | Type | Date | Time | Objective |
 |------|------|------|-----------|
 | Daily Standup | Daily | 15:00 | Task progress follow-up |
@@ -103,7 +107,7 @@ A task is considered complete when:
 
 ---
 
-## 8. Team
+## 7. Team
 | Role | Name |
 |------|------|
 | Scrum Master | Francisco |
