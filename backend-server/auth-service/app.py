@@ -88,30 +88,83 @@ def register():
     if len(password) < 8:
         return jsonify({'error': 'Contrasenya massa curta'}), 400
     try:
-        server = Server(LDAP_HOST, port=LDAP_PORT, get_info=ALL)
-        conn = Connection(server, user=LDAP_ADMIN_DN, password=LDAP_ADMIN_PASS, auto_bind=True)
-        user_dn = f'uid={username},ou=users,{LDAP_BASE}'
-        conn.add(user_dn, ['inetOrgPerson', 'top'], {
-            'uid': username,
-            'cn': name,
-            'sn': name.split()[-1] if ' ' in name else name,
-            'mail': email,
-            'userPassword': password
-        })
-        if conn.result['result'] != 0:
-            conn.unbind()
-            return jsonify({'error': 'Usuari ja existeix o error LDAP'}), 409
-        conn.unbind()
+        # Verificar si ja existeix a PostgreSQL
         pg = get_pg()
         cur = pg.cursor()
-        cur.execute('INSERT INTO users (username, email, full_name, org) VALUES (%s, %s, %s, %s)',
-                    (username, email, name, org))
+        cur.execute('SELECT id FROM users WHERE username=%s OR email=%s', (username, email))
+        if cur.fetchone():
+            cur.close(); pg.close()
+            return jsonify({'error': 'Usuari o email ja registrat'}), 409
+        # Guardar a PostgreSQL com a PENDING (no crear a LDAP encara)
+        cur.execute(
+            'INSERT INTO users (username, email, full_name, org, password_hash, status) VALUES (%s, %s, %s, %s, %s, %s)',
+            (username, email, name, org, password, 'pending')
+        )
         pg.commit()
-        cur.close()
-        pg.close()
-        return jsonify({'message': 'Compte creat correctament'}), 201
+        cur.close(); pg.close()
+        return jsonify({'message': 'Sol·licitud enviada. L\'administrador revisarà el teu compte en breu.', 'status': 'pending'}), 201
     except Exception as e:
         return jsonify({'error': f'Error: {str(e)}'}), 500
+
+@app.route('/api/admin/requests', methods=['GET'])
+def admin_requests():
+    # Verificar que es admin
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        if payload.get('username') != 'admin':
+            return jsonify({'error': 'No autoritzat'}), 403
+    except:
+        return jsonify({'error': 'Token invàlid'}), 401
+    pg = get_pg()
+    cur = pg.cursor()
+    cur.execute('SELECT id, username, email, full_name, org, status, created_at FROM users ORDER BY created_at DESC')
+    rows = cur.fetchall()
+    cur.close(); pg.close()
+    users = [{'id': r[0], 'username': r[1], 'email': r[2], 'name': r[3], 'org': r[4], 'status': r[5], 'created_at': str(r[6])} for r in rows]
+    return jsonify({'users': users})
+
+@app.route('/api/admin/approve/<int:user_id>', methods=['POST'])
+def approve_user(user_id):
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        if payload.get('username') != 'admin':
+            return jsonify({'error': 'No autoritzat'}), 403
+    except:
+        return jsonify({'error': 'Token invàlid'}), 401
+    action = request.get_json().get('action', 'approve')
+    pg = get_pg()
+    cur = pg.cursor()
+    cur.execute('SELECT username, email, full_name, password_hash FROM users WHERE id=%s', (user_id,))
+    user = cur.fetchone()
+    if not user:
+        cur.close(); pg.close()
+        return jsonify({'error': 'Usuari no trobat'}), 404
+    username, email, name, password = user
+    if action == 'approve':
+        # Crear a LDAP
+        try:
+            server = Server(LDAP_HOST, port=LDAP_PORT, get_info=ALL)
+            conn = Connection(server, user=LDAP_ADMIN_DN, password=LDAP_ADMIN_PASS, auto_bind=True)
+            user_dn = f'uid={username},ou=users,{LDAP_BASE}'
+            conn.add(user_dn, ['inetOrgPerson', 'top'], {
+                'uid': username, 'cn': name,
+                'sn': name.split()[-1] if ' ' in name else name,
+                'mail': email, 'userPassword': password
+            })
+            conn.unbind()
+        except Exception as e:
+            cur.close(); pg.close()
+            return jsonify({'error': f'Error LDAP: {str(e)}'}), 500
+        cur.execute('UPDATE users SET status=%s WHERE id=%s', ('approved', user_id))
+        msg = 'Usuari aprovat i creat a LDAP'
+    else:
+        cur.execute('UPDATE users SET status=%s WHERE id=%s', ('rejected', user_id))
+        msg = 'Usuari rebutjat'
+    pg.commit()
+    cur.close(); pg.close()
+    return jsonify({'message': msg})
 
 @app.route('/api/auth/verify', methods=['GET'])
 def verify():
@@ -150,8 +203,14 @@ def add_node():
             return jsonify({'error': 'Node EUI invàlid'}), 400
         pg = get_pg()
         cur = pg.cursor()
-        cur.execute('SELECT id FROM users WHERE username=%s', (username,))
+        cur.execute('SELECT id, status FROM users WHERE username=%s', (username,))
         user = cur.fetchone()
+        if user and user[1] == 'pending':
+            cur.close(); pg.close()
+            return jsonify({'error': 'El teu compte està pendent d\'aprovació per l\'administrador.'}), 403
+        if user and user[1] == 'rejected':
+            cur.close(); pg.close()
+            return jsonify({'error': 'El teu compte ha estat rebutjat. Contacta amb l\'administrador.'}), 403
         if not user:
             return jsonify({'error': 'Usuari no trobat'}), 404
         cur.execute('INSERT INTO nodes (user_id, node_eui) VALUES (%s, %s)', (user[0], node_eui))
