@@ -794,9 +794,10 @@ async function submitAddNode() {
 }
 
 function downloadManual() {
+  const lang = localStorage.getItem('fs_lang') || 'ca';
   const link = document.createElement('a');
-  link.href = '/FireSense/manual-firesense.pdf';
-  link.download = 'manual-firesense.pdf';
+  link.href = '/FireSense/manual-firesense-' + lang + '.pdf';
+  link.download = 'manual-firesense-' + lang + '.pdf';
   link.click();
 }
 
