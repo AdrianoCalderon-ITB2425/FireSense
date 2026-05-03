@@ -62,6 +62,16 @@ def login():
     if not username or not password:
         return jsonify({'error': 'Camps obligatoris'}), 400
     try:
+        # Comprovar status a PostgreSQL primer
+        pg = get_pg()
+        cur = pg.cursor()
+        cur.execute('SELECT status FROM users WHERE username=%s', (username,))
+        row = cur.fetchone()
+        cur.close(); pg.close()
+        if row and row[0] == 'pending':
+            return jsonify({'error': 'El teu compte esta pendent d aprovacio per l administrador.'}), 403
+        if row and row[0] == 'rejected':
+            return jsonify({'error': 'El teu compte ha estat rebutjat. Contacta amb l administrador.'}), 403
         server = Server(LDAP_HOST, port=LDAP_PORT, get_info=ALL)
         user_dn = f'uid={username},ou=users,{LDAP_BASE}'
         conn = Connection(server, user=user_dn, password=password, auto_bind=True)
@@ -75,6 +85,20 @@ def login():
         return jsonify({'error': 'Credencials incorrectes'}), 401
     except Exception as e:
         return jsonify({'error': f'Error servidor: {str(e)}'}), 500
+
+
+def send_email(to, subject, html):
+    import os, requests as req
+    key = os.environ.get('RESEND_API_KEY','')
+    if not key:
+        return
+    try:
+        req.post('https://api.resend.com/emails',
+            headers={'Authorization': f'Bearer {key}', 'Content-Type': 'application/json'},
+            json={'from': 'FireSense <onboarding@resend.dev>', 'to': [to], 'subject': subject, 'html': html},
+            timeout=5)
+    except Exception as e:
+        print('Email error:', e)
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():
@@ -92,17 +116,20 @@ def register():
     # Verificar hCaptcha
     import os
     hcaptcha_secret = os.environ.get('HCAPTCHA_SECRET', '')
-    if hcaptcha_secret:
+    if hcaptcha_secret and hcaptcha_token:
         try:
             r = requests.post('https://api.hcaptcha.com/siteverify', data={
                 'secret': hcaptcha_secret,
-                'response': hcaptcha_token
+                'response': hcaptcha_token,
+                'sitekey': '97f82682-3b56-4b18-98b0-5f0e1cb4a26e'
             }, timeout=5)
             result = r.json()
             if not result.get('success'):
+                print('hCaptcha fail:', result)
                 return jsonify({'error': 'Verificació CAPTCHA fallida. Torna-ho a intentar.'}), 400
-        except Exception:
-            pass  # Si falla hCaptcha, continuar (no bloquejar)
+        except Exception as e:
+            print('hCaptcha error:', e)
+            pass  # Si falla hCaptcha, continuar
     try:
         # Verificar si ja existeix a PostgreSQL
         pg = get_pg()
@@ -174,9 +201,15 @@ def approve_user(user_id):
             cur.close(); pg.close()
             return jsonify({'error': f'Error LDAP: {str(e)}'}), 500
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('approved', user_id))
+        send_email(email,
+            'FireSense — Compte aprovat',
+            '<h2 style="color:#0d5c2e">Compte aprovat!</h2><p>Hola <strong>' + name + '</strong>,</p><p>El teu compte a FireSense ha estat aprovat. Ja pots iniciar sessió.</p><p><a href="https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/FireSense/login.html" style="background:#0d5c2e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;">Iniciar sessió</a></p>')
         msg = 'Usuari aprovat i creat a LDAP'
     else:
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('rejected', user_id))
+        send_email(email,
+            'FireSense — Sol·licitud revisada',
+            '<h2 style="color:#dc2626">Sol·licitud no aprovada</h2><p>Hola <strong>' + name + '</strong>,</p><p>La teva sol·licitud d\'accés a FireSense ha estat revisada i no ha estat aprovada. Si creus que és un error, contacta amb l\'administrador.</p>')
         msg = 'Usuari rebutjat'
     pg.commit()
     cur.close(); pg.close()

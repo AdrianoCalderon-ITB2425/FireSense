@@ -338,6 +338,7 @@
 
 
 
+        <div class="h-captcha" data-sitekey="97f82682-3b56-4b18-98b0-5f0e1cb4a26e" data-theme="light" style="margin-bottom:10px;"></div>
         <button class="btn-submit" id="signup-btn" onclick="doSignup()">
           Crear compte
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -411,11 +412,6 @@ async function doLogin() {
 }
 
 async function doSignup() {
-  const hcaptchaToken = hcaptcha.getResponse();
-  if (!hcaptchaToken) {
-    showAlert('signup-alert','error','Completa la verificació CAPTCHA.');
-    return;
-  }
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const user = document.getElementById('signup-user').value.trim();
@@ -423,11 +419,16 @@ async function doSignup() {
   document.querySelectorAll('#tab-signup .form-input').forEach(i=>i.classList.remove('error'));
   let valid=true;
   if(!name){document.getElementById('signup-name').classList.add('error');valid=false;}
-  if(!email){document.getElementById('signup-email').classList.add('error');valid=false;}
+  if(!email){document.getElementById('signup-email').classList.add('error');valid=false;} else if(!email.includes('@') || !email.includes('.')){document.getElementById('signup-email').classList.add('error');showAlert('signup-alert','error','Format de correu no valid. Exemple: nom@empresa.com');valid=false;}
   if(!user){document.getElementById('signup-user').classList.add('error');valid=false;}
   if(!pass){document.getElementById('signup-pass').classList.add('error');valid=false;}
-  if(!valid){showAlert('signup-alert','error','Omple tots els camps obligatoris.');return;}
+  if(!valid){if(!document.getElementById('signup-alert').textContent){showAlert('signup-alert','error','Omple tots els camps obligatoris.');}return;}
   if (pass.length < 8) { showAlert('signup-alert','error','La contrasenya ha de tenir mínim 8 caràcters.'); return; }
+  const hcaptchaToken = hcaptcha.getResponse();
+  if (!hcaptchaToken) {
+    showAlert('signup-alert','error','Completa la verificació CAPTCHA.');
+    return;
+  }
 
   const btn = document.getElementById('signup-btn');
   btn.classList.add('loading');
@@ -442,10 +443,16 @@ async function doSignup() {
     const data = await res.json();
     if (res.ok) {
       if(typeof hcaptcha!=='undefined') hcaptcha.reset();
-      showAlert('signup-alert','success','Sol·licitud enviada correctament. L\'administrador revisarà el teu compte en breu i rebràs confirmació per email.');
-      document.getElementById('signup-form').style.opacity = '0.5';
-      document.getElementById('signup-form').style.pointerEvents = 'none';
-      setTimeout(() => switchTab('login'), 1500);
+      // Amagar el formulari i mostrar missatge de confirmacio
+      const emailUsed = document.getElementById('signup-email').value.trim();
+      document.getElementById('tab-signup').innerHTML = `
+        <div style="text-align:center;padding:40px 20px;">
+          <div style="font-size:2.5rem;margin-bottom:16px;color:#0d5c2e;">✓</div>
+          <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;color:#0d5c2e;margin-bottom:12px;">Sol·licitud enviada!</h3>
+          <p style="color:#555;font-size:.9rem;line-height:1.8;">L'administrador revisarà el teu compte en breu.<br>Rebràs confirmació a <strong>${emailUsed}</strong><br>quan sigui aprovat o rebutjat.</p>
+          <button onclick="switchTab('login')" style="margin-top:24px;padding:10px 24px;background:#0d5c2e;color:#fff;border:none;border-radius:5px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;">Anar a Iniciar sessió</button>
+        </div>
+      `;
     } else {
       showAlert('signup-alert','error', data.error || 'Error al crear el compte.');
     }
