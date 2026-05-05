@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: headlamp
+  namespace: headlamp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat`) && PathPrefix(`/headlamp`)
+      services:
+        - name: headlamp
+          port: 80
+      middlewares:
+        - name: traefik-dashboard-auth
+          namespace: traefik
+  tls: {}

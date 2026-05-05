@@ -63,3 +63,6 @@ backend-server/nginx/certs/
 backend-server/nginx/htpasswd
 backend-server/nginx/staging_htpasswd
 backend-server/mqtt/passwd
+backend-server/k8s/traefik-worker01/certs
+
+auth

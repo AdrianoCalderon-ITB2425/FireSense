@@ -1,0 +1,101 @@
+# values-harbor.yaml — adaptado a tu cluster (subpath /harbor, Traefik IngressRoute)
+
+expose:
+  type: clusterIP       # NO creamos Ingress estándar, lo haremos con IngressRoute
+  tls:
+    enabled: false      # El TLS lo gestiona Traefik, no Harbor internamente
+
+externalURL: https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/harbor
+
+existingSecretAdminPassword: harbor-admin-secret
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+
+internalTLS:
+  enabled: false        # Sin TLS interno, Traefik ya cifra el tráfico hacia fuera
+
+persistence:
+  enabled: true
+  resourcePolicy: keep
+  persistentVolumeClaim:
+    registry:
+      storageClass: longhorn-replicated
+      accessMode: ReadWriteOnce
+      size: 20Gi          # Reducido respecto al guide, para tu entorno de lab
+    jobservice:
+      jobLog:
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+        size: 1Gi
+    database:
+      storageClass: longhorn-replicated
+      accessMode: ReadWriteOnce
+      size: 5Gi
+    redis:
+      storageClass: longhorn
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    trivy:
+      storageClass: longhorn
+      accessMode: ReadWriteOnce
+      size: 5Gi
+
+updateStrategy:
+  type: Recreate
+
+# --- Recursos ajustados a los cluster de 2 workers ---
+core:
+  replicas: 1
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 1,    memory: 1Gi  }
+
+jobservice:
+  replicas: 1
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 500m, memory: 512Mi }
+
+registry:
+  replicas: 1
+  registry:
+    resources:
+      requests: { cpu: 100m, memory: 256Mi }
+      limits:   { cpu: 1,    memory: 1Gi  }
+  controller:
+    resources:
+      requests: { cpu: 50m,  memory: 128Mi }
+      limits:   { cpu: 500m, memory: 256Mi }
+
+portal:
+  replicas: 1
+  resources:
+    requests: { cpu: 50m,  memory: 64Mi  }
+    limits:   { cpu: 200m, memory: 256Mi }
+
+trivy:
+  enabled: true
+  replicas: 1
+  vulnType: "os,library"
+  severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+  skipUpdate: false
+  resources:
+    requests: { cpu: 200m, memory: 512Mi }
+    limits:   { cpu: 1,    memory: 2Gi  }
+
+database:
+  type: internal
+  internal:
+    password: "firesense-pg-2025"
+    resources:
+      requests: { cpu: 100m, memory: 256Mi }
+      limits:   { cpu: 500m, memory: 1Gi  }
+
+redis:
+  type: internal
+  internal:
+    resources:
+      requests: { cpu: 50m,  memory: 128Mi }
+      limits:   { cpu: 200m, memory: 256Mi }
+
+metrics:
+  enabled: false    # Lo activamos cuando tengamos Prometheus
