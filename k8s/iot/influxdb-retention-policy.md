@@ -23,11 +23,11 @@
 # Llistar buckets
 kubectl exec -n iot deployment/influxdb -- influx bucket list \
   --host http://localhost:8086 \
-  --token firesense-influx-token-2026
+  --token ${INFLUXDB_TOKEN}
 
 # Llistar tasks
 kubectl exec -n iot deployment/influxdb -- influx task list \
   --host http://localhost:8086 \
-  --token firesense-influx-token-2026 \
+  --token ${INFLUXDB_TOKEN} \
   --org firesense
 ```

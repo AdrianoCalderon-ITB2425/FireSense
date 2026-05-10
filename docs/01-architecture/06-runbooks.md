@@ -37,7 +37,7 @@ kubectl cp /tmp/influx-restore/. iot/${POD}:/tmp/restore/
 # 5. Restore
 kubectl exec -n iot ${POD} -- influx restore /tmp/restore \
   --host http://localhost:8086 \
-  --token firesense-influx-token-2026 \
+  --token ${INFLUXDB_TOKEN} \
   --org firesense --full
 ```
 
@@ -53,7 +53,7 @@ kubectl exec -n iot ${POD} -- influx restore /tmp/restore \
 # Via CLI
 kubectl exec -n firesense deployment/auth-service -- python -c "
 import psycopg2
-conn = psycopg2.connect(host='postgres', dbname='firesense', user='firesense', password='firesense2025')
+conn = psycopg2.connect(host='postgres', dbname='firesense', user='firesense', password='${POSTGRES_PASSWORD}')
 cur = conn.cursor()
 cur.execute(\"INSERT INTO users (username, status) VALUES ('newuser', 'approved')\")
 conn.commit(); cur.close(); conn.close(); print('OK')

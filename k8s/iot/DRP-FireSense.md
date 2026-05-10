@@ -109,7 +109,7 @@ kubectl cp /tmp/influx-restore/. iot/${POD}:/tmp/restore/
 # 5. Restaurar
 kubectl exec -n iot ${POD} -- influx restore /tmp/restore \
   --host http://localhost:8086 \
-  --token firesense-influx-token-2026 \
+  --token ${INFLUXDB_TOKEN} \
   --org firesense \
   --full
 
@@ -117,7 +117,7 @@ kubectl exec -n iot ${POD} -- influx restore /tmp/restore \
 kubectl exec -n iot ${POD} -- influx query \
   'from(bucket:"sensors") |> range(start:-1h)' \
   --host http://localhost:8086 \
-  --token firesense-influx-token-2026 \
+  --token ${INFLUXDB_TOKEN} \
   --org firesense
 ```
 

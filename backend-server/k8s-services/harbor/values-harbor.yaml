@@ -85,7 +85,7 @@ trivy:
 database:
   type: internal
   internal:
-    password: "firesense-pg-2025"
+    password: "${HARBOR_PG_PASSWORD}"
     resources:
       requests: { cpu: 100m, memory: 256Mi }
       limits:   { cpu: 500m, memory: 1Gi  }
