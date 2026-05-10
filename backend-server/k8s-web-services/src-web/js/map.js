@@ -130,7 +130,7 @@ window.runElevationProfile2D=function(latA,lngA,eA,latB,lngB,eB,dist,elevs,bldHe
   window.elevChart2D=elevChart;
 }
 
-var KEY_MT       = 'ATuNG7Cyopv89BMrqJK2';
+var KEY_MT       = '';  // Set via environment variable
 var CESIUM_TOKEN = '';  // Set via environment variable
 
 // ── MAP (Leaflet) ────────────────────────────────────────────
