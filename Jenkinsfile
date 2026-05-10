@@ -31,16 +31,32 @@ pipeline {
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:'"${BUILD_NUMBER}"'",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:latest",
                                         "--insecure"
-                                    ]
+                                    ],
+                                    "volumeMounts": [{
+                                        "name": "kaniko-secret",
+                                        "mountPath": "/kaniko/.docker"
+                                    }]
+                                }],
+                                "volumes": [{
+                                    "name": "kaniko-secret",
+                                    "secret": {
+                                        "secretName": "harbor-creds",
+                                        "items": [{
+                                            "key": ".dockerconfigjson",
+                                            "path": "config.json"
+                                        }]
+                                    }
                                 }]
                             }
                         }'
-                    /tmp/kubectl wait --for=condition=complete \
+                    /tmp/kubectl wait --for=condition=ready \
+                        pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=60s || true
+                    /tmp/kubectl wait --for=jsonpath=.status.phase=Succeeded \
                         pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s || \
                     /tmp/kubectl wait --for=jsonpath=.status.phase=Failed \
                         pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s
                     /tmp/kubectl logs kaniko-web-${BUILD_NUMBER} -n jenkins
-                    /tmp/kubectl delete pod kaniko-web-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl delete pod kaniko-web-${BUILD_NUMBER} -n jenkins --force --grace-period=0
                 '''
             }
         }
@@ -63,16 +79,32 @@ pipeline {
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:'"${BUILD_NUMBER}"'",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:latest",
                                         "--insecure"
-                                    ]
+                                    ],
+                                    "volumeMounts": [{
+                                        "name": "kaniko-secret",
+                                        "mountPath": "/kaniko/.docker"
+                                    }]
+                                }],
+                                "volumes": [{
+                                    "name": "kaniko-secret",
+                                    "secret": {
+                                        "secretName": "harbor-creds",
+                                        "items": [{
+                                            "key": ".dockerconfigjson",
+                                            "path": "config.json"
+                                        }]
+                                    }
                                 }]
                             }
                         }'
-                    /tmp/kubectl wait --for=condition=complete \
+                    /tmp/kubectl wait --for=condition=ready \
+                        pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=60s || true
+                    /tmp/kubectl wait --for=jsonpath=.status.phase=Succeeded \
                         pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s || \
                     /tmp/kubectl wait --for=jsonpath=.status.phase=Failed \
                         pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s
                     /tmp/kubectl logs kaniko-auth-${BUILD_NUMBER} -n jenkins
-                    /tmp/kubectl delete pod kaniko-auth-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl delete pod kaniko-auth-${BUILD_NUMBER} -n jenkins --force --grace-period=0
                 '''
             }
         }
