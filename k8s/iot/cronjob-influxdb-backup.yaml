@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: influxdb-backup
+  namespace: iot
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: alpine:3.19
+              env:
+                - name: INFLUX_HOST
+                  value: "http://influxdb:8086"
+                - name: INFLUX_TOKEN
+                  value: "firesense-influx-token-2026"
+                - name: INFLUX_ORG
+                  value: "firesense"
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  apk add --no-cache curl tar
+
+                  curl -sL -o /tmp/influx.tar.gz \
+                    https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.3-linux-amd64.tar.gz
+                  tar -xzf /tmp/influx.tar.gz -C /tmp/
+                  find /tmp -name "influx" -type f -exec cp {} /usr/local/bin/influx \;
+                  chmod +x /usr/local/bin/influx
+
+                  DATE=$(date +%Y%m%d_%H%M%S)
+                  BACKUP_DIR="/backups/influxdb_${DATE}"
+                  mkdir -p ${BACKUP_DIR}
+
+                  echo "=== Backup InfluxDB ${DATE} ==="
+                  influx backup ${BACKUP_DIR} \
+                    --host ${INFLUX_HOST} \
+                    --token ${INFLUX_TOKEN} \
+                    --org ${INFLUX_ORG}
+
+                  echo "=== Comprimint ==="
+                  tar -czf /backups/influxdb_${DATE}.tar.gz -C /backups influxdb_${DATE}
+                  rm -rf ${BACKUP_DIR}
+
+                  echo "=== Netejant >7 dies ==="
+                  find /backups -name "*.tar.gz" -mtime +7 -delete
+
+                  echo "=== Backup completat: influxdb_${DATE}.tar.gz ==="
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /backups
+          volumes:
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: influxdb-backup-pvc
