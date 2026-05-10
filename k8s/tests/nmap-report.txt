@@ -1,0 +1,34 @@
+# Nmap 7.95 scan initiated Sun May 10 17:52:13 2026 as: nmap -sV --script=http-headers,http-security-headers,ssl-cert -p 443 -oN /home/isard/FireSense/k8s/tests/nmap-report.txt 93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat
+Nmap scan report for 93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat (79.153.200.91)
+Host is up (0.0015s latency).
+rDNS record for 79.153.200.91: 91.red-79-153-200.dynamicip.rima-tde.net
+
+PORT    STATE SERVICE        VERSION
+443/tcp open  ssl/tcpwrapped
+| ssl-cert: Subject: commonName=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat
+| Subject Alternative Name: DNS:93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat
+| Issuer: commonName=R12/organizationName=Let's Encrypt/countryName=US
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha256WithRSAEncryption
+| Not valid before: 2026-05-04T17:27:42
+| Not valid after:  2026-08-02T17:27:41
+| MD5:   15ec:b393:5b58:fcad:3d6b:0e0a:afe8:f3e2
+|_SHA-1: 455a:9516:b8d3:1c96:9cd9:a97d:85ad:b50d:bbc1:9a66
+| http-security-headers: 
+|   Strict_Transport_Security: 
+|     HSTS not configured in HTTPS Server
+|   X_Content_Type_Options: 
+|     Header: X-Content-Type-Options: nosniff
+|_    Description: Will prevent the browser from MIME-sniffing a response away from the declared content-type. 
+| http-headers: 
+|   Content-Type: text/plain; charset=utf-8
+|   X-Content-Type-Options: nosniff
+|   Date: Sun, 10 May 2026 15:52:25 GMT
+|   Content-Length: 19
+|   Connection: close
+|   
+|_  (Request type: GET)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sun May 10 17:52:25 2026 -- 1 IP address (1 host up) scanned in 12.86 seconds
