@@ -71,7 +71,7 @@ graph TD
   level = "info"
 
 [postgresql]
-  dsn = "postgres://chirpstack:chirpstack_espurna@postgres/chirpstack?sslmode=disable"
+  dsn = "postgres://chirpstack:firesense2025@postgres/chirpstack?sslmode=disable"
 
 [redis]
   servers = ["redis://redis/"]
@@ -107,7 +107,7 @@ graph TD
 - **MQTT intern**: ChirpStack es comunica amb el seu propi broker Mosquitto (anònim, sense TLS) per simplicitat interna. El broker extern (TLS) s'usa per a la integració cap a Node-RED.
 - **PostgreSQL**: emmagatzema dispositius, aplicacions, gateways i dades de sessions.
 - **Redis**: cache de sessions LoRaWAN actives (OTAA/ABP).
-- **Secret API**: `espurna_collserola_secret_2026` — **canviar en producció**.
+- **Secret API**: `firesense_secret_2026` — **canviar en producció**.
 
 ### Canals EU868 configurats (`regions/eu868.toml`)
 

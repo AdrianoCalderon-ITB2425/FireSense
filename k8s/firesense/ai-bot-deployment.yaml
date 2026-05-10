@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ai-bot-secret
+  namespace: firesense
+type: Opaque
+stringData:
+  TELEGRAM_BOT_TOKEN: "8751648029:AAHiZDGrfgi1nfhzVTNGq66CN1MtWs4TNd8"
+  TELEGRAM_ALLOWED_USERS: "8068312940"
+  INFLUX_URL: "http://influxdb.iot.svc.cluster.local:8086"
+  INFLUXDB_ADMIN_TOKEN: "firesense-influx-token-2026"
+  INFLUX_TOKEN: "firesense-influx-token-2026"
+  INFLUX_ORG: "firesense"
+  INFLUX_BUCKET: "sensors"
+  INFLUX_MEASUREMENT: "sensor_data"
+  INFLUX_TEMP_FIELD: "temperature"
+  INFLUX_HUMIDITY_FIELD: "soil_moisture"
+  OLLAMA_BASE_URL: "http://graphon2.nuvulet.itb.cat/v1"
+  OLLAMA_API_KEY: "94a62146533c41d65cc1c409cffa641b136829ccd4e0826f6008e9455422be2e"
+  OLLAMA_MODEL: "openai/gpt-oss-20b"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-bot
+  namespace: firesense
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-bot
+  template:
+    metadata:
+      labels:
+        app: ai-bot
+    spec:
+      containers:
+        - name: ai-bot
+          image: 93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/ai-bot:v1
+          envFrom:
+            - secretRef:
+                name: ai-bot-secret
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          restartPolicy: Always

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**ProjecteEspVRna** is an IoT forest fire early-detection system for the Parc Natural de Collserola. ESP32 sensor nodes communicate via LoRa mesh (Meshtastic protocol), publishing environmental data (temperature, humidity, pressure, air quality) over MQTT to a Docker-based backend stack.
+**firesense** is an IoT forest fire early-detection system for the Parc Natural de Collserola. ESP32 sensor nodes communicate via LoRa mesh (Meshtastic protocol), publishing environmental data (temperature, humidity, pressure, air quality) over MQTT to a Docker-based backend stack.
 
 ## Backend Services
 
@@ -42,7 +42,7 @@ Configuration is in `backend-server/.env` (not committed — contains credential
 ```
 ESP32 sensors → LoRa mesh (Meshtastic) → Gateway (Home Assistant TCP/WiFi)
   → MQTT (Mosquitto) → Node-RED (validation & transformation)
-  → InfluxDB (bucket: sensor_data, org: ProjecteEspVRna)
+  → InfluxDB (bucket: sensor_data, org: firesense)
   → Grafana dashboards + HTML web dashboard (FireSense)
 ```
 

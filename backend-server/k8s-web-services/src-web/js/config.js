@@ -1,6 +1,6 @@
 // ── CONFIG ─────────────────────────────────────────────────
 const INFLUX_URL = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/influx';
-const INFLUX_ORG = 'ProjecteEspVRna';
+const INFLUX_ORG = 'firesense';
 // token ocult al servidor
 const INFLUX_BUCKET = 'sensor_data';
 const CS  = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/chirpstack';

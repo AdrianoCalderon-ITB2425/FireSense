@@ -7,7 +7,7 @@ cd ./certs
 echo "Generando CA..."
 openssl req -new -x509 -days 365 -nodes \
   -out ca.crt -keyout ca.key \
-  -subj "/CN=PROJECTEESPVRNA-CA/O=PROJECTEESPVRNA/C=ES"
+  -subj "/CN=FIRESENSE-CA/O=FIRESENSE/C=ES"
 
 # 2. Generar clave privada del servidor
 echo "Generando clave servidor..."
@@ -17,7 +17,7 @@ openssl genrsa -out server.key 2048
 echo "Generando CSR..."
 openssl req -new -out server.csr \
   -key server.key \
-  -subj "/CN=mqtt-broker/O=PROJECTEESPVRNA/C=ES"
+  -subj "/CN=mqtt-broker/O=FIRESENSE/C=ES"
 
 # 4. Firmar certificado del servidor con CA
 echo "Firmando certificado servidor..."

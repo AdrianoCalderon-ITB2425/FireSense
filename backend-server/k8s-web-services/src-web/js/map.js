@@ -3561,5 +3561,5 @@ function pnExportCSV(){
     rows.push([item.type,item.label,item.tech||'lorawan',item.lat.toFixed(6),item.lng.toFixed(6)].join(','));
   });
   var blob=new Blob([rows.join('\n')],{type:'text/csv'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='espurna_nodes.csv';a.click();
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='firesense_nodes.csv';a.click();
 }

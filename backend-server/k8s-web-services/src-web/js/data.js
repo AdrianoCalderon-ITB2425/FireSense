@@ -32,14 +32,14 @@ async function fetchNode(i){
     //
     var rng='start:'+_rangeStr+',stop:'+stopTs;
     var results=await Promise.all([
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="temperatura")|>last()'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_aire")|>last()'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_suelo")|>last()'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="rssi" or r["_field"]=="snr" or r["_field"]=="fcnt" or r["_field"]=="bateria_mv" or r["_field"]=="bateria_pct")|>last()'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="temperatura")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="bateria_mv")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_aire")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
-      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_suelo")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="temperatura")|>last()'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_aire")|>last()'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_suelo")|>last()'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="rssi" or r["_field"]=="snr" or r["_field"]=="fcnt" or r["_field"]=="bateria_mv" or r["_field"]=="bateria_pct")|>last()'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="temperatura")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="bateria_mv")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_aire")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
+      influxQuery('from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")|>filter(fn:(r)=>r["_field"]=="humedad_suelo")|>sort(columns:["_time"],desc:true)|>limit(n:'+_limitN+')'),
     ]);
     var rT=parseInfluxCSV(results[0]),rH=parseInfluxCSV(results[1]),rS=parseInfluxCSV(results[2]),rU=parseInfluxCSV(results[3]);
     var gv=function(rows){var r=rows.find(function(r){return r.value&&r.value!=='';});return r?parseFloat(r.value):null;};
@@ -184,7 +184,7 @@ async function fetchHistRange(nodeIdx, rangeStr, dateStr){
     rng  = (rngMap[rangeStr]||'start:-24h')+',stop:'+stopTs;
     nPts = ptsMap[rangeStr]||24;
   }
-  var base = 'from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="espurna_sensors")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")';
+  var base = 'from(bucket:"'+INFLUX_BUCKET+'")|>range('+rng+')|>filter(fn:(r)=>r["_measurement"]=="sensor_data")|>filter(fn:(r)=>r["dev_eui"]=="'+devEUI+'")';
   try {
     var results = await Promise.all([
       influxQuery(base+'|>filter(fn:(r)=>r["_field"]=="temperatura")|>sort(columns:["_time"],desc:true)|>limit(n:'+nPts+')'),

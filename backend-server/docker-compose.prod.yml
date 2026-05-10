@@ -27,7 +27,7 @@ services:
       retries: 3
       start_period: 30s
     labels:
-      - "MQTT_Server_EspVRna"
+      - "MQTT_Server_FireSense"
 
   # ============================================
   # HOME ASSISTANT - MESHCORE GATEWAY (TCP/WiFi)
@@ -60,7 +60,7 @@ services:
       retries: 5
       start_period: 120s
     labels:
-      - "HomeAssistant_MeshCore_EspVRna"
+      - "HomeAssistant_MeshCore_FireSense"
 
   # ============================================
   # INFLUXDB - TIME SERIES DATABASE
@@ -96,7 +96,7 @@ services:
       retries: 3
       start_period: 40s
     labels:
-      - "InfluxDB_Server_EspVRna"
+      - "InfluxDB_Server_FireSense"
 
   # ============================================
   # NODE-RED - DATA PROCESSING & DASHBOARD
@@ -164,7 +164,7 @@ services:
       retries: 3
       start_period: 40s
     labels:
-      - "Grafana_Dashboard_EspVRna"
+      - "Grafana_Dashboard_FireSense"
 
   # ============================================
   # NGINX - REVERSE PROXY + TLS
