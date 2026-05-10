@@ -30,7 +30,9 @@ pipeline {
                                         "--context-sub-path=backend-server/k8s-web-services/src-web",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:'"${BUILD_NUMBER}"'",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:latest",
-                                        "--insecure"
+                                        "--insecure",
+                                        "--skip-tls-verify",
+                                        "--skip-tls-verify-pull"
                                     ],
                                     "volumeMounts": [{
                                         "name": "kaniko-secret",
@@ -78,7 +80,9 @@ pipeline {
                                         "--context-sub-path=backend-server/k8s-web-services/auth-service",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:'"${BUILD_NUMBER}"'",
                                         "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:latest",
-                                        "--insecure"
+                                        "--insecure",
+                                        "--skip-tls-verify",
+                                        "--skip-tls-verify-pull"
                                     ],
                                     "volumeMounts": [{
                                         "name": "kaniko-secret",
