@@ -8,7 +8,7 @@
 |------|------|
 | Hamza Tayibi | Backend Developer / Web Frontend FireSense |
 | Adriano Calderón | Backend Developer |
-| Alejandro Díaz | Scrum Master / Coordination |
+| Francisco Díaz | Scrum Master / Coordination |
 
 ## Project Description
 
