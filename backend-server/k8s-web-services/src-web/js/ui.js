@@ -341,11 +341,11 @@ async function _fetchAndRender(rangeStr, dateStr){
     if(!hist.length){
       tbl.innerHTML='<div style="color:rgba(0,229,255,.3);font-size:10px;padding:8px;">Sense dades per aquest rang</div>';
     } else {
-      var rows='<div class="db-hist-row db-hist-hdr"><span>HORA</span><span>TEMP</span><span>HUM AIRE</span><span>HUM SOL</span><span>BATERIA</span></div>';
+      var rows='<div class="db-hist-row db-hist-hdr"><span>DIA</span><span>HORA</span><span>TEMP</span><span>HUM AIRE</span><span>HUM SOL</span><span>BATERIA</span></div>';
       hist.forEach(function(r){
         var batCol=r.bat_pct!=null?(r.bat_pct>50?'#5bbf7a':r.bat_pct>20?'#d4a843':'#c05050'):'rgba(100,130,150,.5)';
         rows+='<div class="db-hist-row">'
-          +'<span style="color:rgba(0,229,255,.55);">'+r.time+'</span>'
+          +'<span style="color:rgba(0,229,255,.35);">'+r.date+'</span>'+'<span style="color:rgba(0,229,255,.55);">'+r.time+'</span>'
           +'<span style="color:#00e5ff;">'+(r.temp!=null?r.temp.toFixed(1)+'°C':'—')+'</span>'
           +'<span style="color:#00ff88;">'+(r.hum!=null?r.hum.toFixed(1)+'%':'—')+'</span>'
           +'<span style="color:#d4854a;">'+(r.soil!=null?r.soil+'%':'—')+'</span>'
@@ -443,11 +443,11 @@ function _renderDashboard(){
     if(!hist.length){
       tbl.innerHTML = '<div style="color:rgba(0,229,255,.3);font-size:10px;padding:8px;">Sense historial disponible</div>';
     } else {
-      var rows = '<div class="db-hist-row db-hist-hdr"><span>HORA</span><span>TEMP</span><span>HUM AIRE</span><span>HUM SÒL</span><span>BATERIA</span></div>';
+      var rows = '<div class="db-hist-row db-hist-hdr"><span>DIA</span><span>HORA</span><span>TEMP</span><span>HUM AIRE</span><span>HUM SÒL</span><span>BATERIA</span></div>';
       hist.forEach(function(r){
         var batCol = r.bat_pct!=null?(r.bat_pct>50?'#5bbf7a':r.bat_pct>20?'#d4a843':'#c05050'):'rgba(100,130,150,.5)';
         rows += '<div class="db-hist-row">'
-          +'<span style="color:rgba(0,229,255,.55);">'+r.time+'</span>'
+          +'<span style="color:rgba(0,229,255,.35);">'+r.date+'</span>'+'<span style="color:rgba(0,229,255,.55);">'+r.time+'</span>'
           +'<span style="color:#f0c040;">'+(r.temp!=null?r.temp+'°C':'—')+'</span>'
           +'<span style="color:#4aa8d8;">'+(r.hum!=null?r.hum+'%':'—')+'</span>'
           +'<span style="color:#d4854a;">'+(r.soil!=null?r.soil+'%':'—')+'</span>'
