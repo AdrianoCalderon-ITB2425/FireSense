@@ -202,8 +202,8 @@ def approve_user(user_id):
             return jsonify({'error': f'Error LDAP: {str(e)}'}), 500
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('approved', user_id))
         send_email(email,
-            'FireSense — Compte aprovat',
-            '<h2 style="color:#0d5c2e">Compte aprovat!</h2><p>Hola <strong>' + name + '</strong>,</p><p>El teu compte a FireSense ha estat aprovat. Ja pots iniciar sessió.</p><p><a href="https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/FireSense/login.html" style="background:#0d5c2e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;">Iniciar sessió</a></p>')
+            'FireSense — Sol·licitud aprovada',
+            '<h2 style="color:#0d5c2e">Sol·licitud aprovada!</h2><p>Hola <strong>' + name + '</strong>,</p><p>El teu compte a FireSense ha estat aprovat. Ja pots iniciar sessió.</p><p><a href="https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/login.html" style="background:#0d5c2e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;">Iniciar sessió</a></p>')
         msg = 'Usuari aprovat i creat a LDAP'
     else:
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('rejected', user_id))
@@ -269,6 +269,37 @@ def add_node():
         return jsonify({'message': 'Node afegit correctament'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/delete/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        if payload.get('username') != 'admin':
+            return jsonify({'error': 'No autoritzat'}), 403
+    except:
+        return jsonify({'error': 'Token invàlid'}), 401
+    pg = get_pg()
+    cur = pg.cursor()
+    cur.execute('SELECT username FROM users WHERE id=%s', (user_id,))
+    user = cur.fetchone()
+    if not user:
+        cur.close(); pg.close()
+        return jsonify({'error': 'Usuari no trobat'}), 404
+    username = user[0]
+    try:
+        server = Server(LDAP_HOST, port=LDAP_PORT, get_info=ALL)
+        conn = Connection(server, user=LDAP_ADMIN_DN, password=LDAP_ADMIN_PASS, auto_bind=True)
+        conn.delete(f'uid={username},ou=users,{LDAP_BASE}')
+        conn.unbind()
+    except:
+        pass
+    cur.execute('DELETE FROM nodes WHERE user_id=%s', (user_id,))
+    cur.execute('DELETE FROM users WHERE id=%s', (user_id,))
+    pg.commit()
+    cur.close(); pg.close()
+    return jsonify({'message': 'Usuari eliminat'})
 
 @app.route('/health')
 def health():

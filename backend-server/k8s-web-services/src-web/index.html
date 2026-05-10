@@ -104,7 +104,7 @@
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="liveClock" style="color:var(--cyan);letter-spacing:.08em;">—</span>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">→ LIGHT</button><img src="logo-itb.png" id="itb-neon" style="width:70px;filter:invert(1) sepia(1) saturate(5) hue-rotate(180deg) drop-shadow(0 0 5px rgba(0,229,255,0.5)) drop-shadow(0 0 12px rgba(0,229,255,0.25));opacity:0.9;">
+    <span id="user-badge" style="font-family:Share Tech Mono,monospace;font-size:10px;color:rgba(0,229,255,.6);letter-spacing:.12em;border:1px solid rgba(0,229,255,.2);padding:4px 10px;border-radius:3px;"></span><button onclick="fsLogout()" style="font-family:Share Tech Mono,monospace;font-size:10px;letter-spacing:.12em;background:rgba(255,50,50,.08);border:1px solid rgba(255,50,50,.2);color:#ff5555;padding:4px 10px;border-radius:3px;cursor:pointer;">SORTIR</button><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">→ LIGHT</button><img src="logo-itb.png" id="itb-neon" style="width:70px;filter:invert(1) sepia(1) saturate(5) hue-rotate(180deg) drop-shadow(0 0 5px rgba(0,229,255,0.5)) drop-shadow(0 0 12px rgba(0,229,255,0.25));opacity:0.9;">
 <style>
 @media(min-width:769px){
   #itb-neon{display:none;}
@@ -443,6 +443,37 @@
   <span>Projecte Final · FireSense · ITB ASIX2c 2025/2026</span>
   <span id="apiSt" style="color:var(--txt3);"><span data-i18n="api_inicialitzant">API: inicialitzant...</span></span>
 </div>
+<script>
+(function() {
+  const token = localStorage.getItem('fs_token');
+  if (!token) {
+    window.location.href = '/FireSense/login.html';
+    return;
+  }
+  fetch('/fsapi/api/auth/verify', {
+    headers: {'Authorization': 'Bearer ' + token}
+  }).then(r => {
+    if (!r.ok) {
+      localStorage.removeItem('fs_token');
+      window.location.href = '/FireSense/login.html';
+    }
+  }).catch(() => {
+    window.location.href = '/FireSense/login.html';
+  });
+})();
+</script>
+<script>
+function fsLogout() {
+  localStorage.removeItem('fs_token');
+  localStorage.removeItem('fs_username');
+  window.location.href = '/FireSense/login.html';
+}
+window.addEventListener('DOMContentLoaded', function() {
+  const username = localStorage.getItem('fs_username') || '';
+  const badge = document.getElementById('user-badge');
+  if (badge && username) badge.textContent = '// ' + username.toUpperCase();
+});
+</script>
 <script src="js/config.js"></script>
 <script src="js/helpers.js"></script>
 <script src="js/canvas.js"></script>
