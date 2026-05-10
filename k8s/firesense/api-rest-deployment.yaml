@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-rest
+  namespace: firesense
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-rest
+  template:
+    metadata:
+      labels:
+        app: api-rest
+    spec:
+      imagePullSecrets:
+        - name: harbor-pull-secret
+      containers:
+        - name: api-rest
+          image: 93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/api-rest:v1
+          ports:
+            - containerPort: 5001
+          env:
+            - name: INFLUX_URL
+              value: "http://influxdb.iot.svc.cluster.local:8086"
+            - name: INFLUX_TOKEN
+              value: "firesense-influx-token-2026"
+            - name: INFLUX_ORG
+              value: "firesense"
+            - name: INFLUX_BUCKET
+              value: "sensors"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-rest
+  namespace: firesense
+spec:
+  selector:
+    app: api-rest
+  ports:
+    - port: 5001
+      targetPort: 5001
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-rest-ingress
+  namespace: firesense
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat`) && PathPrefix(`/fsapi/v2`)
+      kind: Rule
+      services:
+        - name: api-rest
+          port: 5001

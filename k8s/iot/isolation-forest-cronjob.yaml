@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: isolation-forest
+  namespace: iot
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: harbor-pull-secret
+          containers:
+            - name: detector
+              image: 93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/isolation-forest:v1
+              env:
+                - name: INFLUX_URL
+                  value: "http://influxdb.iot.svc.cluster.local:8086"
+                - name: INFLUX_TOKEN
+                  value: "firesense-influx-token-2026"
+                - name: INFLUX_ORG
+                  value: "firesense"
+                - name: INFLUX_BUCKET
+                  value: "sensors"
+              resources:
+                requests:
+                  cpu: "200m"
+                  memory: "256Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "512Mi"
