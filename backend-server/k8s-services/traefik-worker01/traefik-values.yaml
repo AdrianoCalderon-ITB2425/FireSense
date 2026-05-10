@@ -1,10 +1,13 @@
-nodeSelector:
-  kubernetes.io/hostname: k8s-worker01
+# Valores mínimos para que funcione el dashboard con certResolver
+api:
+  dashboard: true
+  insecure: false   # Queremos autenticación
 
-deployment:
-  kind: Deployment
-  replicas: 1
+ingressRoute:
+  dashboard:
+    enabled: false   # Desactivamos el automático, usaremos el manual
 
+# Exponer puertos necesarios
 ports:
   web:
     port: 8000
@@ -17,17 +20,7 @@ ports:
     hostPort: 443
     protocol: TCP
 
-service:
-  type: ClusterIP
-
-ingressRoute:
-  dashboard:
-    enabled: false
-
-api:
-  dashboard: true
-  insecure: false
-
+# Proveedores
 providers:
   kubernetesCRD:
     enabled: true
@@ -37,6 +30,7 @@ providers:
     publishedService:
       enabled: true
 
+# Logs (opcional pero útil)
 logs:
   general:
     level: INFO

@@ -23,5 +23,4 @@ spec:
           kind: TraefikService
       middlewares:
         - name: dashboard-auth
-  tls:
-    certResolver: letsencrypt
+  # No pongas sección tls, o pon tls: {} (vacío)

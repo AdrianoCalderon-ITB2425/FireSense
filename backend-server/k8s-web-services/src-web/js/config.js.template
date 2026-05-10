@@ -1,0 +1,20 @@
+// ── CONFIG ─────────────────────────────────────────────────
+const INFLUX_URL = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/influx';
+const INFLUX_ORG = 'ProjecteEspVRna';
+// token ocult al servidor
+const INFLUX_BUCKET = 'sensor_data';
+const CS  = 'https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/secure/chirpstack';
+// key oculta al servidor
+const HDR = {'Content-Type':'application/json'};
+const OFFLINE_MS    = 60 * 60 * 1000;
+const BURST_BEFORE_MS = 5 * 1000;
+const GW = {label:'GW-ITB',lat:41.45318,lng:2.18622};
+const NODES = []; // nodes carregats dinamicament des de /api/nodes
+const nodeData=NODES.map(()=>({temp:null,hum:null,soil:null,fCnt:null,rssi:null,snr:null,bat_mv:null,bat_pct:null,time:null,rawTime:null,status:'waiting',history:[]}));
+let selIdx=0,editMode=false,map,gwMarker;
+const nodeMarkers=[],nodeCircles=[],nodeLines=[];
+const lastKnownRawTime=NODES.map(()=>null);
+const packetBurst=NODES.map(()=>0);
+const burstTriggered=NODES.map(()=>false);
+let canvas,ctx,packets=[],rafId=null,lastRaf=0,_cW=0,_cH=0;
+const NEON_COLORS=['#bf5fff','#e040fb','#ff2d9b','#7b2fff','#00cfff','#a259ff','#ff6ec7'];

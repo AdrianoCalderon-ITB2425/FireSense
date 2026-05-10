@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: iot
+  labels:
+    app: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - name: influxdb
+          image: influxdb:2.7
+          ports:
+            - containerPort: 8086
+          env:
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: admin
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              value: firesense2025
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: firesense
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: sensors
+            - name: DOCKER_INFLUXDB_INIT_RETENTION
+              value: 30d
+            - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+              value: firesense-influx-token-2026
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/influxdb2
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: influxdb-pvc

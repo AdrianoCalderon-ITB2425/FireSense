@@ -1,0 +1,74 @@
+# postgres-chirpstack.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-chirpstack-data
+  namespace: iot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-replicated
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-chirpstack
+  namespace: iot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres-chirpstack
+  template:
+    metadata:
+      labels:
+        app: postgres-chirpstack
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker02
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_DB
+              value: chirpstack
+            - name: POSTGRES_USER
+              value: chirpstack
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chirpstack-postgres-secret
+                  key: password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-chirpstack-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-chirpstack
+  namespace: iot
+spec:
+  selector:
+    app: postgres-chirpstack
+  ports:
+    - port: 5432
+      targetPort: 5432

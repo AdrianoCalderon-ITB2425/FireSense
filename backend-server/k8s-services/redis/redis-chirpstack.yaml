@@ -1,0 +1,65 @@
+# redis-chirpstack.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-chirpstack-data
+  namespace: iot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-chirpstack
+  namespace: iot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: redis-chirpstack
+  template:
+    metadata:
+      labels:
+        app: redis-chirpstack
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker02
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          command: ["redis-server", "--appendonly", "yes"]
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redis-chirpstack-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-chirpstack
+  namespace: iot
+spec:
+  selector:
+    app: redis-chirpstack
+  ports:
+    - port: 6379
+      targetPort: 6379

@@ -1,0 +1,59 @@
+# chirpstack.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chirpstack
+  namespace: iot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: chirpstack
+  template:
+    metadata:
+      labels:
+        app: chirpstack
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker02
+      containers:
+        - name: chirpstack
+          image: chirpstack/chirpstack:4
+          args: ["-c", "/etc/chirpstack"]
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chirpstack-postgres-secret
+                  key: password
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/chirpstack
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: chirpstack-config

@@ -1,0 +1,18 @@
+fullnameOverride: headlamp
+
+config:
+  watchPlugins: true
+  baseURL: /headlamp
+
+pluginsManager:
+  enabled: true
+  configContent: |
+    plugins: []
+  baseImage: node:lts-alpine
+  version: latest
+
+service:
+  type: ClusterIP
+  port: 80
+
+replicaCount: 1

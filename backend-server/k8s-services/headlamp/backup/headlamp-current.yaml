@@ -1,0 +1,124 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"headlamp","namespace":"headlamp"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"headlamp"}},"template":{"metadata":{"labels":{"app":"headlamp"}},"spec":{"containers":[{"args":["--in-cluster","--port=4466","--base-url=/headlamp"],"image":"ghcr.io/headlamp-k8s/headlamp:latest","name":"headlamp","ports":[{"containerPort":4466,"name":"http"}],"resources":{"limits":{"cpu":"500m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}}],"nodeSelector":{"kubernetes.io/hostname":"k8s-master"},"tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/control-plane","operator":"Exists"}]}}}}
+    creationTimestamp: "2026-05-04T17:42:38Z"
+    generation: 2
+    name: headlamp
+    namespace: headlamp
+    resourceVersion: "1010764"
+    uid: 600a39fc-dd3f-4f89-8537-ebe08aa1ed8d
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: headlamp
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: headlamp
+      spec:
+        containers:
+        - args:
+          - --in-cluster
+          - --port=4466
+          - --base-url=/headlamp
+          image: ghcr.io/headlamp-k8s/headlamp:latest
+          imagePullPolicy: IfNotPresent
+          name: headlamp
+          ports:
+          - containerPort: 4466
+            name: http
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          kubernetes.io/hostname: k8s-master
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-05-04T17:45:31Z"
+      lastUpdateTime: "2026-05-04T17:45:31Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-05-04T17:42:38Z"
+      lastUpdateTime: "2026-05-04T17:45:31Z"
+      message: ReplicaSet "headlamp-5b5c74f879" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"headlamp","namespace":"headlamp"},"spec":{"ports":[{"port":80,"protocol":"TCP","targetPort":4466}],"selector":{"app":"headlamp"}}}
+    creationTimestamp: "2026-05-04T17:42:38Z"
+    name: headlamp
+    namespace: headlamp
+    resourceVersion: "1010154"
+    uid: f2944fc9-7f7a-4caa-b612-7dbea0951e42
+  spec:
+    clusterIP: 10.101.37.220
+    clusterIPs:
+    - 10.101.37.220
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 4466
+    selector:
+      app: headlamp
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: "2026-05-04T17:42:38Z"
+    name: default
+    namespace: headlamp
+    resourceVersion: "1010138"
+    uid: 3cce4dd0-881a-42c8-bd6b-6e752c27dde4
+kind: List
+metadata:
+  resourceVersion: ""
