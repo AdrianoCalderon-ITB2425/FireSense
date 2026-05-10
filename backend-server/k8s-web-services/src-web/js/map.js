@@ -131,7 +131,7 @@ window.runElevationProfile2D=function(latA,lngA,eA,latB,lngB,eB,dist,elevs,bldHe
 }
 
 var KEY_MT       = 'ATuNG7Cyopv89BMrqJK2';
-var CESIUM_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYzQyYTc0ZC1hNDEwLTQyMjUtODlhMy04NmM2NjYyMDgzZDAiLCJpZCI6NDE2MDMxLCJpYXQiOjE3NzY3Nzg1MTV9.N9mp_2UxfPeF_jaCND8A9TQxcklEVugdVObxfi5aYeU';
+var CESIUM_TOKEN = '';  // Set via environment variable
 
 // ── MAP (Leaflet) ────────────────────────────────────────────
 var currentMap='carto';

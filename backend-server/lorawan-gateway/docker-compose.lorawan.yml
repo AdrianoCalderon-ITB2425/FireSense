@@ -22,7 +22,7 @@ services:
       - ./chirpstack:/etc/chirpstack
     environment:
       - TZ=Europe/Madrid
-      - CHIRPSTACK_SECRET=696f31438154e577824eda8229ca23a0285145b4fb20631ba7c33447706c6da8
+      - CHIRPSTACK_SECRET=${CHIRPSTACK_SECRET}
     networks:
       - lorawan-net
       - backend-iot-network

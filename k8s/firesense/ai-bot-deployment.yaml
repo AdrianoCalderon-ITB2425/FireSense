@@ -16,7 +16,7 @@ stringData:
   INFLUX_TEMP_FIELD: "temperature"
   INFLUX_HUMIDITY_FIELD: "soil_moisture"
   OLLAMA_BASE_URL: "http://graphon2.nuvulet.itb.cat/v1"
-  OLLAMA_API_KEY: "94a62146533c41d65cc1c409cffa641b136829ccd4e0826f6008e9455422be2e"
+  OLLAMA_API_KEY: "${OLLAMA_API_KEY}"
   OLLAMA_MODEL: "openai/gpt-oss-20b"
 ---
 apiVersion: apps/v1
