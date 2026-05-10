@@ -203,7 +203,7 @@ def approve_user(user_id):
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('approved', user_id))
         send_email(email,
             'FireSense — Sol·licitud aprovada',
-            '<h2 style="color:#0d5c2e">Sol·licitud aprovada!</h2><p>Hola <strong>' + name + '</strong>,</p><p>El teu compte a FireSense ha estat aprovat. Ja pots iniciar sessió.</p><p><a href="https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/login.html" style="background:#0d5c2e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;">Iniciar sessió</a></p>')
+            '<h2 style="color:#0d5c2e">Sol·licitud aprovada!</h2><p>Hola <strong>' + name + '</strong>,</p><p>El teu compte a FireSense ha estat aprovat. Ja pots iniciar sessió.</p><div style="height:12px;"></div><p><a href="https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/login.html" style="background:#0d5c2e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;">Iniciar sessió</a></p>')
         msg = 'Usuari aprovat i creat a LDAP'
     else:
         cur.execute('UPDATE users SET status=%s WHERE id=%s', ('rejected', user_id))
