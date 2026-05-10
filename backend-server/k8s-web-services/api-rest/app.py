@@ -100,8 +100,15 @@ from(bucket: "{INFLUX_BUCKET}")
             for record in table.records:
                 metrics[record.get_field()] = record.get_value()
 
-        moisture = metrics.get("soil_moisture", 50)
-        temp = metrics.get("temperature", 20)
+        moisture = metrics.get("soil_moisture")
+        temp = metrics.get("temperature")
+
+        if moisture is None or temp is None:
+            return jsonify({
+                "risk_level": "SENSE_DADES",
+                "color": "grey",
+                "metrics": {"avg_soil_moisture": None, "avg_temperature": None}
+            })
 
         if moisture < 15:
             level, color = "CRITIC", "red"
