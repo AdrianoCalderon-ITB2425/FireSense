@@ -12,6 +12,7 @@
 | **06-runbooks** | Operational runbooks | [Read →](./06-runbooks.md) |
 | **07-sustainability-plan** | Sustainability & digital transformation | [Read →](./07-sustainability-plan.md) |
 | **08-project-memory** | Complete project memory | [Read →](./08-project-memory.md) |
+| **09-nodered-apis** | Node-RED flows & external APIs | [Read →](./09-nodered-apis.md) |
 
 ---
 

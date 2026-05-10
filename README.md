@@ -6,15 +6,15 @@
 
 | Name | Role |
 |------|------|
-| Hamza Tayibi | Backend Developer / Web Frontend FireSense |
-| Adriano Calderón | Backend Developer |
+| Hamza Tayibi | Backend Developer / Web Frontend |
+| Adriano Calderón | Backend Developer / IoT |
 | Francisco Díaz | Scrum Master / Coordination |
 
 ## Project Description
 
 FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB).
 
-**Objective:** To deploy an IoT platform with LoRaWAN technology aimed at forest fire prevention. The system uses a MING stack (Mosquitto, InfluxDB, Node-RED, Grafana) along with ChirpStack. The entire environment is based on Docker containers orchestrated with Kubernetes (K8s) on IsardVDI (private cloud) with hybrid cloud replication to AWS EKS.
+**Objective:** To deploy an IoT platform with LoRaWAN technology aimed at forest fire prevention. The system uses a MING stack (Mosquitto, InfluxDB, Node-RED, Grafana) along with ChirpStack. The entire environment is based on Docker containers orchestrated with Kubernetes (K8s) on IsardVDI (private cloud).
 
 ## Main Index
 
@@ -29,14 +29,16 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 
 ## Features
 
-- **IoT Data Collection** — RAK WisBlock nodes (RAK4631) measuring soil temperature and humidity, connected via LoRaWAN EU868 with AES-128 encryption.
-- **Public Web Portal** — Interactive map showing real-time forest node status with a simplified alert panel for forest rangers. User authentication via OpenLDAP with CAPTCHA protection.
-- **AI Anomaly Detection** — Thermal anomaly detection and fire risk prediction using scikit-learn (Isolation Forest) running as a Kubernetes CronJob.
-- **IoT Automation** — End-to-end data pipeline via Node-RED: MQTT → InfluxDB → Grafana, with Telegram and email alerts.
-- **CI/CD Pipeline** — Automated build, scan and deploy using Jenkins + Helm charts with a private Harbor registry (Trivy vulnerability scanning).
-- **Security Hardening** — Centralized authentication (OpenLDAP), CIS auditing (kube-bench), vulnerability scanning (Trivy), Sealed Secrets, NetworkPolicies, RBAC, WireGuard VPN and TLS via cert-manager.
-- **REST API** — Data integration endpoints for external civil protection systems (JSON and CSV export).
-- **Monitoring** — Prometheus + Grafana dashboards for IoT sensors, AI anomalies and K8s infrastructure health.
+- **IoT Data Collection** — RAK WisBlock nodes (RAK4631) measuring soil temperature and humidity via LoRaWAN EU868.
+- **Public Web Portal** — Home page with interactive map and forest fire prevention info. Portal for forest rangers (no login required).
+- **Authenticated Dashboard** — Real-time IoT dashboard with node telemetry, maps, and external data. Requires approved account.
+- **User Management** — Registration with Cloudflare Turnstile CAPTCHA, OpenLDAP authentication, JWT tokens, email notifications via Resend.
+- **Admin Panel** — LDAP admin panel to approve, reject and delete user accounts.
+- **AI Anomaly Detection** — scikit-learn Isolation Forest running as K8s CronJob for thermal anomaly detection.
+- **External APIs** — Node-RED proxies NASA FIRMS, AEMET, Open-Meteo, NASA POWER, GENCAT, NDVI, OpenAQ, Wind Grid.
+- **CI/CD Pipeline** — Jenkins + Helm charts + Harbor private registry with Trivy scanning.
+- **Security** — OpenLDAP, Sealed Secrets, kube-bench, Trivy, NetworkPolicies, RBAC, TLS via cert-manager.
+- **Monitoring** — Prometheus + Grafana dashboards for IoT sensors, AI anomalies and K8s infrastructure.
 
 ## Stack
 
@@ -58,12 +60,20 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | AI | scikit-learn Isolation Forest |
 | Cloud | IsardVDI (private) |
 
-## Links
+## Service URLs
 
-- **Web Portal:** [FireSense](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/)
-- **Dashboard:** [Live IoT Dashboard](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/index.html)
-- **Grafana:** [Monitoring](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/grafana)
-- **ChirpStack:** [LoRaWAN Server](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/chirpstack)
+| Service | URL | Access |
+|---------|-----|--------|
+| Home | [/FireSense/](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/) | Public |
+| Forest Rangers Portal | [/FireSense/agents.html](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/agents.html) | Public |
+| Login / Register | [/FireSense/login.html](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/login.html) | Public |
+| IoT Dashboard | [/FireSense/index.html](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/index.html) | Login required |
+| Admin LDAP Panel | [/FireSense/adminldap.html](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/FireSense/adminldap.html) | Admin only |
+| Grafana | [/grafana](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/grafana) | Admin |
+| ChirpStack | [/chirpstack](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/chirpstack) | Admin |
+| Node-RED | [/nodered/](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/nodered/) | Admin |
+| Harbor | [/harbor](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/harbor) | Admin |
+| Jenkins | [/jenkins](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/jenkins) | Admin |
 
 ---
 *FireSense IoT Platform — Institut Tecnològic de Barcelona — ASIX2c — 2025/2026*
