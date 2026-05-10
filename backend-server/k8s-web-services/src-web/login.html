@@ -386,7 +386,7 @@ async function doLogin() {
   btn.textContent = 'Verificant...';
 
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/fsapi/api/auth/login', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({username: user, password: pass})
@@ -435,7 +435,7 @@ async function doSignup() {
   btn.textContent = 'Creant compte...';
 
   try {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch('/fsapi/api/auth/register', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({name, email, username: user, password: pass, 'h-captcha-response': hcaptchaToken||''})

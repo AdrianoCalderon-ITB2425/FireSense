@@ -176,7 +176,7 @@ async function adminLogin() {
   const user = document.getElementById('adm-user').value.trim();
   const pass = document.getElementById('adm-pass').value;
   try {
-    const r = await fetch('/api/auth/login', {
+    const r = await fetch('/fsapi/api/auth/login', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({username: user, password: pass})
@@ -207,7 +207,7 @@ async function showDashboard() {
 
 async function loadUsers() {
   try {
-    const r = await fetch('/api/admin/requests', {
+    const r = await fetch('/fsapi/api/admin/requests', {
       headers: {'Authorization': 'Bearer ' + _token}
     });
     const d = await r.json();

@@ -762,7 +762,7 @@ async function submitAddNode() {
 
   const token = localStorage.getItem('fs_token');
   try {
-    const res = await fetch('/api/nodes', {
+    const res = await fetch('/fsapi/api/nodes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ nodeId: eui, lat: parseFloat(document.getElementById('modal-node-lat').value)||null, lon: parseFloat(document.getElementById('modal-node-lng').value)||null })
@@ -832,7 +832,7 @@ async function loadUserNodes() {
   const token = localStorage.getItem('fs_token');
   if (!token) return;
   try {
-    const res = await fetch('/api/nodes', {
+    const res = await fetch('/fsapi/api/nodes', {
       headers: { 'Authorization': 'Bearer ' + token }
     });
     if (!res.ok) return;
