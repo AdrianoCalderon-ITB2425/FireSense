@@ -1,0 +1,100 @@
+{
+  "id": 2,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"anomalies\") |> filter(fn: (r) => r._field == \"anomaly_score\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Anomaly Score (Isolation Forest)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -24h) |> filter(fn: (r) => r._measurement == \"anomalies\") |> filter(fn: (r) => r._field == \"is_anomaly\") |> filter(fn: (r) => r._value == 1) |> count()",
+          "refId": "A"
+        }
+      ],
+      "title": "Anomalies detectades",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 3,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"anomalies\") |> filter(fn: (r) => r._field == \"temperature\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperatura en anomalies",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 4,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"anomalies\") |> filter(fn: (r) => r._field == \"soil_moisture\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Humitat en anomalies",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "tags": [
+    "firesense",
+    "ia",
+    "anomalies"
+  ],
+  "timezone": "browser",
+  "title": "FireSense \u2014 Anomalies IA",
+  "uid": "aflnna2byboqof",
+  "version": 1
+}

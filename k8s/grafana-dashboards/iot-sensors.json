@@ -1,0 +1,99 @@
+{
+  "id": 1,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"sensor_data\") |> filter(fn: (r) => r._field == \"temperature\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperatura sensors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"sensor_data\") |> filter(fn: (r) => r._field == \"soil_moisture\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Humitat del sol",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"sensor_data\") |> filter(fn: (r) => r._field == \"soil_moisture\") |> mean()",
+          "refId": "A"
+        }
+      ],
+      "title": "Risc d incendi actual",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P5CD74C2DE7B9A093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 8
+      },
+      "id": 4,
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"sensor_data\") |> filter(fn: (r) => r._field == \"temperature\") |> mean()",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperatura actual (mitja)",
+      "type": "gauge"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": [
+    "firesense",
+    "iot"
+  ],
+  "timezone": "browser",
+  "title": "FireSense \u2014 IoT Sensors",
+  "uid": "eflnn7vvi4xdsf",
+  "version": 1
+}
