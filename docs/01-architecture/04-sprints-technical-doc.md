@@ -177,3 +177,69 @@ Services tested: Web portal, Login, Dashboard, Auth API, ChirpStack, Grafana, No
 - HSTS: configured via Traefik middleware
 
 Reports: `k8s/tests/nmap-report.txt`, `k8s/tests/nikto-report.txt`
+
+---
+
+# Sprint 1 — Foundation & Initial Setup
+
+## 1.1 Kick-off & Role Assignment
+
+| Member | Role |
+|--------|------|
+| Hamza Tayibi | Backend/Web Developer |
+| Adriano Calderón | Backend/IoT Developer |
+| Francisco Diaz | Scrum Master / Network |
+
+## 1.2 Repository & Documentation
+
+- GitHub repository created: `AdrianoCalderon-ITB2425/FireSense`
+- Branches: `main` (production) · `dev` (development)
+- Documentation structure: `docs/01-architecture/`, `docs/02-sprints/`, etc.
+- README in English with full project description
+
+## 1.4 IsardVDI Provisioning & Kubernetes Installation
+
+Cluster: 1 master + 2 workers on IsardVDI private cloud.
+
+| Node | Role | IP |
+|------|------|----|
+| k8s-master | control-plane | 10.0.0.10 |
+| k8s-worker01 | worker | 10.0.0.11 |
+| k8s-worker02 | worker | 10.0.0.12 |
+
+Components installed: kubeadm, kubelet, kubectl, Calico CNI, MetalLB, Longhorn, Traefik, cert-manager, Headlamp.
+
+## 1.6 OpenLDAP Configuration
+
+OpenLDAP deployed in `firesense` namespace with:
+- Base DN: `dc=firesense,dc=io`
+- OUs: `users`, `groups`, `devices`
+- Admin: `cn=admin,dc=firesense,dc=io`
+- Integrated with auth-service (JWT) and Samba
+
+## 1.8 Dockerfiles — MING Stack
+
+Dockerfiles created for:
+- Mosquitto MQTT broker
+- InfluxDB 2.7
+- Node-RED
+- Grafana
+
+## 1.9 Docker Compose — Dev Environment
+
+`docker-compose.prod.yml` for local development and testing before K8s deployment.
+
+## 1.10 & 1.11 Kubernetes Manifests
+
+Manifests created for all MING stack components:
+- `k8s/iot/` — Mosquitto, InfluxDB, Node-RED, Grafana, ChirpStack, Redis, PostgreSQL
+- `k8s/firesense/` — nginx-web, auth-service, OpenLDAP, PostgreSQL-web
+
+## 1.12 Technologies & Hardware
+
+See `docs/03-tech-comparison/` for full technology comparison.
+
+Hardware selected:
+- **Gateway**: RAK7289V2 WisGate Edge Pro
+- **Nodes**: RAK4631 WisBlock Core (nRF52840 + SX1262)
+- **Sensors**: RAK1901 (temp/humidity) + RAK12023/RAK12035 (soil moisture)
