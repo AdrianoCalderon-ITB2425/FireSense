@@ -443,22 +443,31 @@
   <span>Projecte Final · FireSense · ITB ASIX2c 2025/2026</span>
   <span id="apiSt" style="color:var(--txt3);"><span data-i18n="api_inicialitzant">API: inicialitzant...</span></span>
 </div>
+<style>
+#auth-blocker{position:fixed;inset:0;background:#020912;z-index:99999;display:flex;align-items:center;justify-content:center;}
+.auth-spinner{width:40px;height:40px;border:3px solid rgba(0,229,255,.2);border-top-color:#00e5ff;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<div id="auth-blocker"><div class="auth-spinner"></div></div>
 <script>
 (function() {
   const token = localStorage.getItem('fs_token');
   if (!token) {
-    window.location.href = '/FireSense/login.html';
+    window.location.replace('/FireSense/login.html');
     return;
   }
   fetch('/fsapi/api/auth/verify', {
     headers: {'Authorization': 'Bearer ' + token}
   }).then(r => {
-    if (!r.ok) {
+    if (r.ok) {
+      document.getElementById('auth-blocker').style.display = 'none';
+    } else {
       localStorage.removeItem('fs_token');
-      window.location.href = '/FireSense/login.html';
+      localStorage.removeItem('fs_username');
+      window.location.replace('/FireSense/login.html');
     }
   }).catch(() => {
-    window.location.href = '/FireSense/login.html';
+    window.location.replace('/FireSense/login.html');
   });
 })();
 </script>
