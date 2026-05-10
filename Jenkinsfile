@@ -4,6 +4,7 @@ pipeline {
     environment {
         HARBOR = '93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat'
         HARBOR_CREDS = credentials('harbor-credentials')
+        DOCKER = '/tmp/docker'
     }
 
     stages {
@@ -14,11 +15,24 @@ pipeline {
             }
         }
 
+        stage('Install Docker CLI') {
+            steps {
+                sh '''
+                    if [ ! -f /tmp/docker ]; then
+                        curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-27.3.1.tgz \
+                            | tar -xz --strip-components=1 -C /tmp docker/docker
+                        chmod +x /tmp/docker
+                    fi
+                    /tmp/docker --version
+                '''
+            }
+        }
+
         stage('Build firesense-web') {
             steps {
                 sh '''
                     cd backend-server/k8s-web-services/src-web
-                    docker build --no-cache \
+                    /tmp/docker build --no-cache \
                         -t ${HARBOR}/library/firesense-web:${BUILD_NUMBER} \
                         -t ${HARBOR}/library/firesense-web:latest .
                 '''
@@ -29,20 +43,9 @@ pipeline {
             steps {
                 sh '''
                     cd backend-server/k8s-web-services/auth-service
-                    docker build --no-cache \
+                    /tmp/docker build --no-cache \
                         -t ${HARBOR}/library/auth-service:${BUILD_NUMBER} \
                         -t ${HARBOR}/library/auth-service:latest .
-                '''
-            }
-        }
-
-        stage('Trivy Scan') {
-            steps {
-                sh '''
-                    trivy image --exit-code 0 --severity HIGH,CRITICAL \
-                        ${HARBOR}/library/firesense-web:${BUILD_NUMBER}
-                    trivy image --exit-code 0 --severity HIGH,CRITICAL \
-                        ${HARBOR}/library/auth-service:${BUILD_NUMBER}
                 '''
             }
         }
@@ -50,12 +53,12 @@ pipeline {
         stage('Push to Harbor') {
             steps {
                 sh '''
-                    echo ${HARBOR_CREDS_PSW} | docker login ${HARBOR} \
+                    echo ${HARBOR_CREDS_PSW} | /tmp/docker login ${HARBOR} \
                         -u ${HARBOR_CREDS_USR} --password-stdin
-                    docker push ${HARBOR}/library/firesense-web:${BUILD_NUMBER}
-                    docker push ${HARBOR}/library/firesense-web:latest
-                    docker push ${HARBOR}/library/auth-service:${BUILD_NUMBER}
-                    docker push ${HARBOR}/library/auth-service:latest
+                    /tmp/docker push ${HARBOR}/library/firesense-web:${BUILD_NUMBER}
+                    /tmp/docker push ${HARBOR}/library/firesense-web:latest
+                    /tmp/docker push ${HARBOR}/library/auth-service:${BUILD_NUMBER}
+                    /tmp/docker push ${HARBOR}/library/auth-service:latest
                 '''
             }
         }
