@@ -2,7 +2,7 @@
   level = "debug"
 
 [postgresql]
-  dsn = "postgres://chirpstack:firesense2025@chirpstack-postgres/chirpstack?sslmode=disable"
+  dsn = "postgres://chirpstack:${POSTGRES_PASSWORD}@chirpstack-postgres/chirpstack?sslmode=disable"
 
 [redis]
   servers = ["redis://redis/"]

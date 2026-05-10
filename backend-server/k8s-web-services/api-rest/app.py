@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 INFLUX_URL   = os.getenv("INFLUX_URL", "http://influxdb:8086")
-INFLUX_TOKEN = os.getenv("INFLUX_TOKEN", "firesense-influx-token-2026")
+INFLUX_TOKEN = os.getenv("INFLUX_TOKEN", "INFLUXDB_TOKEN_HERE")
 INFLUX_ORG   = os.getenv("INFLUX_ORG", "firesense")
 INFLUX_BUCKET = os.getenv("INFLUX_BUCKET", "sensors")
 

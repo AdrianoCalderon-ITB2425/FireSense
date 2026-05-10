@@ -30,7 +30,7 @@ echo ""
 echo "--- API Auth Service ---"
 check "Auth login admin" "200" $(curl -sk -o /dev/null -w "%{http_code}" -X POST \
     -H "Content-Type: application/json" \
-    -d '{"username":"admin","password":"FireSense2026!"}' \
+    -d '{"username":"admin","password":"ADMIN_PASSWORD_HERE"}' \
     $BASE_URL/fsapi/api/auth/login)
 check "Auth verify sense token" "401" $(curl -sk -o /dev/null -w "%{http_code}" \
     $BASE_URL/fsapi/api/auth/verify)

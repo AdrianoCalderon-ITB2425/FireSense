@@ -7,7 +7,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from sklearn.ensemble import IsolationForest
 
 INFLUX_URL    = os.getenv("INFLUX_URL", "http://influxdb:8086")
-INFLUX_TOKEN  = os.getenv("INFLUX_TOKEN", "firesense-influx-token-2026")
+INFLUX_TOKEN  = os.getenv("INFLUX_TOKEN", "INFLUXDB_TOKEN_HERE")
 INFLUX_ORG    = os.getenv("INFLUX_ORG", "firesense")
 INFLUX_BUCKET = os.getenv("INFLUX_BUCKET", "sensors")
 

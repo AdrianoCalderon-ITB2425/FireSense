@@ -24,7 +24,7 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               value: admin
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: firesense2025
+              value: ${GRAFANA_PASSWORD}
             - name: GF_SERVER_ROOT_URL
               value: "https://%(domain)s/grafana/"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH

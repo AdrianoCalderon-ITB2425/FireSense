@@ -16,8 +16,8 @@ LDAP_HOST = os.getenv('LDAP_HOST', 'openldap')
 LDAP_PORT = int(os.getenv('LDAP_PORT', 389))
 LDAP_BASE = os.getenv('LDAP_BASE', 'dc=firesense,dc=io')
 LDAP_ADMIN_DN = os.getenv('LDAP_ADMIN_DN', 'cn=admin,dc=firesense,dc=io')
-LDAP_ADMIN_PASS = os.getenv('LDAP_ADMIN_PASSWORD', 'FireSense2026!')
-JWT_SECRET = os.getenv('JWT_SECRET', 'firesense-secret-2026')
+LDAP_ADMIN_PASS = os.getenv('LDAP_ADMIN_PASSWORD', 'LDAP_PASSWORD_HERE')
+JWT_SECRET = os.getenv('JWT_SECRET', 'JWT_SECRET_HERE')
 PG_HOST = os.getenv('POSTGRES_HOST', 'postgres')
 PG_DB = os.getenv('POSTGRES_DB', 'firesense')
 PG_USER = os.getenv('POSTGRES_USER', 'firesense')
@@ -115,7 +115,7 @@ def register():
         return jsonify({'error': 'Contrasenya massa curta'}), 400
     # Verificar Cloudflare Turnstile
     import os
-    turnstile_secret = os.environ.get('TURNSTILE_SECRET', '0x4AAAAAADMZEiBF_P-eDTn1XXncwZnKE70')
+    turnstile_secret = os.environ.get('TURNSTILE_SECRET', 'TURNSTILE_SECRET_HERE')
     turnstile_token = data.get('cf-turnstile-response', '')
     if turnstile_secret and turnstile_token:
         try:

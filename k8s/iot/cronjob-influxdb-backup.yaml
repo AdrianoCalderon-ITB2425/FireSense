@@ -20,7 +20,7 @@ spec:
                 - name: INFLUX_HOST
                   value: "http://influxdb:8086"
                 - name: INFLUX_TOKEN
-                  value: "firesense-influx-token-2026"
+                  value: "${INFLUXDB_TOKEN}"
                 - name: INFLUX_ORG
                   value: "firesense"
               command:

@@ -9,7 +9,7 @@ data:
       level = "info"
 
     [postgresql]
-      dsn = "postgres://chirpstack:firesense2025@postgres-chirpstack:5432/chirpstack?sslmode=disable"
+      dsn = "postgres://chirpstack:${POSTGRES_PASSWORD}@postgres-chirpstack:5432/chirpstack?sslmode=disable"
 
     [redis]
       servers = ["redis://redis-chirpstack:6379"]

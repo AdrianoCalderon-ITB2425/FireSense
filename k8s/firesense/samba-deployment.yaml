@@ -48,7 +48,7 @@ spec:
             - name: LDAP_ADMIN_SUFFIX
               value: "cn=admin,dc=firesense,dc=io"
             - name: LDAP_ADMIN_PASSWORD
-              value: "FireSense2026!"
+              value: "${SAMBA_PASSWORD}"
             - name: LDAP_USER_SUFFIX
               value: "ou=users,dc=firesense,dc=io"
             - name: LDAP_GROUP_SUFFIX
