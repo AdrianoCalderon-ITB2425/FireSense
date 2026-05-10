@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: samba-pvc
+  namespace: firesense
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+  namespace: firesense
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      containers:
+        - name: samba
+          image: servercontainers/samba:latest
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN", "SYS_ADMIN"]
+          env:
+            - name: SAMBA_CONF_WORKGROUP
+              value: "FIRESENSE"
+            - name: SAMBA_CONF_SERVER_STRING
+              value: "FireSense Samba Server"
+            - name: SAMBA_CONF_LOG_LEVEL
+              value: "1"
+            - name: AVAHI_DISABLE
+              value: "1"
+            - name: LDAP_SERVER_URI
+              value: "ldap://openldap:389"
+            - name: LDAP_SUFFIX
+              value: "dc=firesense,dc=io"
+            - name: LDAP_ADMIN_SUFFIX
+              value: "cn=admin,dc=firesense,dc=io"
+            - name: LDAP_ADMIN_PASSWORD
+              value: "FireSense2026!"
+            - name: LDAP_USER_SUFFIX
+              value: "ou=users,dc=firesense,dc=io"
+            - name: LDAP_GROUP_SUFFIX
+              value: "ou=groups,dc=firesense,dc=io"
+            - name: SAMBA_CONF_PASSDB_BACKEND
+              value: "ldapsam:ldap://openldap:389"
+          ports:
+            - containerPort: 445
+              name: smb
+            - containerPort: 139
+              name: netbios
+          volumeMounts:
+            - name: samba-data
+              mountPath: /shares
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: samba-data
+          persistentVolumeClaim:
+            claimName: samba-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: samba
+  namespace: firesense
+spec:
+  selector:
+    app: samba
+  ports:
+    - name: smb
+      port: 445
+      targetPort: 445
+    - name: netbios
+      port: 139
+      targetPort: 139
+  type: ClusterIP
