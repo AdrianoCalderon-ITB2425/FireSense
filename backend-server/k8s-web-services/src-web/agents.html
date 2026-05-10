@@ -60,7 +60,7 @@ header{
 .s-label{font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .s-label::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
 
-.risk-badge{
+.risk-badge{justify-content:flex-start;padding-left:24px;
   display:flex;align-items:center;justify-content:center;gap:10px;
   padding:12px;border-radius:6px;font-family:'Orbitron',monospace;
   font-size:1rem;font-weight:700;letter-spacing:2px;
@@ -140,7 +140,7 @@ header{
     <div class="s-section">
       <div class="s-label">NIVELL DE RISC GLOBAL</div>
       <div class="risk-badge risk-low" id="risk-badge">
-        <span id="risk-icon">◆</span>
+        <div class="risk-indicator"></div>
         <span id="risk-text">CARREGANT</span>
       </div>
     </div>
@@ -221,7 +221,6 @@ function updateRisk(level){
     'CRITIC': {cls:'risk-critic',icon:'⬟',label:'CRÍTIC'}
   }[level]||{cls:'risk-low',icon:'◆',label:'BAIX'};
   badge.className='risk-badge '+r.cls;
-  icon.textContent=r.icon;
   text.textContent=r.label;
 }
 
