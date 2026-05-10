@@ -9,19 +9,6 @@ spec:
   routes:
     - match: Host(`93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat`) && PathPrefix(`/jenkins`)
       kind: Rule
-      middlewares:
-        - name: jenkins-strip
-          namespace: jenkins
       services:
         - name: jenkins
           port: 8080
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: jenkins-strip
-  namespace: jenkins
-spec:
-  stripPrefix:
-    prefixes:
-      - /jenkins

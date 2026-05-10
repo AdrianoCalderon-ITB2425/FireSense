@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         HARBOR = '93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat'
-        HARBOR_CREDS = credentials('harbor-credentials')
-        DOCKER = '/tmp/docker'
     }
 
     stages {
@@ -15,50 +13,66 @@ pipeline {
             }
         }
 
-        stage('Install Docker CLI') {
+        stage('Build & Push firesense-web') {
             steps {
                 sh '''
-                    if [ ! -f /tmp/docker ]; then
-                        curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-27.3.1.tgz \
-                            | tar -xz --strip-components=1 -C /tmp docker/docker
-                        chmod +x /tmp/docker
-                    fi
-                    /tmp/docker --version
+                    kubectl run kaniko-web-${BUILD_NUMBER} \
+                        --image=gcr.io/kaniko-project/executor:latest \
+                        --restart=Never \
+                        --namespace=jenkins \
+                        --overrides='{
+                            "spec": {
+                                "containers": [{
+                                    "name": "kaniko",
+                                    "image": "gcr.io/kaniko-project/executor:latest",
+                                    "args": [
+                                        "--context=git://github.com/AdrianoCalderon-ITB2425/FireSense.git#refs/heads/dev",
+                                        "--context-sub-path=backend-server/k8s-web-services/src-web",
+                                        "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:'"${BUILD_NUMBER}"'",
+                                        "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/firesense-web:latest",
+                                        "--insecure"
+                                    ]
+                                }]
+                            }
+                        }'
+                    kubectl wait --for=condition=complete \
+                        pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s || \
+                    kubectl wait --for=jsonpath=.status.phase=Failed \
+                        pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s
+                    kubectl logs kaniko-web-${BUILD_NUMBER} -n jenkins
+                    kubectl delete pod kaniko-web-${BUILD_NUMBER} -n jenkins
                 '''
             }
         }
 
-        stage('Build firesense-web') {
+        stage('Build & Push auth-service') {
             steps {
                 sh '''
-                    cd backend-server/k8s-web-services/src-web
-                    /tmp/docker build --no-cache \
-                        -t ${HARBOR}/library/firesense-web:${BUILD_NUMBER} \
-                        -t ${HARBOR}/library/firesense-web:latest .
-                '''
-            }
-        }
-
-        stage('Build auth-service') {
-            steps {
-                sh '''
-                    cd backend-server/k8s-web-services/auth-service
-                    /tmp/docker build --no-cache \
-                        -t ${HARBOR}/library/auth-service:${BUILD_NUMBER} \
-                        -t ${HARBOR}/library/auth-service:latest .
-                '''
-            }
-        }
-
-        stage('Push to Harbor') {
-            steps {
-                sh '''
-                    echo ${HARBOR_CREDS_PSW} | /tmp/docker login ${HARBOR} \
-                        -u ${HARBOR_CREDS_USR} --password-stdin
-                    /tmp/docker push ${HARBOR}/library/firesense-web:${BUILD_NUMBER}
-                    /tmp/docker push ${HARBOR}/library/firesense-web:latest
-                    /tmp/docker push ${HARBOR}/library/auth-service:${BUILD_NUMBER}
-                    /tmp/docker push ${HARBOR}/library/auth-service:latest
+                    kubectl run kaniko-auth-${BUILD_NUMBER} \
+                        --image=gcr.io/kaniko-project/executor:latest \
+                        --restart=Never \
+                        --namespace=jenkins \
+                        --overrides='{
+                            "spec": {
+                                "containers": [{
+                                    "name": "kaniko",
+                                    "image": "gcr.io/kaniko-project/executor:latest",
+                                    "args": [
+                                        "--context=git://github.com/AdrianoCalderon-ITB2425/FireSense.git#refs/heads/dev",
+                                        "--context-sub-path=backend-server/k8s-web-services/auth-service",
+                                        "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:'"${BUILD_NUMBER}"'",
+                                        "--destination=93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/library/auth-service:latest",
+                                        "--insecure"
+                                    ]
+                                }]
+                            }
+                        }'
+                    kubectl wait --for=condition=complete \
+                        pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s || \
+                    kubectl wait --for=jsonpath=.status.phase=Failed \
+                        pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s
+                    kubectl logs kaniko-auth-${BUILD_NUMBER} -n jenkins
+                    kubectl delete pod kaniko-auth-${BUILD_NUMBER} -n jenkins
                 '''
             }
         }
