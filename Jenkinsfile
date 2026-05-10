@@ -16,7 +16,7 @@ pipeline {
         stage('Build & Push firesense-web') {
             steps {
                 sh '''
-                    kubectl run kaniko-web-${BUILD_NUMBER} \
+                    /tmp/kubectl run kaniko-web-${BUILD_NUMBER} \
                         --image=gcr.io/kaniko-project/executor:latest \
                         --restart=Never \
                         --namespace=jenkins \
@@ -35,12 +35,12 @@ pipeline {
                                 }]
                             }
                         }'
-                    kubectl wait --for=condition=complete \
+                    /tmp/kubectl wait --for=condition=complete \
                         pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s || \
-                    kubectl wait --for=jsonpath=.status.phase=Failed \
+                    /tmp/kubectl wait --for=jsonpath=.status.phase=Failed \
                         pod/kaniko-web-${BUILD_NUMBER} -n jenkins --timeout=300s
-                    kubectl logs kaniko-web-${BUILD_NUMBER} -n jenkins
-                    kubectl delete pod kaniko-web-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl logs kaniko-web-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl delete pod kaniko-web-${BUILD_NUMBER} -n jenkins
                 '''
             }
         }
@@ -48,7 +48,7 @@ pipeline {
         stage('Build & Push auth-service') {
             steps {
                 sh '''
-                    kubectl run kaniko-auth-${BUILD_NUMBER} \
+                    /tmp/kubectl run kaniko-auth-${BUILD_NUMBER} \
                         --image=gcr.io/kaniko-project/executor:latest \
                         --restart=Never \
                         --namespace=jenkins \
@@ -67,12 +67,12 @@ pipeline {
                                 }]
                             }
                         }'
-                    kubectl wait --for=condition=complete \
+                    /tmp/kubectl wait --for=condition=complete \
                         pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s || \
-                    kubectl wait --for=jsonpath=.status.phase=Failed \
+                    /tmp/kubectl wait --for=jsonpath=.status.phase=Failed \
                         pod/kaniko-auth-${BUILD_NUMBER} -n jenkins --timeout=300s
-                    kubectl logs kaniko-auth-${BUILD_NUMBER} -n jenkins
-                    kubectl delete pod kaniko-auth-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl logs kaniko-auth-${BUILD_NUMBER} -n jenkins
+                    /tmp/kubectl delete pod kaniko-auth-${BUILD_NUMBER} -n jenkins
                 '''
             }
         }
@@ -80,14 +80,14 @@ pipeline {
         stage('Deploy to K8s') {
             steps {
                 sh '''
-                    kubectl set image deployment/nginx-web \
+                    /tmp/kubectl set image deployment/nginx-web \
                         nginx=${HARBOR}/library/firesense-web:${BUILD_NUMBER} \
                         -n firesense
-                    kubectl set image deployment/auth-service \
+                    /tmp/kubectl set image deployment/auth-service \
                         auth-service=${HARBOR}/library/auth-service:${BUILD_NUMBER} \
                         -n firesense
-                    kubectl rollout status deployment/nginx-web -n firesense
-                    kubectl rollout status deployment/auth-service -n firesense
+                    /tmp/kubectl rollout status deployment/nginx-web -n firesense
+                    /tmp/kubectl rollout status deployment/auth-service -n firesense
                 '''
             }
         }
