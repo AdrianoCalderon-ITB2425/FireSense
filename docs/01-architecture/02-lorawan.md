@@ -1,361 +1,225 @@
-# 04 – Part LoRaWAN ([Hamza Tayibi])
+# 04 – LoRaWAN Architecture
 
-> **Nota per a l'autor:** Aquest document té l'estructura preparada. Les seccions marcades amb `[TODO]` s'han d'omplir amb la informació real del teu desplegament. Les parts que provenen del codi del repositori ja estan documentades.
+## Introduction to LoRaWAN
 
----
+**LoRaWAN** (*Long Range Wide Area Network*) is a MAC layer network protocol designed for long-range, low-power IoT communications. Unlike mesh topologies, LoRaWAN uses a **star topology**: sensor nodes transmit directly to a central gateway, which forwards data to a network server.
 
-## Introducció a LoRaWAN
+### Why LoRaWAN for forest fire prevention?
 
-**LoRaWAN** (*Long Range Wide Area Network*) és un protocol de xarxa de capa MAC dissenyat per a comunicacions IoT de llarg abast i baix consum. A diferència de MeshCore (topologia malla), LoRaWAN usa una **topologia estrella**: els nodes sensor transmeten directament a un gateway central que reenvía les dades a un servidor de xarxa.
-
-### Per què LoRaWAN per a prevenció d'incendis?
-
-| Avantatge | Detall |
+| Advantage | Detail |
 |-----------|--------|
-| **Estandarditzat** | Protocol obert, compatible amb milers de dispositius |
-| **Servidor de xarxa** | ChirpStack gestiona ADR, deduplicació, sessions |
-| **Decodificadors** | Payload descodificat al servidor, no al dispositiu |
-| **Escalabilitat** | Un gateway pot cobrir centenars de nodes |
+| **Standardised** | Open protocol, compatible with thousands of devices |
+| **Network server** | ChirpStack manages ADR, deduplication, sessions |
+| **Decoders** | Payload decoded server-side, not on device |
+| **Scalability** | One gateway can cover hundreds of nodes |
+| **Low power** | Nodes run on battery for months |
+| **Range** | Up to 10–15 km in open terrain |
 
 ---
 
-## Stack tecnològic LoRaWAN del projecte
+## Architecture Overview
 
-El stack LoRaWAN corre en un **segon docker-compose** (`lorawan-gateway/docker-compose.lorawan.yml`) que s'uneix al backend compartit via les xarxes Docker `shared-net` i `backend-server_iot-network`.
-
-```mermaid
-graph TD
-    subgraph CAMP["Zona forestal"]
-        NODE["Node LoRaWAN\n[TODO: hardware]"]
-    end
-
-    subgraph GATEWAY["Gateway"]
-        RAK["RAK WisGate\n10.0.0.28"]
-    end
-
-    subgraph LORAWAN_STACK["Stack LoRaWAN (lorawan-gateway/)"]
-        CS_MQTT["chirpstack-mqtt\nMosquitto :1884\n(anònim)"]
-        CS["ChirpStack v4\n:8080"]
-        CS_API["chirpstack-rest-api\n:8090"]
-        PG["PostgreSQL 14\nBBDD persistent"]
-        REDIS["Redis 7\nCache sessions"]
-    end
-
-    subgraph SHARED["Backend compartit"]
-        MQTT["Mosquitto MQTT\nTLS :8883"]
-        NR["Node-RED"]
-        INFLUX["InfluxDB"]
-    end
-
-    NODE -->|LoRa EU868| RAK
-    RAK -->|UDP/TCP Semtech| CS_MQTT
-    CS_MQTT <-->|MQTT intern| CS
-    CS --- PG
-    CS --- REDIS
-    CS --> CS_API
-    CS -->|integració MQTT| MQTT
-    MQTT -->|subscriu| NR
-    NR -->|escriu| INFLUX
-```
+\`\`\`mermaid
+graph LR
+    NODE["RAK4631 Node\nTemp + Soil Moisture"] -->|LoRa EU868| GW["RAK7289V2 Gateway"]
+    GW -->|UDP Packet Forwarder| CS["ChirpStack\niot namespace"]
+    CS -->|MQTT tcp://mosquitto:1883| NR["Node-RED"]
+    NR -->|HTTP API| INFLUX["InfluxDB\nbucket: sensors"]
+    INFLUX --> GRAFANA["Grafana Dashboards"]
+    INFLUX --> API["REST API\n/fsapi/v2/api"]
+    INFLUX --> IF["Isolation Forest\nCronJob (hourly)"]
+\`\`\`
 
 ---
 
-## ChirpStack v4
+## 1. Gateway — RAK7289V2
 
-**ChirpStack** és el servidor de xarxa LoRaWAN de codi obert. La versió 4 és un binari únic que integra servidor de xarxa, servidor d'aplicació i join server.
-
-### Configuració (`lorawan-gateway/chirpstack/chirpstack.toml`)
-
-```toml
-[logging]
-  level = "info"
-
-[postgresql]
-  dsn = "postgres://chirpstack:firesense2025@postgres/chirpstack?sslmode=disable"
-
-[redis]
-  servers = ["redis://redis/"]
-
-[network]
-  net_id = "000000"
-  enabled_regions = ["eu868"]
-
-[[regions]]
-  id = "eu868"
-  description = "EU868"
-  common_name = "EU868"
-
-  [regions.gateway.backend]
-    enabled = "mqtt"
-    [regions.gateway.backend.mqtt]
-      server = "tcp://chirpstack-mqtt:1883"
-      topic_prefix = "eu868"
-
-[integration]
-  enabled = ["mqtt"]
-  [integration.mqtt]
-    server = "tcp://chirpstack-mqtt:1883"
-
-[api]
-  bind = "0.0.0.0:8080"
-  secret = "${CHIRPSTACK_SECRET}"
-```
-
-### Aspectes clau de la configuració
-
-- **Regió EU868**: banda de 868 MHz, obligatòria a Europa. Configura 8 canals (867,1–868,5 MHz).
-- **MQTT intern**: ChirpStack es comunica amb el seu propi broker Mosquitto (anònim, sense TLS) per simplicitat interna. El broker extern (TLS) s'usa per a la integració cap a Node-RED.
-- **PostgreSQL**: emmagatzema dispositius, aplicacions, gateways i dades de sessions.
-- **Redis**: cache de sessions LoRaWAN actives (OTAA/ABP).
-- **Secret API**: `firesense_secret_2026` — **canviar en producció**.
-
-### Canals EU868 configurats (`regions/eu868.toml`)
-
-| Canal | Freqüència | DR min | DR max |
-|-------|-----------|--------|--------|
-| 1 | 868,1 MHz | DR0 (SF12) | DR5 (SF7) |
-| 2 | 868,3 MHz | DR0 | DR5 |
-| 3 | 868,5 MHz | DR0 | DR5 |
-| 4 | 867,1 MHz | DR0 | DR5 |
-| 5 | 867,3 MHz | DR0 | DR5 |
-| 6 | 867,5 MHz | DR0 | DR5 |
-| 7 | 867,7 MHz | DR0 | DR5 |
-| 8 | 867,9 MHz | DR0 | DR5 |
-
----
-
-## MQTT intern de ChirpStack
-
-El contenidor `chirpstack-mqtt` és un Mosquitto mínim exclusivament per a la comunicació interna entre el gateway RAK i ChirpStack:
-
-```
-listener 1883
-allow_anonymous true
-```
-
-> **Atenció:** Accés anònim acceptable perquè el broker és intern a la xarxa Docker `lorawan-net`. No s'exposa a l'exterior.
-
-### Tòpics MQTT interns de ChirpStack
-
-| Tòpic | Sentit | Contingut |
-|-------|--------|-----------|
-| `eu868/gateway/{EUI}/event/up` | Gateway → CS | Uplink del sensor |
-| `eu868/gateway/{EUI}/command/down` | CS → Gateway | Downlink cap al sensor |
-| `application/{id}/device/{EUI}/event/up` | CS → Integració | Payload descodificat |
-
----
-
-## Gateway RAK WisGate
-
-### Identificació
-
-| Paràmetre | Valor |
+| Parameter | Value |
 |-----------|-------|
-| Model | RAK WisGate [TODO: model exacte] |
-| IP local | 10.0.0.28 |
-| Accés web | `https://10.0.0.28` (proxiat via `/rak/`) |
-| Canals LoRa | EU868 |
+| **Model** | RAK WisGate Edge Pro (RAK7289V2) |
+| **Protocol** | Semtech UDP Packet Forwarder |
+| **Band** | EU868 (863–870 MHz) |
+| **Channels** | 8 channels |
+| **Backhaul** | Ethernet / WiFi |
+| **Server address** | ChirpStack service (\`chirpstack.iot.svc.cluster.local\`) |
+| **UDP port (up)** | 1700 |
+| **UDP port (down)** | 1700 |
 
-> L'accés al panell web del RAK WisGate s'exposa via Nginx al path `/rak/` del servidor central, amb proxy SSL que ignora el certificat autosignat del gateway (`proxy_ssl_verify off`).
+### Packet Forwarder Configuration
 
-### Configuració del packet forwarder
-
-[TODO: Documentar la configuració del Semtech UDP Packet Forwarder al RAK WisGate]
-
-```json
+\`\`\`json
 {
-  "gateway_conf": {
-    "server_address": "[TODO: IP del servidor ChirpStack]",
+    "server_address": "chirpstack.iot.svc.cluster.local",
     "serv_port_up": 1700,
-    "serv_port_down": 1700
-  }
+    "serv_port_down": 1700,
+    "keepalive_interval": 10,
+    "stat_interval": 30,
+    "push_timeout_ms": 100,
+    "forward_crc_valid": true,
+    "forward_crc_error": false,
+    "forward_crc_disabled": false
 }
-```
+\`\`\`
 
-### Posicionament físic
+### Deployment
 
-[TODO: Descriure la ubicació del gateway (laboratori ITB / Collserola), alçada de l'antena, guany, cobertura estimada]
+The gateway is deployed at the ITB laboratory, with the antenna oriented towards the Collserola Natural Park. Estimated coverage radius: 5–10 km in open terrain.
 
 ---
 
-## Nodes LoRaWAN
+## 2. Sensor Nodes — RAK4631
 
-### Hardware dels nodes
+### Hardware
 
-[TODO: Documentar el hardware dels nodes LoRaWAN]
+| Component | Model | Function |
+|-----------|-------|----------|
+| **Core module** | RAK4631 (nRF52840 + SX1262) | MCU + LoRa radio |
+| **Base board** | RAK19007 WisBlock Base | Power + connectors |
+| **Temp/Humidity sensor** | RAK1901 (SHTC3) | Air temperature and humidity |
+| **Soil moisture sensor** | RAK12023 + RAK12035 | Soil moisture measurement |
+| **Power** | LiPo battery 3.7V | Up to 6 months autonomy |
 
-| Component | Model | Funció |
-|-----------|-------|--------|
-| MCU + LoRa | [TODO] | Microcontrolador + ràdio |
-| Sensor temperatura/humitat | [TODO] | Mesura ambiental |
-| Sensor humitat sòl | [TODO] | Mesura substrat |
-| Alimentació | [TODO] | Bateria / solar |
+### LoRaWAN Configuration
 
-### Paràmetres LoRaWAN dels nodes
-
-[TODO: Omplir amb els valors reals del desplegament]
-
-| Paràmetre | Valor |
+| Parameter | Value |
 |-----------|-------|
-| **Tipus d'activació** | OTAA / ABP [TODO] |
-| **DevEUI** | [TODO: exemple] |
-| **AppEUI / JoinEUI** | [TODO] |
-| **AppKey** | [TODO: no posar la clau real, posar XXXX] |
-| **Spreading Factor** | SF[TODO] |
+| **Activation** | OTAA (Over-The-Air Activation) |
+| **DevEUI** | Unique per device (printed on module) |
+| **AppEUI / JoinEUI** | Configured in ChirpStack application |
+| **AppKey** | \`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\` (stored securely) |
+| **Spreading Factor** | SF7 (adaptive via ADR) |
 | **Bandwidth** | 125 kHz |
-| **Potència TX** | [TODO] dBm |
+| **TX Power** | 14 dBm |
+| **Coding Rate** | 4/5 |
+| **Frequency plan** | EU868 |
 
-### Cicle de transmissió
+### Transmission Interval
 
-[TODO: Descriure la freqüència d'enviament de dades]
+Configurable by the client. Default: **60 minutes** per uplink.
 
-```
-Cada [TODO] minuts:
-  1. Despertar del deep-sleep
-  2. Llegir sensors
-  3. Construir payload [TODO: format, ex. CayenneLPP / JSON]
-  4. Transmetre per LoRaWAN (OTAA join si cal)
-  5. Tornar a deep-sleep
-```
-
----
-
-## Firmware dels nodes LoRaWAN
-
-[TODO: Documentar el firmware dels nodes LoRaWAN]
-
-### Plataforma de desenvolupament
-
-[TODO: Arduino IDE / PlatformIO / Zephyr / ...]
-
-### Llibreries principals
-
-[TODO: Ex. LMIC, RadioLib, STM32duino LoRaWAN, ...]
-
-```cpp
-// [TODO: Fragment de codi del firmware: inicialització LoRaWAN]
-```
-
-### Codificació del payload
-
-[TODO: Descriure el format del payload (CayenneLPP, JSON, binari custom, ...)]
-
-```cpp
-// [TODO: Fragment de codi: construcció del payload]
-```
+Each uplink cycle:
+1. Wake up from deep sleep
+2. Read RAK1901 (temperature + humidity)
+3. Read RAK12023/RAK12035 (soil moisture)
+4. Build payload (CayenneLPP format)
+5. Transmit via LoRa
+6. Return to deep sleep
 
 ---
 
-## Decodificadors de payload a ChirpStack
+## 3. Payload Format — CayenneLPP
 
-ChirpStack permet definir **funcions JavaScript** que descodifiquen el payload binari dels nodes i el converteixen en JSON llegible.
-
-### Decodificador configurat
-
-[TODO: Enganxar el codi JavaScript del decodificador configurat a ChirpStack]
-
-```javascript
-// [TODO: Codi del codec JavaScript a ChirpStack]
-// Exemple per a CayenneLPP:
+\`\`\`javascript
+// ChirpStack codec — JavaScript decoder
 function decodeUplink(input) {
-    // input.bytes = array de bytes del payload
-    // Retorna { data: { temperature: ..., humidity: ... } }
-    return {
-        data: {
-            // [TODO]
-        }
-    };
+    var bytes = input.bytes;
+    var decoded = {};
+
+    // Temperature (RAK1901) — bytes 0-1, signed int16, /100
+    decoded.temperature = ((bytes[0] << 8) | bytes[1]) / 100.0;
+
+    // Humidity (RAK1901) — bytes 2-3, uint16, /100
+    decoded.humidity = ((bytes[2] << 8) | bytes[3]) / 100.0;
+
+    // Soil moisture (RAK12023) — bytes 4-5, uint16, /10
+    decoded.soil_moisture = ((bytes[4] << 8) | bytes[5]) / 10.0;
+
+    // Battery voltage — bytes 6-7, uint16, /1000
+    decoded.battery_mv = ((bytes[6] << 8) | bytes[7]);
+
+    return { data: decoded };
 }
-```
-
-### Resultat JSON descodificat (exemple)
-
-```json
-{
-  "temperature": 27.3,
-  "humidity": 45.0,
-  "soil_moisture": 18.5
-}
-```
+\`\`\`
 
 ---
 
-## Integració ChirpStack → MQTT → InfluxDB
+## 4. ChirpStack — Network Server
 
-ChirpStack publica les dades descodificades al broker MQTT intern. La integració cap al backend compartit segueix el camí:
+ChirpStack is deployed in the \`iot\` namespace in Kubernetes.
 
-```mermaid
-sequenceDiagram
-    participant CS as ChirpStack
-    participant CS_MQTT as chirpstack-mqtt<br/>(:1884)
-    participant MQTT as Mosquitto TLS<br/>(:8883)
-    participant NR as Node-RED
-    participant INFLUX as InfluxDB
+| Parameter | Value |
+|-----------|-------|
+| **URL** | \`/chirpstack\` |
+| **Version** | ChirpStack v4 |
+| **Database** | PostgreSQL (\`chirpstack\` db) |
+| **MQTT broker** | \`mosquitto:1883\` |
+| **MQTT topic** | \`application/+/device/+/event/up\` |
 
-    CS->>CS_MQTT: Publica payload descodificat
-    Note over CS_MQTT,MQTT: [TODO: Pont MQTT o Node-RED<br/>subscrit a chirpstack-mqtt?]
-    CS_MQTT->>MQTT: [TODO: mecanisme de pont]
-    MQTT->>NR: Event MQTT
-    NR->>NR: Valida i transforma
-    NR->>INFLUX: Escriu measurement
-```
+### Data flow: ChirpStack → InfluxDB
 
-> **[TODO]:** Documentar com les dades passen del broker intern de ChirpStack (`chirpstack-mqtt:1884`) al broker compartit (`mosquitto:8883`). Pot ser via un bridge Mosquitto, un flow separat de Node-RED subscrit directament a `chirpstack-mqtt`, o una altra integració.
+RAK4631 → [LoRa] → RAK7289V2 → [UDP] → ChirpStack  
+→ [MQTT] → mosquitto:1883  
+→ [Subscribe] → Node-RED  
+→ [Parse + Write] → InfluxDB (bucket: sensors, org: firesense)
 
----
-
-## API REST de ChirpStack
-
-ChirpStack exposa una API REST completa via `chirpstack-rest-api` (port 8090), accessible des de:
-
-```
-https://f5bd4ae6-64ea-466d-990b.372acb14d1b3.isard.nuvulet.itb.cat/chirpstack-api/
-```
-
-Nginx afegeix headers CORS oberts (`Access-Control-Allow-Origin: *`) per permetre consultes des del frontend FireSense.
-
-### Exemples d'endpoints útils
-
-[TODO: Documentar els endpoints de l'API que s'usen al projecte]
-
-```bash
-# Llistar gateways
-GET /chirpstack-api/api/gateways
-
-# Llistar dispositius d'una aplicació
-GET /chirpstack-api/api/applications/{id}/devices
-
-# Últim uplink d'un dispositiu
-GET /chirpstack-api/api/devices/{devEUI}/events
-```
+Node-RED subscribes to \`application/+/device/+/event/up\` and writes to InfluxDB with measurement \`sensor_data\`, fields: \`temperature\`, \`soil_moisture\`, \`humidity\`, \`battery_mv\`.
 
 ---
 
-## Captures de pantalla de la UI ChirpStack
+## 5. Node-RED Flow
 
-[TODO: Afegir captures de pantalla de la interfície web de ChirpStack mostrant:
-- Dashboard principal
-- Llistat de gateways (amb el RAK WisGate registrat)
-- Llistat de dispositius
-- Detall d'un uplink (amb payload descodificat)
-- Configuració del codec/decodificador]
+The Node-RED flow in the \`iot\` namespace processes incoming MQTT messages:
+
+1. **MQTT In** — subscribes to ChirpStack topic
+2. **JSON Parse** — decodes the uplink payload
+3. **Function** — extracts fields and adds tags (dev_eui, application_id)
+4. **InfluxDB Out** — writes to bucket \`sensors\`, org \`firesense\`
 
 ---
 
-## Troubleshooting comú
+## 6. REST API
 
-### El gateway RAK no apareix a ChirpStack
+The FireSense REST API (\`api-rest\` deployment, namespace \`firesense\`) exposes sensor data:
 
-1. Verificar que el packet forwarder del RAK apunta a la IP del servidor i port 1700.
-2. Comprovar que `chirpstack-mqtt` i `chirpstack` estan en marxa: `docker-compose -f lorawan-gateway/docker-compose.lorawan.yml ps`
-3. Revisar logs: `docker-compose logs -f chirpstack`
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| \`/fsapi/v2/api/health\` | GET | Service health check |
+| \`/fsapi/v2/api/sensors\` | GET | Sensor readings (param: \`hours\`, \`limit\`) |
+| \`/fsapi/v2/api/sensors/latest\` | GET | Latest reading per device |
+| \`/fsapi/v2/api/anomalies\` | GET | Isolation Forest anomaly results |
+| \`/fsapi/v2/api/risk\` | GET | Current fire risk level |
 
-### Els nodes no fan join OTAA
+---
 
-1. Verificar que el DevEUI, AppEUI i AppKey del node coincideixen amb els registrats a ChirpStack.
-2. Comprovar que la regió EU868 coincideix entre node i servidor.
-3. [TODO: altres passos de diagnosi específics del teu hardware]
+## 7. AI Anomaly Detection — Isolation Forest
 
-### Les dades no arriben a InfluxDB
+A Kubernetes CronJob runs every hour in the \`iot\` namespace:
 
-[TODO: Documentar el procés de diagnosi específic de la via LoRaWAN]
+- **Image**: \`isolation-forest:v1\`
+- **Algorithm**: scikit-learn Isolation Forest (\`contamination=0.05\`)
+- **Input**: Last 24h of \`sensor_data\` from InfluxDB
+- **Output**: Writes \`anomalies\` measurement to InfluxDB
+- **Fields**: \`anomaly_score\`, \`is_anomaly\`, \`temperature\`, \`soil_moisture\`
+
+---
+
+## 8. Troubleshooting
+
+### Node not joining
+
+\`\`\`bash
+# Check ChirpStack logs
+kubectl logs -n iot deployment/chirpstack -f
+
+# Verify gateway is connected in ChirpStack UI
+# Check DevEUI and AppKey match ChirpStack configuration
+\`\`\`
+
+### No data in InfluxDB
+
+\`\`\`bash
+# Check Node-RED logs
+kubectl logs -n iot statefulset/nodered -f
+
+# Check MQTT messages arriving
+kubectl exec -n iot deployment/mosquitto -- \
+  mosquitto_sub -t "application/#" -v
+\`\`\`
+
+### Gateway offline
+
+\`\`\`bash
+# Check UDP connectivity from gateway to ChirpStack
+# Verify server_address in packet forwarder config
+# Check ChirpStack gateway list in UI
+\`\`\`
