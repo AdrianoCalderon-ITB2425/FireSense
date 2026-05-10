@@ -11,7 +11,7 @@ Node-RED running in the `iot` namespace acts as the central data pipeline and AP
 
 - **Node-RED UI:** `https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/nodered/`
 - **API Base URL:** `https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/nodered/api/`
-- **Credentials:** admin / @firesense2025!
+- **Credentials:** admin / see deployment secrets
 
 ## Traefik Routing
 
@@ -180,7 +180,7 @@ module.exports = {
     httpAdminRoot: '/nodered/',
     httpNodeRoot: '/api/',
     functionExternalModules: true,
-    credentialSecret: "@firesense2025!"
+    credentialSecret: "${NODERED_CREDENTIAL_SECRET}"
 };
 ```
 
