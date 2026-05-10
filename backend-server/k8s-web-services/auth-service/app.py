@@ -113,23 +113,23 @@ def register():
         return jsonify({'error': 'Camps obligatoris'}), 400
     if len(password) < 8:
         return jsonify({'error': 'Contrasenya massa curta'}), 400
-    # Verificar hCaptcha
+    # Verificar Cloudflare Turnstile
     import os
-    hcaptcha_secret = os.environ.get('HCAPTCHA_SECRET', '')
-    if hcaptcha_secret and hcaptcha_token:
+    turnstile_secret = os.environ.get('TURNSTILE_SECRET', '0x4AAAAAADMZEiBF_P-eDTn1XXncwZnKE70')
+    turnstile_token = data.get('cf-turnstile-response', '')
+    if turnstile_secret and turnstile_token:
         try:
-            r = requests.post('https://api.hcaptcha.com/siteverify', data={
-                'secret': hcaptcha_secret,
-                'response': hcaptcha_token,
-                'sitekey': '97f82682-3b56-4b18-98b0-5f0e1cb4a26e'
+            r = requests.post('https://challenges.cloudflare.com/turnstile/v0/siteverify', data={
+                'secret': turnstile_secret,
+                'response': turnstile_token
             }, timeout=5)
             result = r.json()
             if not result.get('success'):
-                print('hCaptcha fail:', result)
+                print('Turnstile fail:', result)
                 return jsonify({'error': 'Verificació CAPTCHA fallida. Torna-ho a intentar.'}), 400
         except Exception as e:
-            print('hCaptcha error:', e)
-            pass  # Si falla hCaptcha, continuar
+            print('Turnstile error:', e)
+            pass
     try:
         # Verificar si ja existeix a PostgreSQL
         pg = get_pg()
