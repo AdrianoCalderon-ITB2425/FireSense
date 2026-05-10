@@ -50,9 +50,9 @@ body{
 }
 
 /* CORNER DECORATIONS */
-.corner{position:fixed;width:60px;height:60px;z-index:1;pointer-events:none;}
-.corner-tl{display:none;}
-.corner-tr{display:none;}
+.corner{position:fixed;width:60px;height:60px;z-index:2;pointer-events:none;}
+.corner-tl{top:80px;left:16px;border-top:1px solid var(--cyan2);border-left:1px solid var(--cyan2);}
+.corner-tr{top:80px;right:16px;border-top:1px solid var(--cyan2);border-right:1px solid var(--cyan2);}
 .corner-bl{bottom:16px;left:16px;border-bottom:1px solid var(--cyan2);border-left:1px solid var(--cyan2);}
 .corner-br{bottom:16px;right:16px;border-bottom:1px solid var(--cyan2);border-right:1px solid var(--cyan2);}
 
@@ -523,6 +523,8 @@ body{
   </div>
 </div>
 
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
 <div class="corner corner-bl"></div>
 <div class="corner corner-br"></div>
 </div><!-- /content -->

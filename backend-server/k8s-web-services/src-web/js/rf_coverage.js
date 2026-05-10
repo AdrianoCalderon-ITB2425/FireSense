@@ -69,7 +69,7 @@ RF.fetchElevationsMapbox = async function(pts, token) {
 
 RF._elevCache={};
 RF.fetchElevations=async function(pts){
-  var MAPBOX_TOKEN='MAPBOX_TOKEN_PLACEHOLDER
+  var MAPBOX_TOKEN='';
   try {
     var result = await RF.fetchElevationsMapbox(pts, MAPBOX_TOKEN);
     if(result && result.some(function(v){return v>0;})) return result;
