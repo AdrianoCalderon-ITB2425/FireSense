@@ -21,7 +21,7 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Section | Folder | Direct Access |
 |---------|--------|---------------|
 | Architecture | `docs/01-architecture/` | [View architecture →](./docs/01-architecture/00-index-architecture.md) |
-| Management & Actas | `docs/02-sprints/` | [View minutes →](./docs/02-sprints/) |
+| Management & Actas | `docs/02-sprints/` | [View actas →](./docs/02-sprints/) |
 | Comparison of Technologies | `docs/03-tech-comparison/` | [View tech-comparison →](./docs/03-tech-comparison/) |
 | Occupational Risks | `docs/04-occupational-risks/` | [View risks →](./docs/04-occupational-risks/) |
 | Manuals | `docs/06-manuals/` | [View manuals →](./docs/06-manuals/) |
