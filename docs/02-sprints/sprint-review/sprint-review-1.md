@@ -80,7 +80,7 @@ During the review, a live demonstration was carried out of:
 | Impediment | Impact | Resolution |
 |-----------|--------|------------|
 | MapTiler key invalidated due to exceeding 100k requests | Map not loading | New token created on 27/04/2026 |
-| Missing Espurna templates in nginx container causing crash loop | nginx-proxy in restart loop | Added `|| true` to entrypoint.sh |
+| Missing Espurna templates in nginx container causing crash loop | nginx-proxy in restart loop | Added `\|\| true` to `entrypoint.sh` |
 | Secrets (Mapbox, InfluxDB, ChirpStack) accidentally pushed to GitHub | GitHub push protection blocking pushes | git filter-branch to rewrite history |
 | Hardcoded nodes in config.js visible in F12 | Security issue | Nodes loaded dynamically from /api/nodes |
 | `sed -i` not working inside nginx container (read-only volume) | 2h debugging block | Substitution done on host before build |
