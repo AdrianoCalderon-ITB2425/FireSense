@@ -72,7 +72,7 @@ During the review, a live demonstration was carried out of:
 ---
 
 ## 7. ProofHub Captures — Done Tasks
-![ProofHub Sprint 2 Planning](../sprint-planning/captures/proofhub_sprint2_planning.png)
+![ProofHub Sprint 2 Planning](../sprint-planning/captures/proofhub_sprint2_review.png)
 
 ---
 

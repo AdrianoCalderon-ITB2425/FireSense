@@ -82,7 +82,7 @@ Deliver the AI features (REST API + Isolation Forest), the forest rangers web po
 ---
 
 ## 8. ProofHub Captures — Sprint Planning
-![ProofHub Sprint 2 Planning](./captures/proofhub_sprint2_planning.png)
+![ProofHub Sprint 2 Planning](./captures/proofhub_sprint3_planning.png)
 
 ---
 

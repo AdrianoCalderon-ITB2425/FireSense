@@ -70,7 +70,7 @@ During the review, a live demonstration was carried out of:
 ---
 
 ## 7. ProofHub Captures — Done Tasks
-![ProofHub Sprint 1 Review](../sprint-review/captures/proofhub_sprint1_review.png)
+![ProofHub Sprint 1 Review](../sprint-review/captures/proofhub_sprint3_review.png)
 
 ---
 
