@@ -106,7 +106,7 @@ A task is considered complete when:
 ## 8. Team
 | Role | Name |
 |------|------|
-| Scrum Master | Francisco |
+| Scrum Master | Francisco Diaz |
 | Backend Developer / Web Frontend FireSense | Hamza Tayibi |
 | Backend Developer | Adriano Calderon |
 
