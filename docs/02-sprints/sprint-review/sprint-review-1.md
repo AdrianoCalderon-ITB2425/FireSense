@@ -1,3 +1,24 @@
+# Acta — Sprint 1 Review
+
+## Meeting Information
+| Field | Value |
+|-------|-------|
+| Date | 27/04/2026 |
+| Time | 16:00 - 17:00 |
+| Location | ASIX Classroom — ITB |
+| Sprint | Sprint 1 |
+| Sprint Duration | 14/04/2026 - 27/04/2026 |
+| Version | 1.0 |
+
+## Attendees
+| Name | Role | Attendance |
+|------|------|------------|
+| Hamza Tayibi | Backend Developer / Web Frontend FireSense | Present |
+| Adriano Calderon | Backend Developer | Present |
+| Francisco Diaz | Scrum Master / Coordination | Present |
+
+---
+
 ## 1. Sprint 1 Objective — Review
 The objective of Sprint 1 was to build the base infrastructure of the FireSense project and the MVP of the IoT forest fire prevention platform. Objective achieved at 100%.
 
@@ -85,16 +106,23 @@ During the review, a live demonstration was carried out of:
 - Checking the browser F12 to verify security
 - Documenting each feature in the client manual
 
+---
+
+## 9. Next Meeting
+| Type | Date | Time | Objective |
+|------|------|------|-----------|
+| Sprint 2 Planning | 28/04/2026 | 15:30 | Define phase 2 tasks |
+| Daily Standup | Daily | 15:00 | Task progress follow-up |
 
 ---
 
-## 9. Team
+## 10. Team
 | Role | Name |
 |------|------|
-| Scrum Master | Francisco |
+| Scrum Master | Francisco Diaz |
 | Backend Developer / Web Frontend FireSense | Hamza Tayibi |
 | Backend Developer | Adriano Calderon |
 
 ---
-*Minutes generated: 27/04/2026 — Version 1.0*
+*Acta generated: 27/04/2026 — Version 1.0*
 *FireSense IoT Platform — Institut Tecnologic de Barcelona — ASIX2c — 2025/2026*

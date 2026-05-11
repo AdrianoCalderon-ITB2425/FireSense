@@ -1,5 +1,26 @@
+# Acta — Sprint 3 Review
+
+## Meeting Information
+| Field | Value |
+|-------|-------|
+| Date | 18/05/2026 |
+| Time | 16:00 - 17:00 |
+| Location | ASIX Classroom — ITB |
+| Sprint | Sprint 3 |
+| Sprint Duration | 11/05/2026 - 18/05/2026 |
+| Version | 1.0 |
+
+## Attendees
+| Name | Role | Attendance |
+|------|------|------------|
+| Hamza Tayibi | Backend Developer / Web Frontend FireSense | Present |
+| Adriano Calderon | Backend Developer | Present |
+| Francisco Diaz | Scrum Master / Coordination | Present |
+
+---
+
 ## 1. Sprint 3 Objective — Review
-The objective of Sprint 3 was to implement AI features, REST API, forest rangers portal, complete documentation, integration tests, and prepare the final presentation. All objectives achieved at 100%.
+The objective of Sprint 3 was to implement AI features, REST API, forest rangers portal, complete all technical documentation in English, run integration tests and security audit, and present the final project to the tribunal. All objectives achieved at 100%.
 
 ---
 
@@ -64,13 +85,13 @@ During the review, a live demonstration was carried out of:
 |-----------|--------|------------|
 | Jenkins built image had wrong nginx.conf | nginx-web crashing | Reverted to stable v13 image |
 | API returned fake values when no sensor data | Misleading risk indicator | Added None check, returns SENSE_DADES |
-| Mermaid diagrams breaking in bash heredoc | Docs not rendering | Used Python to write files |
-| sprint-review files were empty | Missing sprint docs | Recreated with real project content |
+| sprint-review files were empty in git | Missing sprint docs | Recreated with real project content |
+| ProofHub captures missing from repo | Incomplete documentation | Copied from client machine via SCP |
 
 ---
 
 ## 7. ProofHub Captures — Done Tasks
-![ProofHub Sprint 1 Review](../sprint-review/captures/proofhub_sprint1_review.png)
+![ProofHub Sprint 3 Review](./captures/proofhub_sprint3_review.png)
 
 ---
 
@@ -90,13 +111,20 @@ During the review, a live demonstration was carried out of:
 
 ---
 
-## 9. Team
+## 9. Next Meeting
+| Type | Date | Time | Objective |
+|------|------|------|-----------|
+| Final presentation | 18/05/2026 | 10:00 | Tribunal presentation |
+
+---
+
+## 10. Team
 | Role | Name |
 |------|------|
 | Scrum Master | Francisco Diaz |
-| Backend Developer / Web Frontend | Hamza Tayibi |
-| Backend Developer / IoT | Adriano Calderón |
+| Backend Developer / Web Frontend FireSense | Hamza Tayibi |
+| Backend Developer | Adriano Calderon |
 
 ---
-*Minutes generated: 18/05/2026 — Version 1.0*
+*Acta generated: 18/05/2026 — Version 1.0*
 *FireSense IoT Platform — Institut Tecnologic de Barcelona — ASIX2c — 2025/2026*

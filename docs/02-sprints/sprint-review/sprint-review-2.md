@@ -1,3 +1,24 @@
+# Acta — Sprint 2 Review
+
+## Meeting Information
+| Field | Value |
+|-------|-------|
+| Date | 10/05/2026 |
+| Time | 16:00 - 17:00 |
+| Location | ASIX Classroom — ITB |
+| Sprint | Sprint 2 |
+| Sprint Duration | 28/04/2026 - 10/05/2026 |
+| Version | 1.0 |
+
+## Attendees
+| Name | Role | Attendance |
+|------|------|------------|
+| Hamza Tayibi | Backend Developer / Web Frontend FireSense | Present |
+| Adriano Calderon | Backend Developer | Present |
+| Francisco Diaz | Scrum Master / Coordination | Present |
+
+---
+
 ## 1. Sprint 2 Objective — Review
 The objective of Sprint 2 was to harden the FireSense infrastructure with security, CI/CD automation, monitoring, backups, and additional services. Objective achieved at 100%.
 
@@ -72,7 +93,7 @@ During the review, a live demonstration was carried out of:
 ---
 
 ## 7. ProofHub Captures — Done Tasks
-![ProofHub Sprint 2 Planning](../sprint-planning/captures/proofhub_sprint2_planning.png)
+![ProofHub Sprint 2 Review](./captures/proofhub_sprint2_review.png)
 
 ---
 
@@ -92,13 +113,21 @@ During the review, a live demonstration was carried out of:
 
 ---
 
-## 9. Team
+## 9. Next Meeting
+| Type | Date | Time | Objective |
+|------|------|------|-----------|
+| Sprint 3 Planning | 11/05/2026 | 15:30 | Define final sprint tasks |
+| Daily Standup | Daily | 15:00 | Task progress follow-up |
+
+---
+
+## 10. Team
 | Role | Name |
 |------|------|
 | Scrum Master | Francisco Diaz |
-| Backend Developer / Web Frontend | Hamza Tayibi |
-| Backend Developer / IoT | Adriano Calderón |
+| Backend Developer / Web Frontend FireSense | Hamza Tayibi |
+| Backend Developer | Adriano Calderon |
 
 ---
-*Minutes generated: 10/05/2026 — Version 1.0*
+*Acta generated: 10/05/2026 — Version 1.0*
 *FireSense IoT Platform — Institut Tecnologic de Barcelona — ASIX2c — 2025/2026*
