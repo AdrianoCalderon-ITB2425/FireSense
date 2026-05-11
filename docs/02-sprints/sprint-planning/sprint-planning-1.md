@@ -82,7 +82,7 @@ A task is considered complete when:
 |------|-------------|--------|--------|
 | Secrets exposed on GitHub (Mapbox, ChirpStack, InfluxDB) | High | Critical | Resolved: git filter-branch + nginx proxy |
 | MapTiler 100k requests limit exceeded | High | High | Resolved: new token created 27/04/2026 |
-| Espurna templates missing in nginx container | Medium | High | Resolved: added `|| true` in entrypoint.sh |
+| Espurna templates missing in nginx container | Medium | High | Resolved: added `\|\| true` in `entrypoint.sh` |
 | Hardcoded NODES in config.js visible in F12 | High | Medium | Resolved: nodes loaded dynamically from /api/nodes |
 | Gateway Offline (RAK7289V2 off) | Low | Low | Pending: physical gateway in lab |
 | Join OTAA fails if AppKey does not match | Medium | High | Documented in client manual (step 4.2) |
