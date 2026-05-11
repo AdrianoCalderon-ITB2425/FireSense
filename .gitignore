@@ -44,7 +44,9 @@ backend-server/mqtt/passwd*
 
 # Archivos generados por envsubst (contienen tokens reales)
 backend-server/mi-web-html-firesense/js/config.js
-backend-server/mi-web-html-firesense/js/map.js
+backend-server/mi-web-html-fireseecho "backend-server/.env" >> .gitignore
+git rm --cached backend-server/.env
+git commit -m "security: remove .env from tracking"nse/js/map.js
 backend-server/mi-web-html-espurna/js/config.js
 backend-server/mi-web-html-espurna/js/map.js
 backend-server/mi-web-html-firesense/js/rf_coverage.js
@@ -65,4 +67,5 @@ backend-server/nginx/staging_htpasswd
 backend-server/mqtt/passwd
 backend-server/k8s/traefik-worker01/certs
 
+backend-server/.env
 auth
