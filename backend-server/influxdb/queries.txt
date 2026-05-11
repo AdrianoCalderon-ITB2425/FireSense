@@ -1,0 +1,57 @@
+# FireSense — InfluxDB Flux Queries Reference
+
+## Latest sensor reading per device
+from(bucket: "sensors")
+  |> range(start: -3h)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> last()
+
+## Temperature last 24h
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> filter(fn: (r) => r._field == "temperature")
+  |> sort(columns: ["_time"])
+
+## Soil moisture last 24h
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> filter(fn: (r) => r._field == "soil_moisture")
+  |> sort(columns: ["_time"])
+
+## Hourly mean (downsampled)
+from(bucket: "sensors")
+  |> range(start: -7d)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+
+## Anomalies last 24h
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "anomalies")
+  |> filter(fn: (r) => r._field == "is_anomaly")
+  |> filter(fn: (r) => r._value == 1)
+
+## Count anomalies per device
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "anomalies")
+  |> filter(fn: (r) => r._field == "is_anomaly")
+  |> filter(fn: (r) => r._value == 1)
+  |> group(columns: ["dev_eui"])
+  |> count()
+
+## Average soil moisture last hour
+from(bucket: "sensors")
+  |> range(start: -1h)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> filter(fn: (r) => r._field == "soil_moisture")
+  |> mean()
+
+## Battery level per device
+from(bucket: "sensors")
+  |> range(start: -3h)
+  |> filter(fn: (r) => r._measurement == "sensor_data")
+  |> filter(fn: (r) => r._field == "battery_mv")
+  |> last()
