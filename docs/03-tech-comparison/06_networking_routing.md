@@ -70,3 +70,38 @@
 - **Familiarity and documentation**: ISC DHCP is the most well-known DHCP server in the Linux/Unix world, with decades of documentation and examples. In an educational lab project, ease of configuration and abundance of documentation are key factors.
 - **Simplicity for the use case**: ISC DHCP is used in FireSense solely for the IoT segment (assigning IPs to the LoRaWAN gateway and nodes). It is a simple task that does not require Kea's advanced capabilities (REST API, database, HA).
 - **Note**: ISC DHCP has its End of Life scheduled for 2026, and the ISC recommends migrating to Kea. For a long-term production project, Kea would be the right choice. In the context of this academic project, ISC DHCP is perfectly valid, and its configuration is more straightforward.
+
+---
+
+## Calico vs Flannel (CNI)
+
+| Criterion | **Calico** | Flannel |
+|-----------|------------|---------|
+| Network policies | Yes (full NetworkPolicy support) | No |
+| Performance | High (eBPF mode available) | Medium |
+| BGP routing | Yes | No |
+| Security | Full NetworkPolicy + GlobalNetworkPolicy | Basic |
+| Observability | Yes (calicoctl) | Limited |
+| Production use | Large enterprises, GKE, AKS | Simple clusters |
+| CIS compliance | Full support | Partial |
+
+### Justification: Calico
+- **NetworkPolicies**: Calico is the only CNI that supports full Kubernetes NetworkPolicy + extended GlobalNetworkPolicy. Required for CIS hardening.
+- **Production standard**: Used by major cloud providers (GKE, AKS) and enterprises. Flannel is suitable only for simple clusters without security requirements.
+- **kube-bench compatibility**: CIS Kubernetes Benchmark tests assume NetworkPolicy support. Calico passes these tests; Flannel does not.
+
+---
+
+## MetalLB vs NodePort (Load Balancing)
+
+| Criterion | **MetalLB** | NodePort |
+|-----------|-------------|---------|
+| External IP | Yes (real LoadBalancer IP) | No (port on each node) |
+| Standard K8s Service | LoadBalancer type | NodePort type |
+| Production-like | Yes | No |
+| Port range | Any port | 30000-32767 only |
+| Integration with Traefik | Native | Manual |
+
+### Justification: MetalLB
+- **Real LoadBalancer**: MetalLB provides a real LoadBalancer IP in bare-metal environments, exactly like cloud providers. This allows Traefik to work as it would in production (GKE, AKS, EKS).
+- **No port restrictions**: NodePort is limited to the 30000-32767 range. MetalLB allows using standard ports (80, 443).

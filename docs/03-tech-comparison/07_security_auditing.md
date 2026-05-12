@@ -167,3 +167,41 @@
 - **Direct debugging and administration**: In a development and lab environment like FireSense, being able to directly see and modify any LDAP attribute (without going through forms that might hide information) is a clear advantage over LAM, which prioritizes ease of use over total control.
 - **Lightweight**: Like LAM, phpLDAPadmin is a PHP application that can be deployed in a minimal Docker container, with no significant impact on cluster resources.
 - **Use case in FireSense**: It is used as an internal administration tool to manage centralized OpenLDAP users (Grafana, Node-RED, SSH). It is not an externally exposed service, but an internal management tool for the team.
+
+---
+
+## Longhorn vs NFS (Persistent Storage)
+
+| Criterion | **Longhorn** | NFS |
+|-----------|--------------|-----|
+| Replication | Yes (2-3 replicas across nodes) | No |
+| Auto-healing | Yes (rebuilds replicas automatically) | No |
+| K8s native | Yes (CSI driver) | Manual PV/PVC |
+| Snapshots | Yes | No |
+| Backup | Yes (S3, NFS target) | Manual |
+| UI dashboard | Yes | No |
+| Single point of failure | No | Yes (NFS server) |
+
+### Justification: Longhorn
+- **Distributed storage**: Longhorn replicates data across 2 workers. If a node fails, data is still available. NFS has a single point of failure.
+- **K8s native**: Longhorn installs as a CSI driver and StorageClass. PVCs are provisioned automatically. NFS requires manual PersistentVolume configuration.
+- **Snapshots and backup**: Longhorn supports automated snapshots and backup to external targets, which is used in the FireSense DRP.
+
+---
+
+## Sealed Secrets vs HashiCorp Vault (Secret Management)
+
+| Criterion | **Sealed Secrets** | HashiCorp Vault |
+|-----------|-------------------|-----------------|
+| Git-safe | Yes (encrypted in git) | No (secrets external) |
+| Complexity | Low | Very high |
+| K8s native | Yes (CRD + controller) | Requires agent/sidecar |
+| Offline operation | Yes | No (Vault must be running) |
+| Cost | Free (open source) | Free/Enterprise |
+| Learning curve | Low | High |
+| Use case | K8s secrets in git | Enterprise secret management |
+
+### Justification: Sealed Secrets
+- **GitOps compatible**: Sealed Secrets is the only solution that allows safely committing encrypted secrets to git. HashiCorp Vault stores secrets externally, breaking the GitOps workflow.
+- **Simplicity**: Sealed Secrets requires only installing the controller and using kubeseal. Vault requires a complex setup (HA, unsealing, policies, agents).
+- **No external dependency**: If Vault is down, pods cannot retrieve secrets. Sealed Secrets decrypts at cluster level — no external dependency.
