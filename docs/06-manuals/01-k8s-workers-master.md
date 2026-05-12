@@ -1,31 +1,31 @@
-# Instalación de un clúster Kubernetes — kubeadm + containerd + Calico
+# Kubernetes Cluster Installation — kubeadm + containerd + Calico
 
-Guía probada y depurada para montar un clúster Kubernetes vanilla de 3 nodos sobre Debian/Ubuntu en máquinas con varias interfaces de red (típico en entornos virtualizados como IsardVDI, libvirt o Proxmox).
+A tested and debugged guide to setting up a vanilla 3-node Kubernetes cluster on Debian/Ubuntu machines with multiple network interfaces (common in virtualized environments like IsardVDI, libvirt, or Proxmox).
 
-## Topología asumida
+## Assumed Topology
 
-| Rol       | Hostname       | IP del clúster | Interfaz        |
-|-----------|----------------|----------------|-----------------|
-| Master    | `k8s-master`   | `10.0.0.10`    | `enp2s0` (red interna del clúster) |
-| Worker01  | `k8s-worker01` | `10.0.0.11`    | `enp2s0`        |
-| Worker02  | `k8s-worker02` | `10.0.0.12`    | `enp2s0`        |
+| Role      | Hostname       | Cluster IP  | Interface                        |
+|-----------|----------------|-------------|----------------------------------|
+| Master    | `k8s-master`   | `10.0.0.10` | `enp2s0` (internal cluster network) |
+| Worker01  | `k8s-worker01` | `10.0.0.11` | `enp2s0`                         |
+| Worker02  | `k8s-worker02` | `10.0.0.12` | `enp2s0`                         |
 
-> **IMPORTANTE — leer antes de empezar.** Si tus nodos tienen varias interfaces de red (cosa habitual en VMs: una NAT de gestión, una interna del clúster, Tailscale, libvirt bridges, etc.), apunta cuál es la interfaz **dedicada al tráfico interno del clúster** y su CIDR. Vas a necesitar esa información en los pasos 3 y 4. Una mala elección aquí es la causa #1 de fallos en este tipo de despliegues.
+> **IMPORTANT — read before you start.** If your nodes have multiple network interfaces (common in VMs: a NAT management interface, an internal cluster interface, Tailscale, libvirt bridges, etc.), identify which interface is **dedicated to internal cluster traffic** and its CIDR. You will need that information in steps 3 and 4. A wrong choice here is the #1 cause of failures in this type of deployment.
 
 ---
 
-## 0. Requisitos previos (en los TRES nodos)
+## 0. Prerequisites (on ALL THREE nodes)
 
-### 0.1 Hostname y resolución local
+### 0.1 Hostname and local resolution
 
 ```bash
-# En el master
+# On the master
 sudo hostnamectl set-hostname k8s-master
 
-# En cada worker (respectivamente)
-sudo hostnamectl set-hostname k8s-worker01   # y k8s-worker02
+# On each worker (respectively)
+sudo hostnamectl set-hostname k8s-worker01   # and k8s-worker02
 
-# En los TRES nodos: añadir las entradas a /etc/hosts
+# On ALL THREE nodes: add entries to /etc/hosts
 sudo tee -a /etc/hosts <<EOF
 10.0.0.10  k8s-master
 10.0.0.11  k8s-worker01
@@ -33,14 +33,14 @@ sudo tee -a /etc/hosts <<EOF
 EOF
 ```
 
-### 0.2 Desactivar swap (obligatorio)
+### 0.2 Disable swap (mandatory)
 
 ```bash
 sudo swapoff -a
 sudo sed -i '/\sswap\s/d' /etc/fstab
 ```
 
-### 0.3 Cargar módulos del kernel
+### 0.3 Load kernel modules
 
 ```bash
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
@@ -52,7 +52,7 @@ sudo modprobe overlay
 sudo modprobe br_netfilter
 ```
 
-### 0.4 Activar parámetros de red (bridging + IP forward)
+### 0.4 Enable network parameters (bridging + IP forwarding)
 
 ```bash
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
@@ -66,11 +66,11 @@ sudo sysctl --system
 
 ---
 
-## 1. Instalar containerd como CRI (en los 3 nodos)
+## 1. Install containerd as CRI (on all 3 nodes)
 
-> **Nota.** Si Docker ya está instalado en el nodo, `containerd.io` también lo está (es dependencia de Docker). En ese caso puedes saltar la instalación y pasar directamente a la configuración de `SystemdCgroup` al final del bloque.
+> **Note.** If Docker is already installed on the node, `containerd.io` is also installed (it is a Docker dependency). In that case you can skip the installation and go directly to the `SystemdCgroup` configuration at the end of this block.
 
-Detecta tu distro y usa el repo correcto:
+Detect your distro and use the correct repo:
 
 - **Debian** → `https://download.docker.com/linux/debian`
 - **Ubuntu** → `https://download.docker.com/linux/ubuntu`
@@ -80,12 +80,12 @@ sudo apt-get update
 sudo apt-get install -y ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 
-# CAMBIAR `debian` POR `ubuntu` SI USAS UBUNTU
+# CHANGE `debian` TO `ubuntu` IF USING UBUNTU
 curl -fsSL https://download.docker.com/linux/debian/gpg | \
   sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-# CAMBIAR `debian` POR `ubuntu` SI USAS UBUNTU
+# CHANGE `debian` TO `ubuntu` IF USING UBUNTU
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
   https://download.docker.com/linux/debian $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -93,7 +93,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 sudo apt-get update
 sudo apt-get install -y containerd.io
 
-# Configurar containerd con SystemdCgroup = true (imprescindible con cgroup v2)
+# Configure containerd with SystemdCgroup = true (required with cgroup v2)
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
@@ -102,7 +102,7 @@ sudo systemctl restart containerd && sudo systemctl enable containerd
 
 ---
 
-## 2. Instalar kubeadm, kubelet y kubectl (en los 3 nodos)
+## 2. Install kubeadm, kubelet and kubectl (on all 3 nodes)
 
 ```bash
 K8S_VERSION="v1.35"
@@ -121,19 +121,19 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
 ```
 
-> En este punto `kubelet` entrará en un bucle de reinicios porque aún no existe el clúster. Es normal.
+> At this point `kubelet` will enter a restart loop because the cluster does not exist yet. This is normal.
 
 ---
 
-## 3. Inicializar el clúster (solo en el master)
+## 3. Initialize the cluster (master only)
 
-> **CRÍTICO — elección del Pod CIDR.** El parámetro `--pod-network-cidr` define la red interna que Kubernetes asignará a los pods. Esa red **no debe solaparse con NINGUNA red ya existente en tus nodos** (incluidas redes Docker, libvirt bridges, Tailscale, redes corporativas, etc.).
+> **CRITICAL — Pod CIDR selection.** The `--pod-network-cidr` parameter defines the internal network Kubernetes will assign to pods. That network **must not overlap with ANY existing network on your nodes** (including Docker networks, libvirt bridges, Tailscale, corporate networks, etc.).
 >
-> Comprueba todas tus redes con `ip a` antes de elegir. La guía oficial de Calico sugiere `192.168.0.0/16`, pero en muchos entornos virtualizados **esa red entra en conflicto** con la red de gestión de las VMs. Aquí usamos `172.16.0.0/16`, que es seguro siempre que no tengas ya una red Docker o libvirt en `172.16.x.x`.
+> Check all your networks with `ip a` before choosing. The official Calico guide suggests `192.168.0.0/16`, but in many virtualized environments **that network conflicts** with the VM management network. This guide uses `172.16.0.0/16`, which is safe as long as you do not already have a Docker or libvirt network on `172.16.x.x`.
 
-> **CRÍTICO — `--apiserver-advertise-address`.** Si tu nodo tiene varias interfaces, kubeadm puede elegir la equivocada y publicar el endpoint del apiserver en una IP que los workers no pueden alcanzar. Especifica **siempre** la IP de la red interna del clúster.
+> **CRITICAL — `--apiserver-advertise-address`.** If your node has multiple interfaces, kubeadm may pick the wrong one and advertise the apiserver endpoint on an IP the workers cannot reach. **Always** specify the IP of the internal cluster network.
 
-Ejecuta esto **únicamente en `k8s-master`**:
+Run this **only on `k8s-master`**:
 
 ```bash
 sudo kubeadm init \
@@ -145,16 +145,16 @@ sudo kubeadm init \
   --cri-socket=unix:///var/run/containerd/containerd.sock
 ```
 
-Tardará unos minutos. Al terminar verás un comando `kubeadm join ...` parecido a:
+This will take a few minutes. When it finishes you will see a `kubeadm join ...` command similar to:
 
 ```
 kubeadm join k8s-master:6443 --token <token> \
     --discovery-token-ca-cert-hash sha256:<hash>
 ```
 
-**Cópialo en un sitio seguro** — lo necesitas para los workers.
+**Copy it somewhere safe** — you need it for the workers.
 
-Configura `kubectl` para tu usuario normal en el master:
+Configure `kubectl` for your regular user on the master:
 
 ```bash
 mkdir -p $HOME/.kube
@@ -162,7 +162,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-Verifica que el master aparece (estará `NotReady` hasta que pongas el CNI):
+Verify that the master appears (it will be `NotReady` until the CNI is installed):
 
 ```bash
 kubectl get nodes
@@ -170,16 +170,16 @@ kubectl get nodes
 
 ---
 
-## 4. Instalar Calico CNI (desde el master)
+## 4. Install Calico CNI (from the master)
 
-### 4.1 Aplicar los manifests con el Pod CIDR correcto
+### 4.1 Apply manifests with the correct Pod CIDR
 
 ```bash
-# CRDs y operador
+# CRDs and operator
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.4/manifests/operator-crds.yaml
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.4/manifests/tigera-operator.yaml
 
-# Descargar el custom-resources y ajustar el CIDR para que coincida con --pod-network-cidr
+# Download custom-resources and adjust the CIDR to match --pod-network-cidr
 curl -o /tmp/custom-resources.yaml \
   https://raw.githubusercontent.com/projectcalico/calico/v3.31.4/manifests/custom-resources.yaml
 sed -i 's|192.168.0.0/16|172.16.0.0/16|' /tmp/custom-resources.yaml
@@ -187,9 +187,9 @@ sed -i 's|192.168.0.0/16|172.16.0.0/16|' /tmp/custom-resources.yaml
 kubectl create -f /tmp/custom-resources.yaml
 ```
 
-### 4.2 Forzar que el operador se ejecute en el master (bootstrap)
+### 4.2 Force the operator to run on the master (bootstrap)
 
-> **Por qué.** El `tigera-operator` necesita comunicarse con el apiserver vía la ClusterIP `10.96.0.1`, pero en los workers ese tráfico depende del CNI… que aún no está instalado. Se crea un deadlock. Forzando el operador al master (que ya tiene red funcional vía host) rompemos el ciclo.
+> **Why.** The `tigera-operator` needs to communicate with the apiserver via ClusterIP `10.96.0.1`, but on the workers that traffic depends on the CNI… which is not yet installed. This creates a deadlock. Forcing the operator onto the master (which already has working networking via the host) breaks the cycle.
 
 ```bash
 kubectl patch deployment tigera-operator -n tigera-operator --patch '{
@@ -204,9 +204,9 @@ kubectl patch deployment tigera-operator -n tigera-operator --patch '{
 }'
 ```
 
-### 4.3 Configurar la autodetección de IP y desactivar BGP
+### 4.3 Configure IP autodetection and disable BGP
 
-> **Por qué.** Por defecto Calico hace autodetección "first-found" y elige cualquier interfaz, incluyendo Tailscale o redes de gestión. Hay que decirle qué CIDR usar para identificar el nodo. Además, con un clúster pequeño en una sola subnet, **VXLAN basta y BGP solo da problemas** (intentaría hacer peering con interfaces irrelevantes).
+> **Why.** By default Calico does "first-found" autodetection and picks any interface, including Tailscale or management networks. You need to tell it which CIDR to use to identify the node. Also, with a small cluster on a single subnet, **VXLAN is sufficient and BGP only causes problems** (it would try to peer with irrelevant interfaces).
 
 ```bash
 kubectl patch installation default --type=merge -p '{
@@ -221,20 +221,20 @@ kubectl patch installation default --type=merge -p '{
 }'
 ```
 
-> **Nota.** `nodeAddressAutodetectionV4.cidrs` y `firstFound` son mutuamente excluyentes. Si te diera el error `no more than one node address autodetection method can be specified per-family`, elimina `firstFound`:
+> **Note.** `nodeAddressAutodetectionV4.cidrs` and `firstFound` are mutually exclusive. If you get the error `no more than one node address autodetection method can be specified per-family`, remove `firstFound`:
 > ```bash
 > kubectl patch installation default --type=json -p '[
 >   {"op": "remove", "path": "/spec/calicoNetwork/nodeAddressAutodetectionV4/firstFound"}
 > ]'
 > ```
 
-Reinicia el daemonset para que recoja la configuración:
+Restart the daemonset so it picks up the new configuration:
 
 ```bash
 kubectl rollout restart daemonset/calico-node -n calico-system
 ```
 
-Espera a que todos los pods de `calico-system` estén `Running` y `Ready`:
+Wait until all pods in `calico-system` are `Running` and `Ready`:
 
 ```bash
 watch kubectl get pods -n calico-system
@@ -242,41 +242,41 @@ watch kubectl get pods -n calico-system
 
 ---
 
-## 5. Unir los workers al clúster
+## 5. Join workers to the cluster
 
-En **cada worker**, ejecuta el comando `kubeadm join` que copiaste del paso 3:
+On **each worker**, run the `kubeadm join` command you saved from step 3:
 
 ```bash
 sudo kubeadm join k8s-master:6443 --token <token> \
     --discovery-token-ca-cert-hash sha256:<hash>
 ```
 
-Si el token ha caducado (validez 24 h), genera uno nuevo desde el master:
+If the token has expired (valid for 24 h), generate a new one from the master:
 
 ```bash
 kubeadm token create --print-join-command
 ```
 
-### 5.1 Symlink del directorio CNI (en cada worker)
+### 5.1 CNI directory symlink (on each worker)
 
-> **Por qué.** En algunas distros (Debian 13/trixie), Calico busca los binarios CNI en `/usr/lib/cni` mientras que kubernetes-cni los instala en `/opt/cni/bin`. El init container `install-cni` crashea con `failed to find plugin "calico" in path [/usr/lib/cni]`.
+> **Why.** On some distros (Debian 13/trixie), Calico looks for CNI binaries in `/usr/lib/cni` while kubernetes-cni installs them in `/opt/cni/bin`. The `install-cni` init container crashes with `failed to find plugin "calico" in path [/usr/lib/cni]`.
 
-En **cada worker**:
+On **each worker**:
 
 ```bash
 sudo mkdir -p /usr/lib/cni
 sudo ln -s /opt/cni/bin/* /usr/lib/cni/
 ```
 
-### 5.2 Verificación
+### 5.2 Verification
 
-Desde el master, espera 1-2 minutos y comprueba:
+From the master, wait 1–2 minutes and check:
 
 ```bash
 kubectl get nodes
 ```
 
-Salida esperada:
+Expected output:
 
 ```
 NAME           STATUS   ROLES           AGE     VERSION
@@ -285,7 +285,7 @@ k8s-worker01   Ready    <none>          2m      v1.35.x
 k8s-worker02   Ready    <none>          2m      v1.35.x
 ```
 
-Y todos los pods del sistema corriendo:
+And all system pods running:
 
 ```bash
 kubectl get pods -A
@@ -293,28 +293,28 @@ kubectl get pods -A
 
 ---
 
-## Solución de problemas comunes
+## Troubleshooting
 
-### Workers `NotReady` indefinidamente
+### Workers stuck `NotReady`
 
 ```bash
-# Desde el master, ver el motivo en los logs del init container
+# From the master, check the reason in the init container logs
 kubectl get pods -n calico-system -o wide
-kubectl logs -n calico-system <calico-node-del-worker> -c install-cni
+kubectl logs -n calico-system <calico-node-pod-on-worker> -c install-cni
 ```
 
-Errores típicos y sus causas:
+Common errors and their causes:
 
-| Error en los logs | Causa | Solución |
-|-------------------|-------|----------|
-| `failed to find plugin "calico" in path [/usr/lib/cni]` | Plugins CNI en otra ruta | Symlink del paso 5.1 |
-| `dial tcp 10.96.0.1:443: connect: no route to host` | apiserver publicado en IP equivocada | Reset y volver a hacer `kubeadm init` con `--apiserver-advertise-address` correcto |
-| `BIRD is not ready: BGP not established with X.X.X.X` | BGP intentando peer con interfaces no deseadas | Aplicar el patch del paso 4.3 (BGP Disabled) |
-| `no more than one node address autodetection method` | Conflicto entre `firstFound` y `cidrs` | Ver nota en paso 4.3 |
+| Log error | Cause | Fix |
+|-----------|-------|-----|
+| `failed to find plugin "calico" in path [/usr/lib/cni]` | CNI plugins in wrong path | Symlink from step 5.1 |
+| `dial tcp 10.96.0.1:443: connect: no route to host` | apiserver advertised on wrong IP | Reset and redo `kubeadm init` with the correct `--apiserver-advertise-address` |
+| `BIRD is not ready: BGP not established with X.X.X.X` | BGP trying to peer with unwanted interfaces | Apply the patch from step 4.3 (BGP Disabled) |
+| `no more than one node address autodetection method` | Conflict between `firstFound` and `cidrs` | See note in step 4.3 |
 
-### Reset completo del clúster
+### Full cluster reset
 
-Si algo se ha torcido y quieres empezar de cero, en los **3 nodos**:
+If something went wrong and you want to start over, on **all 3 nodes**:
 
 ```bash
 sudo kubeadm reset -f
@@ -323,44 +323,44 @@ sudo rm -f /etc/cni/net.d/*
 sudo systemctl restart containerd
 ```
 
-Si el `kubeadm init` falla con `[ERROR Port-6443]: Port 6443 is in use`, comprueba qué proceso ocupa ese puerto:
+If `kubeadm init` fails with `[ERROR Port-6443]: Port 6443 is in use`, check what process is using that port:
 
 ```bash
 sudo ss -tlnp | grep 6443
 ```
 
-Si es un `docker-proxy`, hay un contenedor antiguo mapeando ese puerto:
+If it is a `docker-proxy`, there is an old container mapping that port:
 
 ```bash
 sudo docker ps | grep 6443
 sudo docker stop <container_id>
 ```
 
-### Verificar conectividad de la red interna del clúster
+### Verify internal cluster network connectivity
 
-Desde un worker, prueba que llega al apiserver del master:
+From a worker, test that it can reach the master's apiserver:
 
 ```bash
 curl -k --max-time 5 https://10.0.0.10:6443/healthz
-# Debe devolver: ok
+# Expected response: ok
 ```
 
-Y que las reglas DNAT de kube-proxy apuntan a la IP correcta:
+And that kube-proxy's DNAT rules point to the correct IP:
 
 ```bash
 sudo iptables -t nat -L KUBE-SVC-NPX46M4PTMTKRN6Y -n -v
-# El target KUBE-SEP-* debe redirigir a 10.0.0.10:6443, NO a una IP de otra interfaz
+# The KUBE-SEP-* target should redirect to 10.0.0.10:6443, NOT to an IP from another interface
 ```
 
 ---
 
-## ✅ Clúster base listo
+## Base cluster ready
 
-Kubernetes funcionando con containerd y Calico. Siguientes pasos sugeridos:
+Kubernetes running with containerd and Calico. Suggested next steps:
 
-1. **MetalLB** — balanceador bare-metal para servicios `LoadBalancer`
-2. **Traefik** — Ingress Controller (sustituto del obsoleto ingress-nginx)
-3. **cert-manager** — Let's Encrypt automático
-4. **Longhorn** — almacenamiento distribuido sobre los discos de los nodos
-5. **Harbor** — registro privado de imágenes
-6. **Servicios IoT** — Mosquitto, InfluxDB, Node-RED, Grafana, Home Assistant…
+1. **MetalLB** — bare-metal load balancer for `LoadBalancer` services
+2. **Traefik** — Ingress Controller (replacement for the deprecated ingress-nginx)
+3. **cert-manager** — automatic Let's Encrypt certificates
+4. **Longhorn** — distributed storage over node disks
+5. **Harbor** — private image registry
+6. **IoT services** — Mosquitto, InfluxDB, Node-RED, Grafana...
