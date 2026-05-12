@@ -73,3 +73,29 @@ ChirpStack is the chosen option for several objective reasons:
 - **Orientation to the use case**: NiFi is designed for enterprise Big Data pipelines with provenance, clustering, and high availability. Node-RED is specifically aimed at IoT and lightweight flow automation, which is exactly what FireSense needs.
 - **Plugin ecosystem**: Node-RED has native plugins for MQTT, InfluxDB, Telegram, and alerts, which considerably reduces integration time.
 - **Accessible visual programming**: The learning curve of Node-RED is significantly lower, allowing the team to focus on the project's logic rather than the tool's configuration.
+
+---
+
+## LoRaWAN vs Meshtastic vs MeshCore
+
+| Criterion | **LoRaWAN** | Meshtastic | MeshCore |
+|-----------|-------------|------------|---------|
+| Topology | Star (nodes → gateway → server) | Mesh (peer-to-peer) | Mesh (peer-to-peer) |
+| Range | 5–15 km (gateway) | 1–5 km per hop | 1–5 km per hop |
+| Network server | ChirpStack (standardised) | None (app-based) | None |
+| Standardisation | LoRa Alliance standard | Open source, no standard | Open source, no standard |
+| Scalability | Hundreds of nodes per gateway | Limited (~50 nodes) | Limited |
+| ADR (Adaptive Data Rate) | Yes (automatic) | No | No |
+| Backend integration | MQTT + ChirpStack API | Bluetooth/WiFi app | Bluetooth/WiFi app |
+| Power consumption | Very low (OTAA, deep sleep) | Low | Low |
+| Payload decoding | Server-side JavaScript codec | Device-side | Device-side |
+| Professional use | Industry standard (Sigfox, TTN) | Hobbyist/emergency comms | Hobbyist |
+
+### Justification for the choice: LoRaWAN
+
+- **Standardisation**: LoRaWAN is an open standard maintained by the LoRa Alliance, used in thousands of professional IoT deployments worldwide. Meshtastic and MeshCore are community projects without a formal standard, making long-term maintenance and interoperability harder.
+- **ChirpStack integration**: LoRaWAN works natively with ChirpStack, which provides OTAA authentication, ADR, packet deduplication, and a REST/MQTT API. Meshtastic requires a dedicated app and has no equivalent network server.
+- **Scalability**: A single RAK7289V2 gateway covers 5–15 km and can handle hundreds of simultaneous nodes. Meshtastic mesh networks degrade with more than ~50 nodes due to channel congestion.
+- **Backend pipeline**: LoRaWAN data flows automatically from ChirpStack → MQTT → Node-RED → InfluxDB. Meshtastic has no equivalent automated pipeline for time-series data storage.
+- **ADR (Adaptive Data Rate)**: ChirpStack automatically adjusts each node's spreading factor and transmission power to optimise battery life and range. This feature does not exist in Meshtastic.
+- **FireSense use case**: Forest fire monitoring requires reliable, long-range, low-power communication with centralised data collection. LoRaWAN's star topology with a central gateway perfectly fits this requirement.

@@ -92,3 +92,31 @@
 - **Release management**: Helm maintains a release history and allows rolling back to previous versions with a single command (`helm rollback`), which is essential for the project's DRP (Disaster Recovery Plan).
 - **Jenkins integration**: The FireSense CI/CD pipeline includes `helm upgrade --install` as the final deployment step, allowing atomic and reversible service updates.
 - **Parameterization**: Helm allows managing different configurations for development and production using different `values.yaml` files, while maintaining the same base chart.
+
+---
+
+## Kubernetes vs Docker Compose (production)
+
+| Criterion | **Kubernetes** | Docker Compose |
+|-----------|---------------|----------------|
+| Auto-healing | Yes (restarts failed pods automatically) | No |
+| Horizontal scaling (HPA) | Yes (automatic based on CPU/memory) | No |
+| Rolling updates | Yes (zero downtime) | No |
+| Load balancing | Yes (Service, Ingress) | Manual |
+| Secret management | Yes (Secrets, Sealed Secrets) | .env files |
+| Storage | Persistent Volumes (Longhorn) | Docker volumes |
+| Multi-node | Yes (master + workers) | Single host |
+| Health checks | Liveness + Readiness probes | Basic healthcheck |
+| CI/CD integration | kubectl, Helm, kaniko | docker compose up |
+| CIS auditing | kube-bench | Not applicable |
+| Network policies | Calico NetworkPolicies | Not applicable |
+| Complexity | High | Low |
+
+### Justification for the choice: Kubernetes
+
+- **Production requirements**: FireSense is a production-grade platform. Docker Compose is suitable for development and single-host deployments, but lacks the reliability features required for a 24/7 monitoring system: auto-healing, HPA, rolling updates, and multi-node redundancy.
+- **HPA (Horizontal Pod Autoscaler)**: Grafana and Node-RED scale automatically based on CPU and memory usage. This is not possible with Docker Compose.
+- **Multi-node reliability**: The K8s cluster (1 master + 2 workers) with Longhorn storage provides data redundancy. If a worker fails, pods are automatically rescheduled on the remaining node. Docker Compose on a single host has no equivalent failover mechanism.
+- **Security hardening**: The project requires kube-bench (CIS auditing), Sealed Secrets, NetworkPolicies, and RBAC — all Kubernetes-native features that do not exist in Docker Compose.
+- **CI/CD pipeline**: The Jenkins + kaniko pipeline deploys directly to K8s via kubectl. This integration is native and well-documented.
+- **Docker Compose role in FireSense**: Docker Compose is used exclusively for the local development environment, before deploying to K8s. In production, only Kubernetes manifests are used.
