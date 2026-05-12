@@ -235,7 +235,7 @@ Services tested: Web portal, Login, Dashboard, Auth API, ChirpStack, Grafana, No
 **Security scan**: nmap + nikto against HTTPS endpoint.
 - TLS: Let's Encrypt certificate, valid until August 2026
 - Cipher: TLS_AES_128_GCM_SHA256
-- X-Content-Type-Options: nosniff ✅
+- X-Content-Type-Options: nosniff
 - HSTS: configured via Traefik middleware
 
 Reports: `backend-server/k8s-services-iot/tests/nmap-report.txt`, `backend-server/k8s-services-iot/tests/nikto-report.txt`

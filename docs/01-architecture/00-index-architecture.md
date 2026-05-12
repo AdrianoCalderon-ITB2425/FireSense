@@ -8,12 +8,13 @@
 | **02-k8s** | Complete K8s architecture | [Read →](./02-k8s.md) |
 | **03-lorawan** | LoRaWAN architecture | [Read →](./03-lorawan.md) |
 | **04-playtest-k8s** | K8s playtest & validation | [Read →](./04-playtest-k8s.md) |
-| **05-sprints-technical-doc** | Sprints technical documentation | [Read →](./05-sprints-technical-doc.md) |
-| **06-diagrams** | Architecture diagrams | [Read →](./06-diagrams.md) |
-| **07-runbooks** | Operational runbooks | [Read →](./07-runbooks.md) |
-| **08-sustainability-plan** | Sustainability & digital transformation | [Read →](./08-sustainability-plan.md) |
-| **09-project-memory** | Complete project memory | [Read →](./09-project-memory.md) |
-| **10-nodered-apis** | Node-RED flows & external APIs | [Read →](./10-nodered-apis.md) |
+| **05-hardening** | Security hardening guide | [Read →](./05-hardening.md) |
+| **06-sprints-technical-doc** | Sprints technical documentation | [Read →](./06-sprints-technical-doc.md) |
+| **07-diagrams** | Architecture diagrams | [Read →](./07-diagrams.md) |
+| **08-runbooks** | Operational runbooks | [Read →](./08-runbooks.md) |
+| **09-sustainability-plan** | Sustainability & digital transformation | [Read →](./09-sustainability-plan.md) |
+| **10-project-memory** | Complete project memory | [Read →](./10-project-memory.md) |
+| **11-nodered-apis** | Node-RED flows & external APIs | [Read →](./11-nodered-apis.md) |
 
 ---
 

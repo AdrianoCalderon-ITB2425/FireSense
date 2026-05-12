@@ -24,8 +24,8 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Management & Actas | `docs/02-sprints/` | [View actas →](./docs/02-sprints/) |
 | Comparison of Technologies | `docs/03-tech-comparison/` | [View tech-comparison →](./docs/03-tech-comparison/) |
 | Occupational Risks | `docs/04-occupational-risks/` | [View risks →](./docs/04-occupational-risks/) |
-| Manuals | `docs/06-manuals/` | [View manuals →](./docs/06-manuals/) |
-| Market Analysis | `docs/07-market-analysis/` | [View analysis →](./docs/07-market-analysis/) |
+| Manuals | `docs/05-manuals/` | [View manuals →](./docs/05-manuals/) |
+| Market Analysis | `docs/06-market-analysis/` | [View analysis →](./docs/06-market-analysis/) |
 | K8s Manifests | `backend-server/k8s-services-iot/` | [View manifests →](./backend-server/k8s-services-iot/) |
 | Sealed Secrets | `k8s/sealed-secrets-backup/` | [View secrets →](./k8s/sealed-secrets-backup/) |
 

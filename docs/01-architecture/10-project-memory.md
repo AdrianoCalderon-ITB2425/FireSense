@@ -360,39 +360,39 @@ LDAP administration panel:
 
 | Task | Responsible | Status |
 |------|-------------|--------|
-| K8s cluster provisioning (IsardVDI) | Adriano + Francisco | ✅ Done |
-| Network configuration + fixed IPs | Francisco | ✅ Done |
-| MING stack Dockerfiles | Adriano | ✅ Done |
-| K8s manifests (all services) | Francisco | ✅ Done |
-| OpenLDAP configuration | Hamza | ✅ Done |
-| GitHub repository + documentation | Adriano | ✅ Done |
-| Technology comparison | All | ✅ Done |
-| Hardware selection + LoRaWAN setup | Adriano + Hamza | ✅ Done |
+| K8s cluster provisioning (IsardVDI) | Adriano + Francisco | Done |
+| Network configuration + fixed IPs | Francisco | Done |
+| MING stack Dockerfiles | Adriano | Done |
+| K8s manifests (all services) | Francisco | Done |
+| OpenLDAP configuration | Hamza | Done |
+| GitHub repository + documentation | Adriano | Done |
+| Technology comparison | All | Done |
+| Hardware selection + LoRaWAN setup | Adriano + Hamza | Done |
 
 **Sprint 2 — Security & Infrastructure (Weeks 4–7)**
 
 | Task | Responsible | Status |
 |------|-------------|--------|
-| Sealed Secrets + Trivy + kube-bench | Adriano | ✅ Done |
-| CI/CD Jenkins + kaniko | Adriano | ✅ Done |
-| HPA (Grafana + Node-RED) | Hamza | ✅ Done |
-| InfluxDB retention policies | Adriano | ✅ Done |
-| Backup CronJob + DRP | Hamza | ✅ Done |
-| AI Telegram Bot | Hamza | ✅ Done |
-| Prometheus + Samba | Francisco | ✅ Done |
-| Harbor Trivy scanning | Adriano | ✅ Done |
+| Sealed Secrets + Trivy + kube-bench | Adriano | Done |
+| CI/CD Jenkins + kaniko | Adriano | Done |
+| HPA (Grafana + Node-RED) | Hamza | Done |
+| InfluxDB retention policies | Adriano | Done |
+| Backup CronJob + DRP | Hamza | Done |
+| AI Telegram Bot | Hamza | Done |
+| Prometheus + Samba | Francisco | Done |
+| Harbor Trivy scanning | Adriano | Done |
 
 **Sprint 3 — Features & AI (Weeks 8–10)**
 
 | Task | Responsible | Status |
 |------|-------------|--------|
-| Forest Rangers Portal (Leaflet) | Hamza + Adriano | ✅ Done |
-| REST API + Isolation Forest | Hamza + Francisco | ✅ Done |
-| Grafana dashboards | Hamza + Francisco | ✅ Done |
-| Technical documentation (English) | Francisco + Hamza | ✅ Done |
-| Sustainability plan | Adriano + Francisco | ✅ Done |
-| Integration tests + pentest | Hamza | ✅ Done |
-| Demo + presentation | All | ✅ Done |
+| Forest Rangers Portal (Leaflet) | Hamza + Adriano | Done |
+| REST API + Isolation Forest | Hamza + Francisco | Done |
+| Grafana dashboards | Hamza + Francisco | Done |
+| Technical documentation (English) | Francisco + Hamza | Done |
+| Sustainability plan | Adriano + Francisco | Done |
+| Integration tests + pentest | Hamza | Done |
+| Demo + presentation | All | Done |
 
 ### 7.2 Tools
 
@@ -413,15 +413,15 @@ LDAP administration panel:
 
 | KPI | Target | Result |
 |-----|--------|--------|
-| Integration tests passing | 100% | ✅ 10/10 (100%) |
-| Critical vulnerabilities in images | 0 | ✅ 0 (Trivy) |
-| kube-bench CIS FAIL checks | 0 | ✅ 2 fixed |
-| TLS certificate valid | Yes | ✅ Let's Encrypt exp. Aug 2026 |
-| CI/CD build time | < 5 min | ✅ ~3 minutes |
-| Backup frequency | Daily | ✅ 02:00 AM daily |
-| HPA configured | Yes | ✅ Grafana + Node-RED |
-| Namespaces operational | 8 | ✅ 8/8 |
-| Services deployed | 20+ | ✅ 24 services |
+| Integration tests passing | 100% | 10/10 (100%) |
+| Critical vulnerabilities in images | 0 | 0 (Trivy) |
+| kube-bench CIS FAIL checks | 0 | 2 fixed |
+| TLS certificate valid | Yes | Let's Encrypt exp. Aug 2026 |
+| CI/CD build time | < 5 min | ~3 minutes |
+| Backup frequency | Daily | 02:00 AM daily |
+| HPA configured | Yes | Grafana + Node-RED |
+| Namespaces operational | 8 | 8/8 |
+| Services deployed | 20+ | 24 services |
 
 ### 8.2 Cost Analysis
 
