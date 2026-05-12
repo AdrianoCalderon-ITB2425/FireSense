@@ -26,6 +26,8 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Occupational Risks | `docs/04-occupational-risks/` | [View risks →](./docs/04-occupational-risks/) |
 | Manuals | `docs/06-manuals/` | [View manuals →](./docs/06-manuals/) |
 | Market Analysis | `docs/07-market-analysis/` | [View analysis →](./docs/07-market-analysis/) |
+| K8s Manifests | `backend-server/k8s-services-iot/` | [View manifests →](./backend-server/k8s-services-iot/) |
+| Sealed Secrets | `k8s/sealed-secrets-backup/` | [View secrets →](./k8s/sealed-secrets-backup/) |
 
 ## Features
 
@@ -74,6 +76,9 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Node-RED | [/nodered/](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/nodered/) | Admin |
 | Harbor | [/harbor](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/harbor) | Admin |
 | Jenkins | [/jenkins](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/jenkins) | Admin |
+| REST API | [/fsapi/v2/api/health](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/fsapi/v2/api/health) | Public |
+| Prometheus | [/prometheus](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/prometheus) | Admin |
+| Headlamp | [/headlamp](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/headlamp) | Admin |
 
 ---
 
