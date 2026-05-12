@@ -84,3 +84,4 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 
 *FireSense IoT Platform — Institut Tecnològic de Barcelona — ASIX2c — 2025/2026*
 
+
