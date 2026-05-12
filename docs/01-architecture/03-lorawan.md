@@ -1,4 +1,4 @@
-# 02 – LoRaWAN Architecture
+# LoRaWAN Architecture
 
 ## Introduction to LoRaWAN
 
