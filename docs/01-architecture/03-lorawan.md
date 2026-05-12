@@ -19,7 +19,7 @@
 
 ## Architecture Overview
 
-\`\`\`mermaid
+```mermaid
 graph LR
     NODE["RAK4631 Node\nTemp + Soil Moisture"] -->|LoRa EU868| GW["RAK7289V2 Gateway"]
     GW -->|UDP Packet Forwarder| CS["ChirpStack\niot namespace"]
@@ -28,7 +28,7 @@ graph LR
     INFLUX --> GRAFANA["Grafana Dashboards"]
     INFLUX --> API["REST API\n/fsapi/v2/api"]
     INFLUX --> IF["Isolation Forest\nCronJob (hourly)"]
-\`\`\`
+```
 
 ---
 
@@ -41,13 +41,13 @@ graph LR
 | **Band** | EU868 (863–870 MHz) |
 | **Channels** | 8 channels |
 | **Backhaul** | Ethernet / WiFi |
-| **Server address** | ChirpStack service (\`chirpstack.iot.svc.cluster.local\`) |
+| **Server address** | ChirpStack service (`chirpstack.iot.svc.cluster.local`) |
 | **UDP port (up)** | 1700 |
 | **UDP port (down)** | 1700 |
 
 ### Packet Forwarder Configuration
 
-\`\`\`json
+```json
 {
     "server_address": "chirpstack.iot.svc.cluster.local",
     "serv_port_up": 1700,
@@ -59,7 +59,7 @@ graph LR
     "forward_crc_error": false,
     "forward_crc_disabled": false
 }
-\`\`\`
+```
 
 ### Deployment
 
@@ -86,7 +86,7 @@ The gateway is deployed at the ITB laboratory, with the antenna oriented towards
 | **Activation** | OTAA (Over-The-Air Activation) |
 | **DevEUI** | Unique per device (printed on module) |
 | **AppEUI / JoinEUI** | Configured in ChirpStack application |
-| **AppKey** | \`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\` (stored securely) |
+| **AppKey** | `XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX` (stored securely) |
 | **Spreading Factor** | SF7 (adaptive via ADR) |
 | **Bandwidth** | 125 kHz |
 | **TX Power** | 14 dBm |
@@ -109,7 +109,7 @@ Each uplink cycle:
 
 ## 3. Payload Format — CayenneLPP
 
-\`\`\`javascript
+```javascript
 // ChirpStack codec — JavaScript decoder
 function decodeUplink(input) {
     var bytes = input.bytes;
@@ -129,21 +129,21 @@ function decodeUplink(input) {
 
     return { data: decoded };
 }
-\`\`\`
+```
 
 ---
 
 ## 4. ChirpStack — Network Server
 
-ChirpStack is deployed in the \`iot\` namespace in Kubernetes.
+ChirpStack is deployed in the `iot` namespace in Kubernetes.
 
 | Parameter | Value |
 |-----------|-------|
-| **URL** | \`/chirpstack\` |
+| **URL** | `/chirpstack` |
 | **Version** | ChirpStack v4 |
-| **Database** | PostgreSQL (\`chirpstack\` db) |
-| **MQTT broker** | \`mosquitto:1883\` |
-| **MQTT topic** | \`application/+/device/+/event/up\` |
+| **Database** | PostgreSQL (`chirpstack` db) |
+| **MQTT broker** | `mosquitto:1883` |
+| **MQTT topic** | `application/+/device/+/event/up` |
 
 ### Data flow: ChirpStack → InfluxDB
 
@@ -152,44 +152,44 @@ RAK4631 → [LoRa] → RAK7289V2 → [UDP] → ChirpStack
 → [Subscribe] → Node-RED  
 → [Parse + Write] → InfluxDB (bucket: sensors, org: firesense)
 
-Node-RED subscribes to \`application/+/device/+/event/up\` and writes to InfluxDB with measurement \`sensor_data\`, fields: \`temperature\`, \`soil_moisture\`, \`humidity\`, \`battery_mv\`.
+Node-RED subscribes to `application/+/device/+/event/up` and writes to InfluxDB with measurement `sensor_data`, fields: `temperature`, `soil_moisture`, `humidity`, `battery_mv`.
 
 ---
 
 ## 5. Node-RED Flow
 
-The Node-RED flow in the \`iot\` namespace processes incoming MQTT messages:
+The Node-RED flow in the `iot` namespace processes incoming MQTT messages:
 
 1. **MQTT In** — subscribes to ChirpStack topic
 2. **JSON Parse** — decodes the uplink payload
 3. **Function** — extracts fields and adds tags (dev_eui, application_id)
-4. **InfluxDB Out** — writes to bucket \`sensors\`, org \`firesense\`
+4. **InfluxDB Out** — writes to bucket `sensors`, org `firesense`
 
 ---
 
 ## 6. REST API
 
-The FireSense REST API (\`api-rest\` deployment, namespace \`firesense\`) exposes sensor data:
+The FireSense REST API (`api-rest` deployment, namespace `firesense`) exposes sensor data:
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| \`/fsapi/v2/api/health\` | GET | Service health check |
-| \`/fsapi/v2/api/sensors\` | GET | Sensor readings (param: \`hours\`, \`limit\`) |
-| \`/fsapi/v2/api/sensors/latest\` | GET | Latest reading per device |
-| \`/fsapi/v2/api/anomalies\` | GET | Isolation Forest anomaly results |
-| \`/fsapi/v2/api/risk\` | GET | Current fire risk level |
+| `/fsapi/v2/api/health` | GET | Service health check |
+| `/fsapi/v2/api/sensors` | GET | Sensor readings (param: `hours`, `limit`) |
+| `/fsapi/v2/api/sensors/latest` | GET | Latest reading per device |
+| `/fsapi/v2/api/anomalies` | GET | Isolation Forest anomaly results |
+| `/fsapi/v2/api/risk` | GET | Current fire risk level |
 
 ---
 
 ## 7. AI Anomaly Detection — Isolation Forest
 
-A Kubernetes CronJob runs every hour in the \`iot\` namespace:
+A Kubernetes CronJob runs every hour in the `iot` namespace:
 
-- **Image**: \`isolation-forest:v1\`
-- **Algorithm**: scikit-learn Isolation Forest (\`contamination=0.05\`)
-- **Input**: Last 24h of \`sensor_data\` from InfluxDB
-- **Output**: Writes \`anomalies\` measurement to InfluxDB
-- **Fields**: \`anomaly_score\`, \`is_anomaly\`, \`temperature\`, \`soil_moisture\`
+- **Image**: `isolation-forest:v1`
+- **Algorithm**: scikit-learn Isolation Forest (`contamination=0.05`)
+- **Input**: Last 24h of `sensor_data` from InfluxDB
+- **Output**: Writes `anomalies` measurement to InfluxDB
+- **Fields**: `anomaly_score`, `is_anomaly`, `temperature`, `soil_moisture`
 
 ---
 
@@ -197,29 +197,29 @@ A Kubernetes CronJob runs every hour in the \`iot\` namespace:
 
 ### Node not joining
 
-\`\`\`bash
+```bash
 # Check ChirpStack logs
 kubectl logs -n iot deployment/chirpstack -f
 
 # Verify gateway is connected in ChirpStack UI
 # Check DevEUI and AppKey match ChirpStack configuration
-\`\`\`
+```
 
 ### No data in InfluxDB
 
-\`\`\`bash
+```bash
 # Check Node-RED logs
 kubectl logs -n iot statefulset/nodered -f
 
 # Check MQTT messages arriving
 kubectl exec -n iot deployment/mosquitto -- \
   mosquitto_sub -t "application/#" -v
-\`\`\`
+```
 
 ### Gateway offline
 
-\`\`\`bash
+```bash
 # Check UDP connectivity from gateway to ChirpStack
 # Verify server_address in packet forwarder config
 # Check ChirpStack gateway list in UI
-\`\`\`
+```
