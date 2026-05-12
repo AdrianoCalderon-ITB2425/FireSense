@@ -364,3 +364,4 @@ Kubernetes running with containerd and Calico. Suggested next steps:
 4. **Longhorn** — distributed storage over node disks
 5. **Harbor** — private image registry
 6. **IoT services** — Mosquitto, InfluxDB, Node-RED, Grafana...
+
