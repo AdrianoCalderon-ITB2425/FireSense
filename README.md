@@ -76,5 +76,6 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Jenkins | [/jenkins](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/jenkins) | Admin |
 
 ---
+
 *FireSense IoT Platform — Institut Tecnològic de Barcelona — ASIX2c — 2025/2026*
 
