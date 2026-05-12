@@ -4,6 +4,7 @@
 
 | **Document** | **Description** | **Quick Access** |
 |---|---|---|
+| **01-k8s-workers-master** | K8s cluster installation guide (kubeadm + containerd + Calico) | [Read →](./01-k8s-workers-master.md) |
 | **01-k8s** | Complete K8s architecture | [Read →](./01-k8s.md) |
 | **02-lorawan** | LoRaWAN architecture | [Read →](./02-lorawan.md) |
 | **03-playtest-k8s** | K8s playtest & validation | [Read →](./03-playtest-k8s.md) |
