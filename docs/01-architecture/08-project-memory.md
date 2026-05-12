@@ -340,7 +340,7 @@ LDAP administration panel:
 **DRP targets:**
 - RTO (Recovery Time Objective): < 2 hours
 - RPO (Recovery Point Objective): < 24 hours
-- Full procedures documented in `k8s/iot/DRP-FireSense.md`
+- Full procedures documented in `backend-server/k8s-services-iot/iot/DRP-FireSense.md`
 
 ### 6.3 Observability Stack
 

@@ -54,8 +54,8 @@ Dockerfiles created for:
 ## 1.10 & 1.11 Kubernetes Manifests
 
 Manifests created for all MING stack components:
-- `k8s/iot/` — Mosquitto, InfluxDB, Node-RED, Grafana, ChirpStack, Redis, PostgreSQL
-- `k8s/firesense/` — nginx-web, auth-service, OpenLDAP, PostgreSQL-web
+- `backend-server/k8s-services-iot/iot/` — Mosquitto, InfluxDB, Node-RED, Grafana, ChirpStack, Redis, PostgreSQL
+- `backend-server/k8s-services-iot/firesense/` — nginx-web, auth-service, OpenLDAP, PostgreSQL-web
 
 ## 1.12 Technologies & Hardware
 
@@ -81,7 +81,7 @@ kubectl get secret <name> -n <ns> -o yaml | \
   --controller-namespace=kube-system --format yaml > sealed-secret.yaml
 ```
 
-Sealed secrets are stored in `k8s/iot/`:
+Sealed secrets are stored in `backend-server/k8s-services-iot/iot/`:
 - `sealed-backup-scp-secret.yaml`
 - `sealed-backup-ssh-key.yaml`
 - `sealed-chirpstack-postgres-secret.yaml`
@@ -141,13 +141,13 @@ Downsampling task runs every hour via InfluxDB Tasks.
 
 ```bash
 # Manual backup test
-bash ~/FireSense/k8s/iot/backup-relay.sh
+bash ~/FireSense/backend-server/k8s-services-iot/iot/backup-relay.sh
 
 # View CronJob status
 kubectl get cronjob -n iot
 ```
 
-DRP document: `k8s/iot/DRP-FireSense.md`
+DRP document: `backend-server/k8s-services-iot/iot/DRP-FireSense.md`
 
 ---
 
@@ -228,7 +228,7 @@ Datasources: InfluxDB (IoT data) + Prometheus (infrastructure).
 
 ## 3.7 Integration Tests + Pentest
 
-**Integration tests** (`k8s/tests/integration-tests.sh`): 10/10 passed.
+**Integration tests** (`backend-server/k8s-services-iot/tests/integration-tests.sh`): 10/10 passed.
 
 Services tested: Web portal, Login, Dashboard, Auth API, ChirpStack, Grafana, Node-RED, Harbor, Jenkins.
 
@@ -238,4 +238,4 @@ Services tested: Web portal, Login, Dashboard, Auth API, ChirpStack, Grafana, No
 - X-Content-Type-Options: nosniff ✅
 - HSTS: configured via Traefik middleware
 
-Reports: `k8s/tests/nmap-report.txt`, `k8s/tests/nikto-report.txt`
+Reports: `backend-server/k8s-services-iot/tests/nmap-report.txt`, `backend-server/k8s-services-iot/tests/nikto-report.txt`

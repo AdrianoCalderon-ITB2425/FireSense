@@ -190,10 +190,10 @@ module.exports = {
 
 ```bash
 # Export current flows
-kubectl exec -n iot statefulset/nodered -- cat /data/flows.json > k8s/iot/nodered-flows.json
+kubectl exec -n iot statefulset/nodered -- cat /data/flows.json > backend-server/k8s-services-iot/iot/nodered-flows.json
 
 # Import flows
-kubectl cp k8s/iot/nodered-flows.json \
+kubectl cp backend-server/k8s-services-iot/iot/nodered-flows.json \
   iot/$(kubectl get pods -n iot -l app=nodered -o jsonpath='{.items[0].metadata.name}'):/data/flows.json
 
 kubectl rollout restart statefulset/nodered -n iot

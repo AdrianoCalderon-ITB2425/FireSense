@@ -91,7 +91,7 @@ kubectl get pvc -A
 kubectl get hpa -A
 
 # Run integration tests
-bash ~/FireSense/k8s/tests/integration-tests.sh
+bash ~/FireSense/backend-server/k8s-services-iot/tests/integration-tests.sh
 ```
 
 ---
