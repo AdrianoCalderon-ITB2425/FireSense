@@ -77,8 +77,8 @@ FireSense is an academic project from the Institut Tecnològic de Barcelona (ITB
 | Harbor | [/harbor](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/harbor) | Admin |
 | Jenkins | [/jenkins](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/jenkins) | Admin |
 | REST API | [/fsapi/v2/api/health](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/fsapi/v2/api/health) | Public |
-| Prometheus | [/prometheus](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/prometheus) | Admin |
-| Headlamp | [/headlamp](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/headlamp) | Admin |
+| Prometheus | [/prometheus](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/prometheus/) | Admin |
+| Headlamp | [/headlamp](https://93d92c4a-e3bf-4ea6-93c6.afab44153cac.isard.nuvulet.itb.cat/headlamp/) | Admin |
 
 ---
 
